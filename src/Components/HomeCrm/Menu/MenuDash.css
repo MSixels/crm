@@ -1,0 +1,31 @@
+.containerMenuDash{
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0px 32px 24px;
+    width: 280px;
+    color: var(--secondary800);
+    flex-shrink: 0;
+    background-color: #FFF;
+}
+.containerMenuDash .divOptions{
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+.containerMenuDash .divOption{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 18px;
+    padding: 12px;
+    cursor: pointer;
+}
+.containerMenuDash .divOption .divIcon{
+    display: flex;
+    align-items: center;
+    width: 50px;
+}
+.containerMenuDash .active{
+    color: var(--deep-purple500);
+    border-right: solid 3px var(--deep-purple500);
+}

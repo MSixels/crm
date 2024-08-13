@@ -1,0 +1,44 @@
+.containerHeader{
+    background-color: var(--bg-principal);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+    width: 100%;
+    z-index: 1000;
+}
+.containerHeader header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    
+}
+.containerHeader .divOptions{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 64px;
+}
+.containerHeader .divOptions span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 16px;
+    cursor: pointer;
+}
+.containerHeader .divUser{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+@media (max-width: 450px) {
+    .containerHeader header{
+       flex-direction: column;
+       gap: 10px;
+    } 
+    .containerHeader .divOptions{
+        width: 100%;
+    }
+}

@@ -1,0 +1,116 @@
+.containerLogin{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+    background-color: var(--bg-1);
+}
+.containerLogin .divContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 64px;
+}
+.containerLogin .divForm{
+    color: var(--color-1);
+    padding: 32px;
+    background-color: var(--bg-White);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+.containerLogin .divForm .divIcon{
+    background-color: var(--color-2);
+    padding: 9px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s;
+    color: var(--color-1);
+}
+.containerLogin .divForm .divTitle{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+.containerLogin .divForm .title{
+    font-size: 30px;
+    font-weight: bold;
+}
+.containerLogin .divForm .divInput{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.containerLogin .divForm .divInput label{
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background-color: #FFF;
+    padding-inline: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-3);
+}
+.containerLogin .divForm .input{
+    border: solid 1px var(--color-2);
+    padding-inline: 12px;
+    padding-block: 16px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    font-size: 24px;
+    margin-bottom: 24px;
+}
+.containerLogin .divForm .input:hover{
+    border: solid 1px #000;
+}
+.containerLogin .divCheck-forgot{
+    display: flex;
+    align-items: center;
+    gap: 64px;
+    font-size: 24px;
+}
+.containerLogin .divCheck{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+    color: var(--bg-btnConfirm);
+}
+.containerLogin .divCheck span{
+    color: var(--color-1);
+}
+.containerLogin .btnLogin{
+    border: none;
+    padding: 20px;
+    font-size: 24px;
+    border-radius: 4px;
+    margin-top: 32px;
+    background-color: var(--bg-btnConfirm);
+    color: #FFF;
+    cursor: pointer;
+    transition: .3s;
+}
+.containerLogin .btnLogin:hover{
+    scale: 1.01;
+}
+.containerLogin .divHelp{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 32px;
+    font-size: 24px;
+}
+.containerLogin a{
+    color: var(--color-textLine);
+    font-size: 24px;
+}
+.containerLogin .decorationN{
+    text-decoration: none;
+}

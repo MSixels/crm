@@ -1,0 +1,10 @@
+.containerDashProf{
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+}
+.containerDashProf .divInputs{
+    display: flex;
+    margin-top: 20px;
+    gap: 8px;
+}

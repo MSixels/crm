@@ -1,0 +1,38 @@
+.containerAulas{
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    flex-grow: 1;
+}
+.containerAulas .divContent{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.containerAulas button{
+    border: none;
+    background-color: transparent;
+    border: solid 1px var(--bg-principal);
+    padding: 18px 36px;
+    border-radius: 4px;
+    font-size: 20px;
+    color: var(--bg-principal);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .3s;
+}
+.containerAulas button:hover{
+    background-color: var(--bg-principal);
+    color: #FFF;
+}
+.containerAulas .divHeadLine{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerAulas .textHeadLine{
+    width: 50%;
+}

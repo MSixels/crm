@@ -1,0 +1,153 @@
+.containerCursos{
+    display: flex;
+    flex-direction: column;
+    padding: 64px 24px;
+}
+.containerCursos header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerCursos header .divSearch{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #E7EBEF;
+    padding: 12px;
+    border-radius: 4px;
+    color: #4A5E6D;
+}
+.containerCursos header .subtitle{
+    color: #637D92;
+}
+.containerCursos header .divSearch input{
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    outline: none;
+}
+.containerCursos .divModulos{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));    
+    gap: 20px;
+    justify-content: center;
+    padding: 40px 0px;
+    
+}
+
+.containerCursos .divModulo{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+    border: solid 1px #ddd;
+    border-radius: 8px;
+    gap: 8px;
+}
+.containerCursos .divModulo .prof{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--secondary800);
+}
+.containerCursos .divProgressInfos{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+.containerCursos .divProgressInfos .divInfo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border-radius: 40px;
+    padding: 7px 10px;
+}
+.containerCursos .divProgressInfos .aulaStart{
+    background-color: var(--indigo50);
+    color: var(--indigo500);
+}
+.containerCursos .divProgressInfos .aulaBlock{
+    background-color: var(--secondary200);
+    color: var(--secondary700);
+}
+.containerCursos .divProgressInfos .aulaEnd{
+    background-color: var(--success);
+    color: #FFF;
+}
+.containerCursos .divProgressInfos .provaStart{
+    background-color: var(--deep-purple50);
+    color: var(--deep-purple500);
+}
+.containerCursos .divProgressInfos .provaBlock{
+    background-color: var(--secondary200);
+    color: var(--secondary700);
+}
+.containerCursos .divProgressInfos .provaEnd{
+    background-color: var(--success);
+    color: #FFF;
+}
+.containerCursos .divProgressInfos .campoStart{
+    background-color: var(--secondary100);
+    color: var(--secondary1000);
+}
+.containerCursos .divProgressInfos .campoBlock{
+    background-color: var(--secondary200);
+    color: var(--secondary700);
+}
+.containerCursos .divProgressInfos .campoEnd{
+    background-color: var(--success);
+    color: #FFF;
+}
+.containerCursos .divProgressBar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+    color: var(--secondary800);
+    gap: 10px;
+}
+.containerCursos .divProgressBar .progressPorcent{
+    white-space: nowrap;
+    text-align: center;
+}
+.containerCursos .btn{
+    border: none;
+    padding: 12px;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 4px;
+    margin-top: 32px;
+    cursor: pointer;
+    transition: .3s;
+}
+.containerCursos .btn:hover{
+    scale: 1.01;
+}
+.containerCursos .btnStart{
+    background-color: var(--bg-principal);
+    color: #FFF;
+}
+.containerCursos .btnBlock{
+    background-color: var(--bg-block);
+    color: var(--color-block);
+}
+.containerCursos .btnEnd{
+    background-color: var(--bg-success);
+    color: #FFF;
+}
+@media (max-width: 450px) {
+    .containerCursos header{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .containerCursos .divModulos {
+        grid-template-columns: 1fr;
+        padding: 20px 0px;
+    }
+    .containerCursos .divModulo {
+        width: 100%;
+    }
+}

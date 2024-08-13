@@ -1,0 +1,9 @@
+.containerModulo{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+.containerModulo .divContent{
+    display: flex;
+    height: 100%;
+}

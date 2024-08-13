@@ -1,0 +1,43 @@
+.containerTurmas{
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    width: 100%;
+}
+.containerTurmas .divContent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    background-color: #FFF;
+    border-radius: 4px;
+    height: auto;
+    padding-bottom: 16px;
+    font-size: 18px;
+}
+.containerTurmas .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+.containerTurmas .divInfos {
+    display: flex;
+    flex-direction: column;
+}
+.containerTurmas .divHeader{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    border-bottom: solid 1px var(--color-2);
+}
+.containerTurmas .divHeader .title{
+    padding: 16px;
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    position: relative;
+}
+.containerTurmas .bold{
+    font-weight: bold;
+}

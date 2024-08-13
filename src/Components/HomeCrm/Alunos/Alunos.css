@@ -1,0 +1,69 @@
+.containerAlunos{
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    width: 100%;
+}
+.containerAlunos .divContent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    background-color: #FFF;
+    border-radius: 4px;
+    height: auto;
+    padding-bottom: 16px;
+    font-size: 18px;
+}
+.containerAlunos .divInfos {
+    display: flex;
+    flex-direction: column;
+}
+.containerAlunos .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+.containerAlunos .divContent .divInputs{
+    display: flex;
+    gap: 8px;
+}
+.containerAlunos .divHeader,
+.containerAlunos .divAlunos {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    border-bottom: solid 1px var(--color-2);
+}
+.containerAlunos .divHeader .title,
+.containerAlunos .divAlunos .spanBox {
+    padding: 16px;
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    position: relative;
+}
+.containerAlunos .divAlunos .spanBox .text{
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    max-width: 130px;
+}
+.containerAlunos .divAlunos .spanBox .ativo{
+    background-color: var(--success-light);
+    color: var(--success);
+}
+.containerAlunos .divAlunos .spanBox .pendente{
+    background-color: var(--warning50);
+    color: var(--warning200);
+}
+.containerAlunos .bold{
+    font-weight: bold;
+}
+.containerAlunos .divAlunos .spanBox .boa{
+    color: var(--success);
+}
+.containerAlunos .divAlunos .spanBox .ruim{
+    color: var(--warning200);
+}

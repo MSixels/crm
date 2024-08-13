@@ -1,0 +1,31 @@
+.boxBar{
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    height: 4px;
+    border-radius: 4px;
+}
+.boxBarStart{
+    background-color: var(--secondary200);
+}
+.boxBarBlock{
+    background-color: var(--secondary200);
+}
+.boxBarEnd{
+    background-color: var(--secondary200);
+}
+.boxBar .bar{
+    height: 4px;
+    display: flex;
+    border-radius: 4px;
+}
+.boxBarStart .bar{
+    background-color: var(--bg-principal);
+}
+.boxBarBlock .bar{
+    background-color: var(--secondary200);
+}
+.boxBarEnd .bar{
+    background-color: var(--bg-success);
+}

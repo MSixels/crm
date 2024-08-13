@@ -1,0 +1,39 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --bg-1:#EBEBEB;
+  --color-1:#323F49;
+  --bg-White:#FFF;
+  --color-2:#DAE1E7;
+  --color-3:#B6C3CD;
+  --bg-btnConfirm:#6732D1;
+  --color-textLine:#007AFF;
+  --bg-principal:#6732D1;
+  --bg-principal-light:#c1afe0;
+  --bg-success:#1BA284;
+  --bg-block:#C2CDD6;
+  --color-block: #92A5B5;
+  --secondary200:#DAE1E7;
+  --indigo50:#e8eaf6;
+  --indigo500:#3f51b5;
+  --deep-purple50:#ede7f6;
+  --deep-purple500:#673ab7;
+  --secondary100:#e7ebef;
+  --secondary1000:#323f49;
+  --secondary700:#7991a4;
+  --success:#1BA284;
+  --secondary800:#637D92;
+  --primary:#6732D1;
+  --success-light:#e4faf5;
+  --warning200:#EDA145;
+  --warning50:#fceede;
+  
+}
+html {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
