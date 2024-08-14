@@ -1,0 +1,117 @@
+.perfil {
+  padding: 1rem;
+}
+
+.perfil__grid {
+  display: grid;
+  grid-template-columns: 4fr 6fr;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.perfil__card {
+  background-color: var(--bg-White);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  border: 1px solid var(--color-2);
+}
+
+.perfil__card--centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.perfil__avatar {
+  width: 96px;
+  height: 96px;
+  background-color: var(--bg-1);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.perfil__avatar-photo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+}
+
+.perfil__text-center {
+  text-align: center;
+}
+
+.perfil__description {
+  color: var(--color-block);
+  font-size: 0.875rem;
+  margin: 32px auto;
+  text-align: center;
+}
+
+.perfil__button {
+  background-color: var(--bg-btnConfirm);
+  color: var(--bg-White);
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.perfil__grid-input {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+.perfil__input-group {
+  margin-top: 1rem;
+  width: 100%;
+  position: relative;
+}
+
+.perfil__input-group label {
+  position: absolute;
+  top: -10px;
+  left: 10px;
+  background-color: var(--bg-White);
+  padding: 0 4px;
+  font-size: 0.875rem;
+}
+
+.perfil__input-group input {
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-2);
+  outline: none;
+  transition: border-color 0.3s;
+  width: 100%;
+}
+
+.perfil__input--erro input {
+  border-color: red;
+}
+
+.perfil__button-save {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.perfil__icon-eye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-3);
+}
