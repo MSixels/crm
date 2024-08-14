@@ -7,6 +7,7 @@ import Login from './Pages/Login/Login.jsx';
 import Home from './Pages/Home/Home.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
 import HomeCrm from './Pages/HomeCrm/HomeCrm.jsx';
+import PerfilAluno from './Pages/PerfilAluno/PerfilAluno.jsx'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: `/aluno/home`,
     element: <Home />,
+  },
+  {
+    path: `/aluno/perfil`,
+    element: <PerfilAluno />,
   },
   {
     path: `/aluno/:moduloid`,
