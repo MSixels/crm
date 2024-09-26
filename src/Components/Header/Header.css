@@ -35,8 +35,8 @@
 }
 @media (max-width: 450px) {
     .containerHeader header{
-       flex-direction: column;
-       gap: 10px;
+    flex-direction: column;
+    gap: 10px;
     } 
     .containerHeader .divOptions{
         width: 100%;

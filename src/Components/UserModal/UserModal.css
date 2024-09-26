@@ -12,6 +12,7 @@
     right: 16px;
     top: 85px;
     border: 1px solid #c2cdd6;
+    z-index: 2000;
 }
 .modal-infos {
     margin-bottom: 16px;
