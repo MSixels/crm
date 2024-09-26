@@ -33,6 +33,7 @@ function PasswordInput({ id, placeholder, value, onChange, erro }) {
   );
 }
 
+
 export default function ProfileEdit() {
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
