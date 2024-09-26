@@ -35,6 +35,10 @@ const router = createBrowserRouter([
     element: <HomeCrm />,
   },
   {
+    path: `/professor/perfil`,
+    element: <PerfilAluno />,
+  },
+  {
     path: `/professor`,
     element: <Navigate to="/professor/dashboard" replace />,
   },

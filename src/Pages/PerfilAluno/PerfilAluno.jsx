@@ -1,12 +1,14 @@
 import './PerfilAluno.css';
 import Header from "../../Components/Header/Header";
 import InputMask from 'react-input-mask';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useLocation, useParams } from 'react-router-dom';
 
 
 function PasswordInput({ id, placeholder, value, onChange, erro }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -39,6 +41,9 @@ export default function ProfileEdit() {
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [erro, setErro] = useState(false);
+  const [route, setRoute] = useState('')
+  const [tilte, setTitle] = useState('')
+  const [routePage, setRoutePage] = useState('')
 
   const handleSave = () => {
     if (!senhaAtual || !novaSenha || !confirmarSenha) {
@@ -48,9 +53,25 @@ export default function ProfileEdit() {
     }
   };
 
+  const location = useLocation()
+  
+  
+  useEffect(() => {
+    if (location.pathname.startsWith('/aluno')) {
+      setRoute('/aluno/perfil')
+      setRoutePage('/aluno/home')
+      setTitle('Seus cursos')
+    } else if (location.pathname.startsWith('/professor')) {
+      setRoute('/professor/perfil')
+      setRoutePage('/professor/dashbord')
+      setTitle('Dashboard')
+    }
+  }, [location])
+  
+
   return (
     <>
-      <Header options={[{ id: 1, text: "Home" }, { id: 2, text: "Perfil" }]} />
+      <Header options={[{ id: 1, text: "Perfil", route: route }, { id: 2, text: tilte, route: routePage }]} />
       <div className="perfil">
         <div className='divContent'>
           <div className="perfil__grid">

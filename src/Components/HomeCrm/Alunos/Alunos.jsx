@@ -14,23 +14,23 @@ function Alunos() {
     const [showModal, setShowModal] = useState(false)
     const header = [
         {
-            id: 1,
+            
             title: 'Nome'
         },
         {
-            id: 2,
+            
             title: 'E-mail'
         },
         {
-            id: 3,
+            
             title: 'Status'
         },
         {
-            id: 4,
+            
             title: 'Média'
         },
         {
-            id: 5,
+            
             title: 'Turma'
         },
     ]
@@ -77,8 +77,8 @@ function Alunos() {
                 </div>
                 <div className='divInfos'>
                     <div className='divHeader'>
-                        {header.map((h) => (
-                            <div key={h.id} className='title'>
+                        {header.map((h, index) => (
+                            <div key={index} className='title'>
                                 <span className='bold'>{h.title}</span>
                             </div>
                         ))}

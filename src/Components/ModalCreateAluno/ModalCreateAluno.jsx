@@ -6,22 +6,24 @@ import PropTypes from 'prop-types'
 import { IoClose } from "react-icons/io5";
 import { MdEmail } from "react-icons/md";
 import ButtonSend from '../ButtonSend/ButtonSend';
+import { supabase } from '../../../lib/supabase';
+
 
 function ModalCreateAluno({title, close}) {
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
+    const [nameInput, setNameInput] = useState('')
+    const [emailInput, setEmailInput] = useState('')
     const [emailError, setEmailError] = useState(false)
     const [nameError, seNameError] = useState(false)
 
     const getName = (newName) => {
-        setName(newName);
+        setNameInput(newName);
         if(newName != ''){
             seNameError(false)
         }
     };
 
     const getEmail = (newEmail) => {
-        setEmail(newEmail);
+        setEmailInput(newEmail);
         if(newEmail != ''){
             setEmailError(false)
         }
@@ -29,18 +31,48 @@ function ModalCreateAluno({title, close}) {
 
     const sendEmail = (send) => {
         if(send){
-            if(name === ''){
+            if(nameInput === ''){
                 seNameError(true)
                 return
-            } if(email === ''){
+            } if(emailInput === ''){
                 setEmailError(true)
                 return
             } else {
+                console.log(emailInput)
+                console.log(nameInput)
                 seNameError(false)
                 setEmailError(false)
-                //salvar aluno da db
+                signUpWithEmail({ name: nameInput, email: emailInput, password: '12345678' });
                 close(false)
             }
+        }
+    }
+
+    async function signUpWithEmail({ name, email, password }) {
+        try {
+            console.log('email no supabase: ', email)
+            const { data, error } = await supabase.auth.signUp({
+                email: email,
+                password: password,
+            });
+    
+            if (error) {
+                alert(`Deu erro ${error}`);
+                return;
+            }
+    
+            if (data.user) {
+                const { error: updateUsernameError } = await supabase
+                    .from('profiles')
+                    .update({ username: name })
+                    .eq('id', data.user.id);
+    
+                if (updateUsernameError) {
+                    console.error('Erro ao atualizar o username:', updateUsernameError);
+                }
+            }
+        } catch (err) {
+            console.error('Erro ao criar conta', err);
         }
     }
 
@@ -53,8 +85,8 @@ function ModalCreateAluno({title, close}) {
                         <IoClose size={25} onClick={() => close(false)}/>
                     </div>
                 </div>
-                <InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError}/>
-                <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError}/>
+                <InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text'/>
+                <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email'/>
                 <ButtonSend  title='Enviar convite' icon={<MdEmail size={20}/>} action={sendEmail}/>
             </div>
         </div>
