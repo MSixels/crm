@@ -1,0 +1,30 @@
+.containerInputDate .divInput{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.containerInputDate .divInput label{
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background-color: #FFF;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-inline: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.containerInputDate .divInput .input{
+    border: solid 1px var(--color-2);
+    padding-inline: 12px;
+    padding-block: 16px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    font-size: 18px;
+    height: 55px;
+}
+.containerInputDate .divInput .input::placeholder{
+    color: var(--color-3);
+}

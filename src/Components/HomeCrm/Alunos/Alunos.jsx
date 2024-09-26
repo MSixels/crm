@@ -6,10 +6,12 @@ import { FaCirclePlus } from "react-icons/fa6";
 import { alunos, turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
 import { useState } from 'react';
+import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
 
 function Alunos() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchDrop, setSearchDrop] = useState('Selecione')
+    const [showModal, setShowModal] = useState(false)
     const header = [
         {
             id: 1,
@@ -45,6 +47,14 @@ function Alunos() {
         setSearchDrop(newDrop);
     };
 
+    const clickBtn = (openModal) => {
+        setShowModal(openModal)
+    }
+
+    const closeBtn = (close) => {
+        setShowModal(close)
+    }
+
     const filtered = alunos.filter(a => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
         const matchesSearchTerm = removeAccents(a.name).toLowerCase().includes(lowerCaseSearchTerm);
@@ -55,6 +65,7 @@ function Alunos() {
     
     return(
         <div className='containerAlunos'>
+            {showModal && <ModalCreateAluno title='Novo Aluno' close={closeBtn}/> }
             <h1>Alunos</h1>
             <div className='divContent'>
                 <div className='header'>
@@ -62,7 +73,7 @@ function Alunos() {
                         <InputText title='Pesquisa na lista' placeH='Nome do aluno' onSearchChange={handleSearchChange}/>
                         <DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />
                     </div>
-                    <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>}/>
+                    <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
                 </div>
                 <div className='divInfos'>
                     <div className='divHeader'>

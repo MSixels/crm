@@ -5,20 +5,20 @@ import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 
 function DropDown({ title, type, options, onTurmaChange }) {
-    const [selectedTurma, setSelectedTurma] = useState(type);
+    const [selected, setSelected] = useState(type);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
     useEffect(() => {
-        setSelectedTurma(type);
+        setSelected(type);
     }, [type]);
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const handleSelectTurma = (turma) => {
-        setSelectedTurma(turma);
-        onTurmaChange(turma);
+    const handleSelectTurma = (name) => {
+        setSelected(name);
+        onTurmaChange(name);
         setIsDropdownOpen(false);
     };
 
@@ -26,7 +26,7 @@ function DropDown({ title, type, options, onTurmaChange }) {
         <div className='containerDropDown'>
             <div className='dropdownInput' onClick={toggleDropdown}>
                 <span className='label'>{title}</span>
-                <span>{selectedTurma}</span>
+                <span>{selected}</span>
                 <span>{isDropdownOpen ? <IoIosArrowUp size={20} /> : <IoIosArrowDown size={20} />}</span>
             </div>
             {isDropdownOpen && (

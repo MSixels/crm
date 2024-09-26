@@ -1,0 +1,25 @@
+.containerButtonSend{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.containerButtonSend button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    border: none;
+    background-color: var(--primary);
+    padding: 12px 32px;
+    border-radius: 4px;
+    color: #FFF;
+    font-size: 16px;
+    height: 50px;
+    cursor: pointer;
+    transition: .3s;
+}
+.containerButtonSend button:hover{
+    scale: 1.01;
+}

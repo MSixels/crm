@@ -2,4 +2,22 @@
     display: flex;
     flex-direction: column;
     padding: 32px;
+    width: 100%;
+}
+.containerModulos .divContent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    background-color: #FFF;
+    border-radius: 4px;
+    height: auto;
+    padding-bottom: 16px;
+    font-size: 18px;
+}
+.containerModulos .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
 }

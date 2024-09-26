@@ -146,3 +146,31 @@ export const alunos = [
         turma: 2
     },
 ]
+
+export const professores = [
+    {
+        id: 1,
+        name: 'Vincios Parrião',
+        email: 'vinicios@gmail.com', 
+    },
+    {
+        id: 1,
+        name: 'Vitor Sixel',
+        email: 'v.vitor@gmail.com',
+    },
+    {
+        id: 1,
+        name: 'João Pedro',
+        email: 'jpjogador@gmail.com',
+    },
+    {
+        id: 1,
+        name: 'Fernando Oliveira',
+        email: 'fernandoo@gmail.com',
+    },
+    {
+        id: 1,
+        name: 'Matheus Souza',
+        email: 'matsouza@gmail.com',
+    },
+]

@@ -1,12 +1,12 @@
-import './ButtonBold.css'
+import './ButtonSend.css'
 import PropTypes from 'prop-types'
 
-function ButtonBold({title, icon, action}) {
+function ButtonSend({title, icon, action}) {
     const executeAction = () => {
         action(true)
     }
     return (
-        <div className='containerButtonBold'>
+        <div className='containerButtonSend'>
             <button onClick={() => executeAction()}>
                 <span>{title}</span>
                 {icon}
@@ -14,10 +14,10 @@ function ButtonBold({title, icon, action}) {
         </div>
     )
 }
-ButtonBold.propTypes = {
+ButtonSend.propTypes = {
     title: PropTypes.string.isRequired,
     icon: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
 };
 
-export default ButtonBold
+export default ButtonSend
