@@ -2,4 +2,86 @@
     display: flex;
     flex-direction: column;
     padding: 32px;
+    width: 100%;
+}
+.containerUsuarios .divContent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    background-color: #FFF;
+    border-radius: 4px;
+    height: auto;
+    padding-bottom: 16px;
+    font-size: 18px;
+}
+.containerUsuarios .divInfos {
+    display: flex;
+    flex-direction: column;
+}
+.containerUsuarios .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+.containerUsuarios .divContent .divInputs{
+    display: flex;
+    gap: 8px;
+}
+.containerUsuarios .divHeader,
+.containerUsuarios .divAlunos {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-items: center;
+    border-bottom: solid 1px var(--color-2);
+}
+.containerUsuarios .divHeader .title,
+.containerUsuarios .divAlunos .spanBox {
+    padding: 16px;
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    position: relative;
+}
+.containerUsuarios .divAlunos .spanBox .text{
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    max-width: 130px;
+}
+.containerUsuarios .divAlunos .spanBox .ativo{
+    background-color: var(--success-light);
+    color: var(--success);
+}
+.containerUsuarios .divAlunos .spanBox .pendente{
+    background-color: var(--warning50);
+    color: var(--warning200);
+}
+.containerUsuarios .bold{
+    font-weight: bold;
+}
+.containerUsuarios .divAlunos .spanBox .boa{
+    color: var(--success);
+}
+.containerUsuarios .divAlunos .spanBox .ruim{
+    color: var(--warning200);
+}
+.containerUsuarios .divAlunos .adm{
+    background-color: #E6DDF7;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    color: var(--primary);
+}
+.containerUsuarios .divAlunos .prof{
+    background-color: #4873E026;
+    width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    color: #4873e0;
 }

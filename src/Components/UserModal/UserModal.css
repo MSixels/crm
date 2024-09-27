@@ -29,13 +29,17 @@
     }
 }
 
-.modal-links a {
+.modal-links button {
     display: block;
     text-decoration: none;
     color: #333;
+    border: none;
+    background-color: transparent;
+    font-size: 16px;
+    cursor: pointer;
 }
 
-.modal-links a:last-child {
+.modal-links button:last-child {
     color: #952020;
     margin-top: 1rem;
 }

@@ -33,6 +33,9 @@
     align-items: center;
     justify-content: space-between;
 }
+.containerHeader .avatar{
+    cursor: pointer;
+}
 @media (max-width: 450px) {
     .containerHeader header{
     flex-direction: column;

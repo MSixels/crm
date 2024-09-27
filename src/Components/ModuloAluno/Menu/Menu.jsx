@@ -45,7 +45,10 @@ function Menu({modulo}) {
 
     return (
         <div className='containerMenu'>
-            <IoIosArrowDropleftCircle size={30} onClick={backHome}/>
+            <div className='divBtnBack'>
+                <IoIosArrowDropleftCircle size={30} onClick={backHome}/>
+            </div>
+           
             {modulo && (
                 <div className='divContentMenu'>
                     <span>Disponível até {modulo.timesEnd}</span>

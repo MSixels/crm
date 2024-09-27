@@ -5,34 +5,24 @@ import ButtonBold from '../../ButtonBold/ButtonBold'
 import { FaCirclePlus } from "react-icons/fa6";
 import { alunos, turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
+import { firestore } from '../../../services/firebaseConfig';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import Loading from '../../Loading/Loading';
 
 function Alunos() {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [showModal, setShowModal] = useState(false)
+    const [alunos, setAlunos] = useState([]);
+    const [loading, setLoading] = useState(true);
     const header = [
-        {
-            
-            title: 'Nome'
-        },
-        {
-            
-            title: 'E-mail'
-        },
-        {
-            
-            title: 'Status'
-        },
-        {
-            
-            title: 'Média'
-        },
-        {
-            
-            title: 'Turma'
-        },
+        { title: 'Nome' },
+        { title: 'E-mail' },
+        { title: 'Status' },
+        { title: 'Média' },
+        { title: 'Turma' },
     ]
 
     const removeAccents = (text) => {
@@ -55,13 +45,36 @@ function Alunos() {
         setShowModal(close)
     }
 
+    const fetchAlunosFromFirestore = async () => {
+        try {
+            const q = query(collection(firestore, 'users'), where('type', '==', 3)); // Buscar usuários com type 3
+            const querySnapshot = await getDocs(q);
+            const alunosList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); // Mapear os dados
+            setAlunos(alunosList);
+            setLoading(false);
+        } catch (error) {
+            console.error("Erro ao buscar alunos:", error);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAlunosFromFirestore()
+    }, [])
+
     const filtered = alunos.filter(a => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
         const matchesSearchTerm = removeAccents(a.name).toLowerCase().includes(lowerCaseSearchTerm);
         const matchesTurma = searchDrop === 'Selecione' || turmas.find(t => t.id === a.turma)?.name === searchDrop;
-        
+    
         return matchesSearchTerm && matchesTurma;
+    }).sort((a, b) => {
+        return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
+    
+    if (loading) {
+        return <Loading />
+    }
     
     return(
         <div className='containerAlunos'>

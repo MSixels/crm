@@ -4,6 +4,8 @@ import InputMask from 'react-input-mask';
 import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useLocation, useParams } from 'react-router-dom';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '../../services/firebaseConfig';
 
 
 function PasswordInput({ id, placeholder, value, onChange, erro }) {
@@ -36,7 +38,10 @@ function PasswordInput({ id, placeholder, value, onChange, erro }) {
 }
 
 
-export default function ProfileEdit() {
+export default function PerfilAluno() {
+  const {userId} = useParams()
+  const [userData, setUserData] = useState([])
+  const [loading, setLoading] = useState(false)
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -67,6 +72,30 @@ export default function ProfileEdit() {
       setTitle('Dashboard')
     }
   }, [location])
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDoc = doc(firestore, "users", userId);
+        const docSnap = await getDoc(userDoc);
+
+        if (docSnap.exists()) {
+          setUserData(docSnap.data());
+          console.log(docSnap.data())
+        } else {
+          console.log("Nenhum usuário encontrado!");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar usuário:", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
+    }
+  }, [userId]);
   
 
   return (
@@ -101,7 +130,7 @@ export default function ProfileEdit() {
                 <div className="perfil__grid-input">
                   <div className="perfil__input-group">
                     <label htmlFor="nome-completo">Nome completo</label>
-                    <input id="nome-completo" placeholder="Vinícius Parrilo" />
+                    <input id="nome-completo" placeholder="Seu nome" value={userData.name}/>
                   </div>
                   <div className="perfil__input-group">
                     <label htmlFor="cidade">Cidade</label>
@@ -121,7 +150,7 @@ export default function ProfileEdit() {
                 <div className="perfil__grid-input">
                   <div className="perfil__input-group">
                     <label htmlFor="email">E-mail (deve ser o mesmo do login)</label>
-                    <input id="email" placeholder="viniciusparrilo@gmail.com" disabled />
+                    <input id="email" placeholder="Seu email" disabled value={userData.email}/>
                   </div>
                   <div className="perfil__input-group">
                     <label htmlFor="telefone">Telefone/Celular</label>

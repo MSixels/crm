@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: `/aluno/perfil`,
+    path: `/aluno/perfil/:userId`,
     element: <PerfilAluno />,
   },
   {
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
     element: <HomeCrm />,
   },
   {
-    path: `/professor/perfil`,
+    path: `/professor/perfil/:userId`,
     element: <PerfilAluno />,
   },
   {

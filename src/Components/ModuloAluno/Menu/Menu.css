@@ -52,3 +52,10 @@
     color: var(--deep-purple500);
     border-right: solid 3px var(--deep-purple500);
 }
+.containerMenu .divBtnBack{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 50px;
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import InputSend from '../InputSend/InputSend';
-import './ModalCreateAluno.css';
+import './ModalCreateUser.css';
 import PropTypes from 'prop-types';
 import { IoClose } from "react-icons/io5";
 import { MdEmail } from "react-icons/md";
@@ -8,12 +8,15 @@ import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
+import { MdCheckBoxOutlineBlank } from "react-icons/md";
+import { IoCheckbox } from "react-icons/io5";
 
-function ModalCreateAluno({ title, close }) {
+function ModalCreateUser({ title, close }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [nameError, setNameError] = useState(false);
+    const [selectedCargo, setSelectedCargo] = useState(null);
     const [
         createUserWithEmailAndPassword,
         user,
@@ -56,6 +59,10 @@ function ModalCreateAluno({ title, close }) {
                 setEmailError(true);
                 return;
             }
+            if (selectedCargo === null) { 
+                console.error("Cargo não selecionado.");
+                return;
+            }
 
             setNameError(false);
             setEmailError(false);
@@ -68,12 +75,11 @@ function ModalCreateAluno({ title, close }) {
                 await setDoc(doc(firestore, 'users', userId), {
                     name: name,
                     email: email,
-                    type: 3,
+                    type: selectedCargo,
                     userId: userId,
                     password: randomPassword
                 });
 
-                //console.log("Usuário criado no Firestore com sucesso");
                 close(false);
             })
             .catch((error) => {
@@ -82,6 +88,46 @@ function ModalCreateAluno({ title, close }) {
         }
     };
 
+    const renderCargo = () => {
+        const handleSelectCargo = (cargo) => {
+            setSelectedCargo(cargo); 
+        };
+        return (
+            <div className='containerCorgo'>
+                <p style={{fontSize: 18}}>Cargo:</p>
+                <div className='divOptions'>
+                    <div 
+                        className='divOption' 
+                        onClick={() => handleSelectCargo(1)}
+                    >
+                        <div className='divIcon'>
+                            {selectedCargo === 1 ? (
+                                <IoCheckbox size={25} />
+                            ) : (
+                                <MdCheckBoxOutlineBlank size={25} color='#1d1d1d' />
+                            )}
+                        </div>
+                        <p>Administrador</p>
+                    </div>
+                    
+                    <div 
+                        className='divOption' 
+                        onClick={() => handleSelectCargo(2)}
+                    >
+                        <div className='divIcon'>
+                            {selectedCargo === 2 ? (
+                                <IoCheckbox size={25} />
+                            ) : (
+                                <MdCheckBoxOutlineBlank size={25} color='#1d1d1d' />
+                            )}
+                        </div>
+                        <p>Professor</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+ 
     return (
         <div className='containerModalCreateAluno'>
             <div className='modalCreate'>
@@ -93,15 +139,16 @@ function ModalCreateAluno({ title, close }) {
                 </div>
                 <InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />
                 <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
+                {renderCargo()}
                 <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailtoSignOut} />
             </div>
         </div>
     );
 }
 
-ModalCreateAluno.propTypes = {
+ModalCreateUser.propTypes = {
     title: PropTypes.string.isRequired,
     close: PropTypes.func.isRequired,
 };
 
-export default ModalCreateAluno;
+export default ModalCreateUser;

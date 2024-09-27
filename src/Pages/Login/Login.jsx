@@ -6,7 +6,11 @@ import { AiFillHome } from "react-icons/ai";
 import { ImCheckboxUnchecked } from "react-icons/im";
 import { ImCheckboxChecked } from "react-icons/im";
 import { TfiReload } from "react-icons/tfi";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth, firestore } from '../../services/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
+import Cookies from 'js-cookie'
 
 function Login() {
     const navigate = useNavigate()
@@ -16,6 +20,13 @@ function Login() {
     const [inputSenha, setInputSenha] = useState(false)
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
+    const [typeUser, setTypeUser] = useState(null)
+    const [
+        signInWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useSignInWithEmailAndPassword(auth);
 
     const openHome = (email, senha) => {
         if(email === ''){
@@ -25,13 +36,55 @@ function Login() {
             setInputSenha(true)
         }
         if(email != '' && senha != ''){
-            if(type === 'aluno'){
-                navigate(`/${type}/home`)
-            } else if(type === 'professor'){
-                navigate(`/${type}/dashboard`)
-            }
+            signInWithEmailAndPassword(email, senha)
         }
     }
+
+    const fetchUserType = async (userId) => {
+        try {
+            const userDocRef = doc(firestore, 'users', userId); 
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                console.log("Tipo de usuário:", userData.type);
+                setTypeUser(userData.type)
+            } else {
+                console.log("Usuário não encontrado no Firestore");
+            }
+        } catch (err) {
+            console.error("Erro ao buscar dados do usuário:", err);
+        }
+    };
+
+
+    useEffect(() => {
+        if (user) {
+            console.log("Usuário logado:", user);
+            console.log("Access Token:", user.user.accessToken);
+            fetchUserType(user.user.uid);
+            const accessToken = user.user.accessToken;
+            if (checkConect) {
+                Cookies.set('accessToken', accessToken, { expires: 7 }); 
+            } else {
+                Cookies.set('accessToken', accessToken); 
+            }
+        }
+    }, [user, type, navigate, checkConect]);
+
+    useEffect(() => {
+        if(user && typeUser){
+            if (type === 'aluno' && typeUser === 3) {
+                navigate(`/${type}/home`);
+            } else if(type === 'professor' && typeUser === 2){
+                navigate(`/${type}/dashboard`);
+            } else if (type === 'professor' && typeUser === 1){
+                navigate(`/${type}/dashboard`);
+            } else {
+                alert(`Você tem permissão apenas de ${typeUser === 3 ? 'Aluno' : typeUser === 2 ? 'Professor' : typeUser === 1 ? 'Administrador' : ''}`)
+                setTypeUser(null)
+            }
+        }
+    }, [typeUser, user, type, navigate])
 
     return (
         <div className='containerLogin'>
@@ -75,7 +128,7 @@ function Login() {
                         </div>
                         <a href="">Esqueci minha senha</a>
                     </div>
-                    <button className='btnLogin' onClick={() => openHome(email, senha)}>Fazer login</button>
+                    <button className='btnLogin' onClick={() => openHome(email, senha)}>{loading ? 'Carregando' : 'Fazer login'}</button>
                     <div className='divHelp'>
                         <span>Precisa de ajuda?</span>
                         <a href="">Fale conosco</a>

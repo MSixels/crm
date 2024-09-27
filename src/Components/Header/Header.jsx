@@ -2,11 +2,14 @@ import './Header.css';
 import PropTypes from 'prop-types';
 import Logo from '../../imgs/logoTextWhite.svg';
 import UserImg from '../../imgs/user.svg';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import UserModal from '../UserModal/UserModal';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'js-cookie'
 
 function Header({ options }) {
+    const [userId, setUserId] = useState('')
     const [optId, setOptId] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate()
@@ -14,6 +17,17 @@ function Header({ options }) {
     const handleClickOption = (route) => {
         navigate(route)
     }
+
+    useEffect(() => {
+        const accessToken = Cookies.get('accessToken');
+
+        if (accessToken) {
+            const decodedToken = jwtDecode(accessToken);
+            setUserId(decodedToken.user_id)
+        } else {
+            console.log("Nenhum token encontrado nos cookies.");
+        }
+    }, []);
 
     return (
         <div className='containerHeader'>
@@ -25,8 +39,8 @@ function Header({ options }) {
                             <span key={o.id} onClick={() => [setOptId(o.id), handleClickOption(o.route)]} style={{borderBottom: optId === o.id ? '3px solid #FFF' : 'none'}}>{o.text}</span>
                         ))}
                     </div>
-                    <img src={UserImg} alt="" onClick={() => setIsModalOpen(!isModalOpen)} />
-                    {isModalOpen && <UserModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+                    <img src={UserImg} alt="" onClick={() => setIsModalOpen(!isModalOpen)} className='avatar'/>
+                    {isModalOpen && <UserModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} userId={userId}/>}
                 </div>
             </header>
         </div>
@@ -39,6 +53,7 @@ Header.propTypes = {
         text: PropTypes.string.isRequired,
         route: PropTypes.string.isRequired,
     })).isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default Header;

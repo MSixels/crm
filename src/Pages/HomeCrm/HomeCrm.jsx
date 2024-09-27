@@ -7,13 +7,31 @@ import Alunos from '../../Components/HomeCrm/Alunos/Alunos'
 import Turmas from '../../Components/HomeCrm/Turmas/Turmas'
 import Modulos from '../../Components/HomeCrm/Modulos/Modulos'
 import Usuarios from '../../Components/HomeCrm/Usuarios/Usuarios'
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode'
+import { useEffect, useState } from 'react'
 
 function HomeCrm() {
     const { page } = useParams()
+    const [userId, setUserId] = useState('')
+
+    useEffect(() => {
+        const accessToken = Cookies.get('accessToken');
+
+        if (accessToken) {
+            //console.log("Access Token:", accessToken);
+            const decodedToken = jwtDecode(accessToken);
+            //console.log("Decoded Token:", decodedToken);
+            //console.log("UID:", decodedToken.user_id);
+            setUserId(decodedToken.user_id)
+        } else {
+            console.log("Nenhum token encontrado nos cookies.");
+        }
+    }, []);
     
     return (
         <div className='containerHomeCrm'>
-            <Header />
+            <Header userId={userId}/>
             <div className='divContent'>
                 <MenuDash page={page}/>
                 {page === 'dashboard' && <DashProf />}
