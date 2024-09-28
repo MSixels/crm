@@ -129,10 +129,13 @@ export default function PerfilAluno() {
       fetchUserData();
     }
   }, [userId]);
-  
+  const options = [
+    { id: 1, text: "Perfil", route: route }, 
+    { id: 2, text: tilte, route: routePage }
+  ] 
   return (
     <>
-      <Header options={[{ id: 1, text: "Perfil", route: route }, { id: 2, text: tilte, route: routePage }]} />
+      <Header options={options} />
       <div className="perfil">
         <div className='divContent'>
           <div className="perfil__grid">
