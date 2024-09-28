@@ -5,12 +5,11 @@ import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useLocation, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
-import { firestore } from '../../services/firebaseConfig';
-
+import { auth, firestore } from '../../services/firebaseConfig';
+import { reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
 
 function PasswordInput({ id, placeholder, value, onChange, erro }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
@@ -37,41 +36,75 @@ function PasswordInput({ id, placeholder, value, onChange, erro }) {
   );
 }
 
-
 export default function PerfilAluno() {
-  const {userId} = useParams()
-  const [userData, setUserData] = useState([])
-  const [loading, setLoading] = useState(false)
+  const { userId } = useParams();
+  const [userData, setUserData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
   const [erro, setErro] = useState(false);
-  const [route, setRoute] = useState('')
-  const [tilte, setTitle] = useState('')
-  const [routePage, setRoutePage] = useState('')
+  const [route, setRoute] = useState('');
+  const [tilte, setTitle] = useState('');
+  const [routePage, setRoutePage] = useState('');
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!senhaAtual || !novaSenha || !confirmarSenha) {
       setErro(true);
-    } else {
-      setErro(false);
+      return;
+    }
+
+    if (novaSenha !== confirmarSenha) {
+      alert("As senhas não correspondem.");
+      setErro(true);
+      return;
+    }
+
+    setErro(false);
+
+    try {
+      const user = auth.currentUser;
+      if (user) {
+        const credential = EmailAuthProvider.credential(user.email, senhaAtual);
+
+        // Reautenticar usuário
+        await reauthenticateWithCredential(user, credential);
+
+        // Verificar se a nova senha é igual à senha atual
+        if (senhaAtual === novaSenha) {
+          alert("A nova senha não pode ser igual à senha atual.");
+          return;
+        }
+
+        // Atualizar senha
+        await updatePassword(user, novaSenha);
+
+        alert("Senha alterada com sucesso!");
+
+        // Limpar os inputs após sucesso
+        setSenhaAtual('');
+        setNovaSenha('');
+        setConfirmarSenha('');
+      }
+    } catch (error) {
+      console.error("Erro ao alterar senha:", error);
+      alert("Erro ao alterar senha. Verifique se sua senha atual foi digitada corretamente.");
     }
   };
 
-  const location = useLocation()
-  
-  
+  const location = useLocation();
+
   useEffect(() => {
     if (location.pathname.startsWith('/aluno')) {
-      setRoute('/aluno/perfil')
-      setRoutePage('/aluno/home')
-      setTitle('Seus cursos')
+      setRoute('/aluno/perfil');
+      setRoutePage('/aluno/home');
+      setTitle('Seus cursos');
     } else if (location.pathname.startsWith('/professor')) {
-      setRoute('/professor/perfil')
-      setRoutePage('/professor/dashbord')
-      setTitle('Dashboard')
+      setRoute('/professor/perfil');
+      setRoutePage('/professor/dashbord');
+      setTitle('Dashboard');
     }
-  }, [location])
+  }, [location]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -81,14 +114,14 @@ export default function PerfilAluno() {
 
         if (docSnap.exists()) {
           setUserData(docSnap.data());
-          console.log(docSnap.data())
+          console.log(docSnap.data());
         } else {
           console.log("Nenhum usuário encontrado!");
         }
       } catch (error) {
         console.error("Erro ao buscar usuário:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
@@ -96,7 +129,6 @@ export default function PerfilAluno() {
       fetchUserData();
     }
   }, [userId]);
-  
 
   return (
     <>
@@ -111,7 +143,7 @@ export default function PerfilAluno() {
               <div className="perfil__text-center">
                 <h3>Foto do perfil</h3>
                 <p className="perfil__description">
-                  Recomendamos que a foto tenha um tamanho máximo de 250x250px. O arquivo não pode ter tamanho superior a 2MB
+                  Recomendamos que a foto tenha um tamanho máximo de 250x250px. O arquivo não pode ter tamanho superior a 2MB.
                 </p>
                 <button className="perfil__button">
                   Fazer upload de foto
@@ -130,7 +162,7 @@ export default function PerfilAluno() {
                 <div className="perfil__grid-input">
                   <div className="perfil__input-group">
                     <label htmlFor="nome-completo">Nome completo</label>
-                    <input id="nome-completo" placeholder="Seu nome" value={userData.name}/>
+                    <input id="nome-completo" placeholder="Seu nome" value={userData.name} />
                   </div>
                   <div className="perfil__input-group">
                     <label htmlFor="cidade">Cidade</label>
@@ -150,7 +182,7 @@ export default function PerfilAluno() {
                 <div className="perfil__grid-input">
                   <div className="perfil__input-group">
                     <label htmlFor="email">E-mail (deve ser o mesmo do login)</label>
-                    <input id="email" placeholder="Seu email" disabled value={userData.email}/>
+                    <input id="email" placeholder="Seu email" disabled value={userData.email} />
                   </div>
                   <div className="perfil__input-group">
                     <label htmlFor="telefone">Telefone/Celular</label>
@@ -206,7 +238,6 @@ export default function PerfilAluno() {
             </div>
           </div>
         </div>
-        
       </div>
     </>
   );
