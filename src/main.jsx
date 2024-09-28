@@ -19,7 +19,7 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: `/aluno/home`,
+    path: `/aluno/:page`,
     element: <Home />,
   },
   {

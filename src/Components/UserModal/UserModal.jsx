@@ -4,6 +4,7 @@ import "./UserModal.css";
 import { useEffect, useState } from "react";
 import { firestore } from "../../services/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
+import Cookies from "js-cookie";
 
 UserModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
@@ -72,7 +73,7 @@ export default function UserModal({ isOpen, userId }) {
         <button onClick={() => navigate(routePerfil)}>
           Perfil
         </button>
-        <button onClick={() => navigate(routeLogin)}>
+        <button onClick={() => { Cookies.remove('accessToken'); navigate(routeLogin); window.location.reload();}}>
           Sair
         </button>
       </div>

@@ -15,6 +15,7 @@ import Cookies from 'js-cookie'
 function Login() {
     const navigate = useNavigate()
     const { type } = useParams()
+    const [alertText, setAlertText] = useState(false)
     const [checkConect, setCheckConect] = useState(false)
     const [inputEmail, setInputEmail] = useState(false)
     const [inputSenha, setInputSenha] = useState(false)
@@ -74,13 +75,17 @@ function Login() {
     useEffect(() => {
         if(user && typeUser){
             if (type === 'aluno' && typeUser === 3) {
-                navigate(`/${type}/home`);
+                navigate(`/${type}/rastreio`);
             } else if(type === 'professor' && typeUser === 2){
                 navigate(`/${type}/dashboard`);
             } else if (type === 'professor' && typeUser === 1){
                 navigate(`/${type}/dashboard`);
             } else {
-                alert(`Você tem permissão apenas de ${typeUser === 3 ? 'Aluno' : typeUser === 2 ? 'Professor' : typeUser === 1 ? 'Administrador' : ''}`)
+                setInputEmail(true)
+                setInputSenha(true)
+                setAlertText(true)
+                Cookies.remove('accessToken');
+                
                 setTypeUser(null)
             }
         }
@@ -121,6 +126,18 @@ function Login() {
                             style={{borderColor: inputSenha && 'red'}}
                         />
                     </div>
+                    {alertText && type === 'professor' &&
+                        <div style={{marginBottom: 20}}>
+                            <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
+                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => {navigate(`/login/aluno`); window.location.reload();}}>portal do aluno</span> e tente novamente</p>
+                        </div>
+                    }
+                    {alertText && type === 'aluno' &&
+                        <div style={{marginBottom: 20}}>
+                            <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
+                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => {navigate(`/login/professor`); window.location.reload();}}>portal do professor</span> e tente novamente</p>
+                        </div>
+                    }
                     <div className='divCheck-forgot'>
                         <div className='divCheck' onClick={() => setCheckConect(!checkConect)}>
                             {checkConect ? <ImCheckboxChecked /> : <ImCheckboxUnchecked color='#000'/>}

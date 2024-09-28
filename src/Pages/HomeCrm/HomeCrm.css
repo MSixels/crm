@@ -3,6 +3,7 @@
     flex-direction: column;
     height: 100vh;
     background-color: #f6f6f3;
+    padding-top: 80px;
 }
 .containerHomeCrm .divContent{
     display: flex;
