@@ -7,6 +7,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
+import { SiTruenas } from 'react-icons/si';
 
 function PasswordInput({ id, placeholder, value, onChange, erro }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -47,6 +48,9 @@ export default function PerfilAluno() {
   const [route, setRoute] = useState('');
   const [tilte, setTitle] = useState('');
   const [routePage, setRoutePage] = useState('');
+  const [alertNewPasswordInvalid, setAlertNewPasswordInvalid] = useState(false)
+  const [alertInputInvalid, setAlertInputInvalid] = useState(false)
+  const [alertPasswordInvalid, setAlertPasswordInvalid] = useState(false)
 
   const handleSave = async () => {
     if (!senhaAtual || !novaSenha || !confirmarSenha) {
@@ -55,7 +59,7 @@ export default function PerfilAluno() {
     }
 
     if (novaSenha !== confirmarSenha) {
-      alert("As senhas não correspondem.");
+      setAlertInputInvalid(true)
       setErro(true);
       return;
     }
@@ -67,28 +71,26 @@ export default function PerfilAluno() {
       if (user) {
         const credential = EmailAuthProvider.credential(user.email, senhaAtual);
 
-        // Reautenticar usuário
         await reauthenticateWithCredential(user, credential);
 
-        // Verificar se a nova senha é igual à senha atual
         if (senhaAtual === novaSenha) {
-          alert("A nova senha não pode ser igual à senha atual.");
+          setAlertNewPasswordInvalid(true);
+          //"A nova senha não pode ser igual à senha atual."
           return;
         }
 
-        // Atualizar senha
         await updatePassword(user, novaSenha);
 
         alert("Senha alterada com sucesso!");
 
-        // Limpar os inputs após sucesso
+
         setSenhaAtual('');
         setNovaSenha('');
         setConfirmarSenha('');
       }
     } catch (error) {
       console.error("Erro ao alterar senha:", error);
-      alert("Erro ao alterar senha. Verifique se sua senha atual foi digitada corretamente.");
+      setAlertPasswordInvalid(true)
     }
   };
 
@@ -97,8 +99,8 @@ export default function PerfilAluno() {
   useEffect(() => {
     if (location.pathname.startsWith('/aluno')) {
       setRoute('/aluno/perfil');
-      setRoutePage('/aluno/home');
-      setTitle('Seus cursos');
+      setRoutePage('/aluno/rastreio');
+      setTitle('Rastreio');
     } else if (location.pathname.startsWith('/professor')) {
       setRoute('/professor/perfil');
       setRoutePage('/professor/dashbord');
@@ -205,7 +207,7 @@ export default function PerfilAluno() {
               <h2>Alterar senha</h2>
             </div>
             <div className="perfil__content">
-              <div className="perfil__grid-input">
+              <div className="perfil__grid-input flexC">
                 <PasswordInput
                   required
                   id="senha-atual"
@@ -214,24 +216,31 @@ export default function PerfilAluno() {
                   onChange={(e) => setSenhaAtual(e.target.value)}
                   erro={erro && !senhaAtual}
                 />
+                {alertPasswordInvalid && <p style={{color: 'red'}}>Erro ao alterar senha. Verifique se sua senha atual foi digitada corretamente</p>}
               </div>
               <div className="perfil__grid-input">
-                <PasswordInput
-                  required
-                  id="nova-senha"
-                  placeholder="Nova senha*"
-                  value={novaSenha}
-                  onChange={(e) => setNovaSenha(e.target.value)}
-                  erro={erro && !novaSenha}
-                />
-                <PasswordInput
-                  required
-                  id="confirmar-senha"
-                  placeholder="Confirmar a nova senha"
-                  value={confirmarSenha}
-                  onChange={(e) => setConfirmarSenha(e.target.value)}
-                  erro={erro && !confirmarSenha}
-                />
+                <div className='divNewPasswords'>
+                  <PasswordInput
+                    required
+                    id="nova-senha"
+                    placeholder="Nova senha*"
+                    value={novaSenha}
+                    onChange={(e) => {setNovaSenha(e.target.value), e.target.value != '' && setAlertNewPasswordInvalid(false)}}
+                    erro={erro && !novaSenha}
+                  />
+                  {alertNewPasswordInvalid && <p style={{color: 'red'}}>A nova senha não pode ser igual à senha atual.</p>}
+                </div>
+                <div className='divNewPasswords'>
+                  <PasswordInput
+                    required
+                    id="confirmar-senha"
+                    placeholder="Confirmar a nova senha"
+                    value={confirmarSenha}
+                    onChange={(e) => {setConfirmarSenha(e.target.value), e.target.value != '' && setAlertInputInvalid(false)}}
+                    erro={erro && !confirmarSenha}
+                  />
+                  {alertInputInvalid && <p style={{color: 'red'}}>As senhas não são iguais</p>}
+                </div>
               </div>
             </div>
             <div className="perfil__button-save">

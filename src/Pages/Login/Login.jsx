@@ -11,6 +11,8 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode';
+import { TbRulerOff } from 'react-icons/tb';
 
 function Login() {
     const navigate = useNavigate()
@@ -22,6 +24,7 @@ function Login() {
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
     const [typeUser, setTypeUser] = useState(null)
+    const [alertCredentialInvalid, setAlertCredentialInvalid] = useState(false)
     const [
         signInWithEmailAndPassword,
         user,
@@ -41,6 +44,19 @@ function Login() {
         }
     }
 
+    useEffect(() => {
+        if (error) {
+            setInputEmail(true)
+            setInputSenha(true)
+            setAlertCredentialInvalid(true); 
+            console.error("Erro de autenticação:", error.message); 
+        } else {
+            setInputEmail(false)
+            setInputSenha(false)
+            setAlertCredentialInvalid(false); 
+        }
+    }, [error]);
+
     const fetchUserType = async (userId) => {
         try {
             const userDocRef = doc(firestore, 'users', userId); 
@@ -53,10 +69,18 @@ function Login() {
                 console.log("Usuário não encontrado no Firestore");
             }
         } catch (err) {
-            console.error("Erro ao buscar dados do usuário:", err);
+            console.log("Erro ao buscar dados do usuário:");
         }
     };
 
+    useEffect(() => {
+        const sessao = Cookies.get('accessToken')
+        if (sessao) {
+            navigate('/aluno/rastreio');
+        } else {
+            navigate('/login/aluno');
+        }
+    }, [navigate])
 
     useEffect(() => {
         if (user) {
@@ -64,10 +88,11 @@ function Login() {
             console.log("Access Token:", user.user.accessToken);
             fetchUserType(user.user.uid);
             const accessToken = user.user.accessToken;
+    
             if (checkConect) {
-                Cookies.set('accessToken', accessToken, { expires: 7 }); 
+                Cookies.set('accessToken', accessToken, { expires: 7 });
             } else {
-                Cookies.set('accessToken', accessToken); 
+                Cookies.set('accessToken', accessToken, { expires: null }); 
             }
         }
     }, [user, type, navigate, checkConect]);
@@ -110,7 +135,7 @@ function Login() {
                             id='email' 
                             className='input' 
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {setEmail(e.target.value), e.target.value != setInputEmail(false)}}
                             style={{borderColor: inputEmail && 'red'}}
                         />
                     </div>
@@ -122,7 +147,7 @@ function Login() {
                             id='password' 
                             className='input' 
                             value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
+                            onChange={(e) => {setSenha(e.target.value), e.target.value != setInputSenha(false)}}
                             style={{borderColor: inputSenha && 'red'}}
                         />
                     </div>
@@ -136,6 +161,12 @@ function Login() {
                         <div style={{marginBottom: 20}}>
                             <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
                             <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => {navigate(`/login/professor`); window.location.reload();}}>portal do professor</span> e tente novamente</p>
+                        </div>
+                    }
+                    {alertCredentialInvalid && 
+                        <div style={{marginBottom: 20}}>
+                            <p style={{color: 'red'}}>Email ou senha incorretos</p>
+                            <p style={{color: 'red'}}>Tente novamente</p>
                         </div>
                     }
                     <div className='divCheck-forgot'>

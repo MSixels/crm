@@ -122,3 +122,14 @@
   justify-content: center;
   color: var(--color-3);
 }
+.perfil .divNewPasswords{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+} 
+.perfil .flexC{
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  gap: 0;
+}
