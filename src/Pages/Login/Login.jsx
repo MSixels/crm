@@ -77,8 +77,6 @@ function Login() {
         const sessao = Cookies.get('accessToken')
         if (sessao) {
             navigate('/aluno/rastreio');
-        } else {
-            navigate('/login/aluno');
         }
     }, [navigate])
 
