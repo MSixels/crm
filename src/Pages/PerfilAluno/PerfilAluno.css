@@ -9,6 +9,10 @@
   max-width: 1500px;
 }
 
+input {
+  font-size: 1rem;
+}
+
 .perfil__grid {
   display: grid;
   grid-template-columns: 4fr 6fr;
@@ -53,7 +57,7 @@
 
 .perfil__description {
   color: var(--color-block);
-  font-size: 0.875rem;
+  font-size: 1rem;
   margin: 32px auto;
   text-align: center;
 }
@@ -67,7 +71,7 @@
   cursor: pointer;
 }
 
-.perfil__grid-input {
+.perfil__grid-input{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
@@ -86,7 +90,7 @@
   left: 10px;
   background-color: var(--bg-White);
   padding: 0 4px;
-  font-size: 0.875rem;
+  font-size: 1rem;
 }
 
 .perfil__input-group input {
@@ -127,9 +131,9 @@
   flex-direction: column;
   align-items: start;
 } 
-.perfil .flexC{
-  display: flex;
-  flex-direction: column;
-  width: 50%;
-  gap: 0;
+
+.invalidPassword , .successMessage{
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: end;
 }
