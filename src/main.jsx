@@ -4,6 +4,7 @@ import './index.css'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import App from './App.jsx'
 import Login from './Pages/Login/Login.jsx';
+import RecuperarSenha from './Pages/RecuperarSenha/RecuperarSenha.jsx';
 import Home from './Pages/Home/Home.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
 import HomeCrm from './Pages/HomeCrm/HomeCrm.jsx';
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: `/login/:type`,
     element: <Login />,
+  },
+  {
+    path: `/recuperar-senha`,
+    element: <RecuperarSenha />,
   },
   {
     path: `/aluno/:page`,

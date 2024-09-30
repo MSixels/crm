@@ -11,8 +11,6 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import Cookies from 'js-cookie'
-import { jwtDecode } from 'jwt-decode';
-import { TbRulerOff } from 'react-icons/tb';
 
 function Login() {
     const navigate = useNavigate()
@@ -172,7 +170,7 @@ function Login() {
                             {checkConect ? <ImCheckboxChecked /> : <ImCheckboxUnchecked color='#000'/>}
                             <span>Manter conectado</span>
                         </div>
-                        <a href="">Esqueci minha senha</a>
+                        <a onClick={() => navigate('/recuperar-senha')}>Esqueci minha senha</a>
                     </div>
                     <button className='btnLogin' onClick={() => openHome(email, senha)}>{loading ? 'Carregando' : 'Fazer login'}</button>
                     <div className='divHelp'>
