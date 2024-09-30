@@ -26,6 +26,20 @@ input {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   border: 1px solid var(--color-2);
+  margin-bottom: 0.5rem;
+}
+
+.perfil__card-password {
+  background-color: var(--bg-White);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  border: 1px solid var(--color-2);
+  width: 58.6%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  left: 41.4%;
 }
 
 .perfil__card--centered {
@@ -135,5 +149,5 @@ input {
 .invalidPassword , .successMessage{
   display: grid;
   grid-template-columns: 1fr;
-  align-items: end;
+  align-items: center;
 }

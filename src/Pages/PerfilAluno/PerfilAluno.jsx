@@ -153,7 +153,6 @@ export default function PerfilAluno() {
                 </button>
               </div>
             </div>
-
             <div className="perfil__card">
               <div className="perfil__infos">
                 <h2>Dados do aluno</h2>
@@ -200,7 +199,7 @@ export default function PerfilAluno() {
               </div>
             </div>
           </div>
-          <div className="perfil__card">
+          <div className="perfil__card-password">
             <div className="perfil__infos">
               <h2>Alterar senha</h2>
             </div>
@@ -214,7 +213,7 @@ export default function PerfilAluno() {
                   onChange={(e) => {
                     setSenhaAtual(e.target.value);
                     e.target.value !== '' && setAlertPasswordInvalid(false);
-                    setAlertPasswordSuccess(false); // Esconder mensagem de sucesso ao digitar
+                    setAlertPasswordSuccess(false);
                   }}
                   erro={erro && !senhaAtual}
                 />
@@ -234,7 +233,7 @@ export default function PerfilAluno() {
                     }}
                     erro={erro && !novaSenha}
                   />
-                  {alertNewPasswordInvalid && <p>A nova senha não pode ser igual à senha atual.</p>}
+                  {alertNewPasswordInvalid && <p style={{color: 'red'}} >A nova senha não pode ser igual à senha atual.</p>}
                 </div>
                 <div className='divNewPasswords'>
                   <PasswordInput
