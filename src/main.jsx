@@ -8,6 +8,7 @@ import Home from './Pages/Home/Home.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
 import HomeCrm from './Pages/HomeCrm/HomeCrm.jsx';
 import PerfilAluno from './Pages/PerfilAluno/PerfilAluno.jsx'
+import NewRastreio from './Components/HomeAluno/NewRastreio/NewRastreio.jsx';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: `/aluno/:page`,
     element: <Home />,
+  },
+  {
+    path: `/aluno/rastreio/:page`,
+    element: <NewRastreio />,
   },
   {
     path: `/aluno/perfil/:userId`,

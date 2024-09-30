@@ -41,8 +41,8 @@ function Cursos() {
         <div className='containerCursos'>
             <header>
                 <div>
-                    <h2>Cursos</h2>
-                    <span className='subtitle'>Acesse os conteúdos de aulas e suas provas.</span>
+                    <h1>Módulos e aulas</h1>
+                    <span className='subtitle'>Últimos módulos acessados, ou mais importantes para você.</span>
                 </div>
                 <div className='divSearch'>
                     <label htmlFor="search"><IoMdSearch size={22}/></label>
@@ -77,7 +77,7 @@ function Cursos() {
                             <span className='progressPorcent'>{m.status !== 'block' ? `${calculateProgress(m) > 0 ? `${calculateProgress(m)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
                         </div>
                         <button className={`btn ${m.status === 'start' ? 'btnStart' : m.status === 'block' ? 'btnBlock' : m.status === 'end' ? 'btnEnd' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
-                            {m.status !== 'end' ? 'Acessar módulo' : 'Ver progresso'}
+                            {m.status === 'end' ? 'Ver progresso' : m.status === 'block' ? 'Em breve' : 'Acessar módulo'}
                         </button>
                     </div>
                 ))}
