@@ -167,7 +167,7 @@ function Login() {
                     }
                     <div className='divCheck-forgot'>
                         <div className='divCheck' onClick={() => setCheckConect(!checkConect)}>
-                            {checkConect ? <ImCheckboxChecked /> : <ImCheckboxUnchecked color='#000'/>}
+                            {checkConect ? <ImCheckboxChecked size={15}/> : <ImCheckboxUnchecked color='#000' size={15}/>}
                             <span>Manter conectado</span>
                         </div>
                         <a onClick={() => navigate('/recuperar-senha')}>Esqueci minha senha</a>

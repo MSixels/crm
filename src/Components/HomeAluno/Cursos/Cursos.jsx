@@ -47,6 +47,7 @@ function Cursos() {
                 <div className='divSearch'>
                     <label htmlFor="search"><IoMdSearch size={22}/></label>
                     <input 
+                        className='inputPesquisa'
                         type="text" 
                         id='search' 
                         placeholder='Buscar por módulo'
@@ -59,8 +60,8 @@ function Cursos() {
                 {filteredModulos.map((m) => (
                     <div key={m.id} className='divModulo'>
                         <span className='prof'>Prof: {m.prof} <GoDotFill size={12}/> Disponível até {m.timesEnd}</span>
-                        <h2>{m.name}</h2>
-                        <span>{m.description}</span>
+                        <h3 style={{fontSize: 20}}>{m.name}</h3>
+                        <span style={{fontSize: 16}}>{m.description}</span>
                         <div className='divProgressInfos'>
                             <div className={`divInfo ${m.status === 'start' ? 'aulaStart' : m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : ''}`}>
                                 <span>{m.aulasFeitas}/{m.aulasTotal} aulas</span>

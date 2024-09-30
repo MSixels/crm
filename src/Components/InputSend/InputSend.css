@@ -5,7 +5,7 @@
 }
 .containerInputSend .divInput label{
     position: absolute;
-    top: -10px;
+    top: 0px;
     left: 15px;
     background-color: #FFF;
     border-top-left-radius: 5px;
@@ -22,7 +22,7 @@
     border-radius: 4px;
     outline: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     height: 55px;
 }
 .containerInputSend .divInput .input::placeholder{

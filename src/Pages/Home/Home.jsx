@@ -20,23 +20,27 @@ function Home() {
         {
             id: 1,
             text: 'início',
-            route: '/aluno/home'
+            route: '/aluno/home',
+            status: 'active'
         },
         {
             id: 2,
             text: 'Rastreio',
-            route: '/aluno/rastreio'
+            route: '/aluno/rastreio',
+            status: 'active'
         },
         {
             id: 3,
             text: 'Módulos e aulas',
-            route: '/aluno/modulos'
+            route: '/aluno/modulos',
+            status: 'active'
         },
         
         {
             id: 4,
             text: 'Ao vivo',
-            route: '/aluno/aovivo'
+            route: '/aluno/aovivo',
+            status: 'block'
         },
     ]
 

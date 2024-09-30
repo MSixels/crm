@@ -42,7 +42,7 @@ function NewRastreio() {
         <div className='containerNewRastreio'>
             <div className='divContent'>
                 <div className='divHeader'>
-                    <h2 style={{marginBottom: 32}}>
+                    <h2 style={{marginBottom: 32, fontSize: 20}}>
                         ESCALA DE RASTREAMENTO RADY E BORGES PARA CRIANÇAS{' '}
                         <span>
                             {page === 'novo-rastreio-tipo-1' 
@@ -54,18 +54,18 @@ function NewRastreio() {
                                 : ''}
                         </span>
                     </h2>
-                    <p style={{marginBottom: 20, fontSize: 18}}>
+                    <p style={{marginBottom: 20, fontSize: 18}}  className='secondary900'>
                         <span style={{fontWeight: 'bold'}}>Objetivo:</span> Analisar o potencial de risco do Paciente para determinados transtornos, espectros e condições.
                     </p>
-                    <p style={{marginBottom: 20, fontSize: 18}}>
+                    <p style={{marginBottom: 20, fontSize: 18}} className='secondary900'>
                         <span style={{fontWeight: 'bold'}}>Tópicos de avaliação:</span>
                     </p>
                     <ul className='listTopicos'>
-                        <li style={{fontSize: 18}}>Comportamentos Repetitivos e Estereotipados</li>
-                        <li style={{fontSize: 18}}>Dificuldades de Comunicação</li>
-                        <li style={{fontSize: 18}}>Habilidades Sociais e Interações</li>
-                        <li style={{fontSize: 18}}>Sensibilidade Sensorial</li>
-                        <li style={{fontSize: 18}}>Adaptabilidade e Flexibilidade Cognitiva</li>
+                        <li style={{fontSize: 16}}>Comportamentos Repetitivos e Estereotipados</li>
+                        <li style={{fontSize: 16}}>Dificuldades de Comunicação</li>
+                        <li style={{fontSize: 16}}>Habilidades Sociais e Interações</li>
+                        <li style={{fontSize: 16}}>Sensibilidade Sensorial</li>
+                        <li style={{fontSize: 16}}>Adaptabilidade e Flexibilidade Cognitiva</li>
                     </ul>
                     <div className='divBarPages'>
                         {pagesBar.map((p) => (
@@ -90,7 +90,7 @@ function NewRastreio() {
                                         <div className='circle'>
                                             <div className={`${selectedOptions[qr.id] === op.id ? 'ball' : ''}`}></div>
                                         </div>
-                                        <p>{op.text}</p>
+                                        <p className='textOption'>{op.text}</p>
                                     </div>
                                 ))}
                             </div>

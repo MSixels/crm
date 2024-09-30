@@ -15,8 +15,11 @@ function Header({ options }) {
     const navigate = useNavigate()
     const location = useLocation()
 
-    const handleClickOption = (route) => {
-        navigate(route)
+    const handleClickOption = (route, id, status) => {
+        if(status === 'active'){
+            navigate(route)
+            setOptId(id)
+        }
     }
 
     useEffect(() => {
@@ -37,7 +40,7 @@ function Header({ options }) {
                 <div className='divUser'>
                     <div className='divOptions'>
                         {options && options.map((o) => (
-                            <span key={o.id} onClick={() => [setOptId(o.id), handleClickOption(o.route)]} style={{borderBottom: optId === o.id ? '3px solid #FFF' : 'none'}}>{o.text}</span>
+                            <span key={o.id} onClick={() => handleClickOption(o.route, o.id, o.status)} style={{borderBottom: optId === o.id ? '2px solid #FFF' : 'none', color: o.status === 'block' ? '#000' : ''}}>{o.text}</span>
                         ))}
                     </div>
                     <img src={UserImg} alt="" onClick={() => setIsModalOpen(!isModalOpen)} className='avatar'/>
@@ -53,6 +56,7 @@ Header.propTypes = {
         id: PropTypes.number.isRequired,
         text: PropTypes.string.isRequired,
         route: PropTypes.string.isRequired,
+        status: PropTypes.string.isRequired,
     })).isRequired,
     userId: PropTypes.string.isRequired,
 };

@@ -22,7 +22,7 @@
 }
 .containerLogin .divForm .divIcon{
     background-color: var(--color-2);
-    padding: 9px;
+    padding: 8px;
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -37,7 +37,7 @@
     margin-bottom: 32px;
 }
 .containerLogin .divForm .title{
-    font-size: 30px;
+    font-size: 24px;
     font-weight: bold;
 }
 .containerLogin .divForm .divInput{
@@ -47,7 +47,7 @@
 }
 .containerLogin .divForm .divInput label{
     position: absolute;
-    top: -10px;
+    top: 0px;
     left: 15px;
     background-color: #FFF;
     padding-inline: 5px;
@@ -55,6 +55,7 @@
     align-items: center;
     justify-content: center;
     color: var(--color-3);
+    font-size: 12px;
 }
 .containerLogin .divForm .input{
     border: solid 1px var(--color-2);
@@ -63,7 +64,7 @@
     border-radius: 4px;
     outline: none;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 16px;
     margin-bottom: 24px;
     width: 100%;
 }
@@ -85,11 +86,12 @@
 }
 .containerLogin .divCheck span{
     color: var(--color-1);
+    font-size: 16px;
 }
 .containerLogin .btnLogin{
     border: none;
-    padding: 20px;
-    font-size: 24px;
+    padding: 14px;
+    font-size: 16px;
     border-radius: 4px;
     margin-top: 32px;
     background-color: var(--bg-btnConfirm);
@@ -106,11 +108,11 @@
     justify-content: center;
     gap: 3px;
     margin-top: 32px;
-    font-size: 24px;
+    font-size: 16px;
 }
 .containerLogin a{
     color: var(--color-textLine);
-    font-size: 24px;
+    font-size: 16px;
 }
 .containerLogin .decorationN{
     text-decoration: none;

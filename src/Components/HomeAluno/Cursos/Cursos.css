@@ -13,23 +13,25 @@
     align-items: center;
     gap: 8px;
     background-color: #E7EBEF;
-    padding: 12px;
+    padding-inline: 12px;
     border-radius: 4px;
     color: #4A5E6D;
+    height: 48px;
 }
 .containerCursos header .subtitle{
     color: #637D92;
+    font-size: 18px;
 }
 .containerCursos header .divSearch input{
     background-color: transparent;
     border: none;
-    font-size: 18px;
+    font-size: 16px;
     outline: none;
 }
 .containerCursos .divModulos{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(440px, 1fr));    
-    gap: 20px;
+    gap: 32px;
     justify-content: center;
     padding: 40px 0px;
     
@@ -49,6 +51,7 @@
     align-items: center;
     gap: 5px;
     color: var(--secondary800);
+    font-size: 14px;
 }
 .containerCursos .divProgressInfos{
     display: flex;
@@ -63,6 +66,7 @@
     text-align: center;
     border-radius: 40px;
     padding: 7px 10px;
+    font-size: 13px;
 }
 .containerCursos .divProgressInfos .aulaStart{
     background-color: var(--indigo50);
@@ -111,11 +115,12 @@
 .containerCursos .divProgressBar .progressPorcent{
     white-space: nowrap;
     text-align: center;
+    font-size: 12px;
 }
 .containerCursos .btn{
     border: none;
     padding: 12px;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 500;
     border-radius: 4px;
     margin-top: 32px;

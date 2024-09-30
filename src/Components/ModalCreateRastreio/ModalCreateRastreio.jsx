@@ -46,19 +46,19 @@ function ModalCreateRastreio({ title, close }) {
         <div className='containerModalCreateRastreio'>
             <div className='modalCreate'>
                 <div className='divheader'>
-                    <h3>{title}</h3>
+                    <h3 style={{fontSize: 20}}>{title}</h3>
                     <div className='divClose'>
                         <IoClose size={25} onClick={() => close(false)} />
                     </div>
                 </div>
-                <p>Nome do paciente</p>
+                <p style={{fontSize: 16}}>Nome do paciente</p>
                 <InputSend 
                     title='Nome' 
                     placeH='' 
                     onSearchChange={handleSearchChange} 
                     type="text" 
                 />
-                <p>Faixa etária</p>
+                <p style={{fontSize: 16}}>Faixa etária</p>
                 <div className='divOptionsFaixas'>
                     {faixa.map((f) => (
                         <div key={f.id} className={`divFaixa ${optionSelected === f.id ? 'active' : ''}`} onClick={() => setOptionSelected(f.id)}>

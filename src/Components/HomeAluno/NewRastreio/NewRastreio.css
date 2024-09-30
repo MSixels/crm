@@ -2,13 +2,16 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
 }
 .containerNewRastreio .divContent{
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1500px;
+    max-width: 1400px;
     padding: 32px;
+    box-shadow: 0px 8px 10px .8px #ccc;
+    border-radius: 10px;
 }
 .containerNewRastreio .divContent .divHeader{
     display: flex;
@@ -16,8 +19,12 @@
     padding: 32px 0px;
 
 }
+.containerNewRastreio .divContent .secondary900{
+    color: var(--secondary900);
+}
 .containerNewRastreio .divContent .listTopicos{
     margin-left: 32px;
+    color: var(--secondary900);
 }
 .containerNewRastreio .divContent .divBarPages{
     display: flex;
@@ -43,7 +50,7 @@
     padding-bottom: 100px;
 }
 .containerNewRastreio .divContent .divOptions .divOption{
-    font-size: 18px;
+    font-size: 16px;
     display: flex;
     flex-direction: column;
 }
@@ -54,7 +61,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    margin-top: 32px;
+    margin-top: 64px;
 }
 .containerNewRastreio .divContent .divOptions .divOption .btns .divBtn{
     display: flex;
@@ -67,16 +74,16 @@
     color: #000;
 }
 .containerNewRastreio .divContent .divOptions .divOption .btns .divBtn .circle{
-    width: 24px;
-    height: 24px;
-    border-radius: 24px;
-    border: solid 3px var(--secondary500);
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    border: solid 2px var(--secondary900);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 .containerNewRastreio .divContent .divOptions .divOption .btns .active .circle{
-    border: solid 3px var(--primary);
+    border: solid 2px var(--primary);
 }
 .containerNewRastreio .divContent .divOptions .divOption .btns .circle .ball{
     width: 12px;
@@ -84,18 +91,22 @@
     border-radius: 12px;
     background-color: var(--primary);
 }
+.containerNewRastreio .divContent .divOptions .divOption .btns .divBtn .textOption{
+    color: var(--secondary900);
+}
 
 .containerNewRastreio .footer{
     display: flex;
     padding: 32px;
     border-top: solid 1px var(--secondary500);
-    position: fixed;
+    /*position: fixed;
     bottom: 0;
     left: 50%;
     width: calc(100% - 64px);
     max-width: 1500px;
     background-color: #FFF;
     transform: translateX(-50%);
+    */
 }
 .containerNewRastreio .footer .backNext{
     display: flex;

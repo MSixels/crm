@@ -14,7 +14,7 @@ function InputSend({title, placeH, onSearchChange, inputError, type }) {
     return(
         <div className='containerInputSend'>
             <div className='divInput'>
-                <label htmlFor="busca">{title}</label>
+                <label htmlFor="busca" style={{fontSize: 12}}>{title}</label>
                 <input 
                     type={type} 
                     name='busca' 

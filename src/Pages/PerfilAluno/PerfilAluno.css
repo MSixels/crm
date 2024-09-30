@@ -99,11 +99,11 @@ input {
 
 .perfil__input-group label {
   position: absolute;
-  top: -10px;
+  top: 0px;
   left: 10px;
   background-color: var(--bg-White);
   padding: 0 4px;
-  font-size: 1rem;
+  font-size: 12px;
 }
 
 .perfil__input-group input {
