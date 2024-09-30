@@ -3,15 +3,15 @@ export const modulos = [
         id: 1,
         name: 'Módulo 1',
         description: 'Neste módulo, você irá ver um assunto que será informado durante as aulas, não se esqueça de fazer as provas',
-        prof: 'Pedro Pedrosa',
+        prof: 'Antônio Ambulante',
         timesEnd: 'XX/XX/XX',
         aulasTotal: 6,
-        aulasFeitas: 3,
+        aulasFeitas: 0,
         provasTotal: 6,
-        provasFeitas: 2,
+        provasFeitas: 0,
         workCampoTotal: 2,
         workCampoFeitas: 0,
-        status: 'start',
+        status: 'block',
     },
     {
         id: 2,
@@ -20,12 +20,12 @@ export const modulos = [
         prof: 'Antônio Ambulante',
         timesEnd: 'XX/XX/XX',
         aulasTotal: 6,
-        aulasFeitas: 6,
+        aulasFeitas: 0,
         provasTotal: 6,
-        provasFeitas: 6,
-        workCampoTotal: 1,
+        provasFeitas: 0,
+        workCampoTotal: 2,
         workCampoFeitas: 0,
-        status: 'start',
+        status: 'block',
     },
     {
         id: 3,
@@ -39,49 +39,7 @@ export const modulos = [
         provasFeitas: 0,
         workCampoTotal: 2,
         workCampoFeitas: 0,
-        status: 'start',
-    },
-    {
-        id: 4,
-        name: 'Módulo 4',
-        description: 'Neste módulo, você irá ver um assunto que será informado durante as aulas, não se esqueça de fazer as provas',
-        prof: 'Júnior Jota',
-        timesEnd: 'XX/XX/XX',
-        aulasTotal: 6,
-        aulasFeitas: 3,
-        provasTotal: 6,
-        provasFeitas: 2,
-        workCampoTotal: 2,
-        workCampoFeitas: 0,
-        status: 'start',
-    },
-    {
-        id: 5,
-        name: 'Módulo 5',
-        description: 'Conclua o módulo XXXX para desbloquear',
-        prof: 'Pedro Augusto',
-        timesEnd: 'XX/XX/XX',
-        aulasTotal: 6,
-        aulasFeitas: 0,
-        provasTotal: 6,
-        provasFeitas: 0,
-        workCampoTotal: 2,
-        workCampoFeitas: 0,
         status: 'block',
-    },
-    {
-        id: 6,
-        name: 'Módulo Inicial',
-        description: 'Neste módulo, você irá ver um assunto que será informado durante as aulas, não se esqueça de fazer as provas',
-        prof: 'Pedro Augusto',
-        timesEnd: 'XX/XX/XX',
-        aulasTotal: 6,
-        aulasFeitas: 6,
-        provasTotal: 6,
-        provasFeitas: 6,
-        workCampoTotal: 2,
-        workCampoFeitas: 2,
-        status: 'end',
     },
 ]
 
@@ -172,5 +130,134 @@ export const professores = [
         id: 1,
         name: 'Matheus Souza',
         email: 'matsouza@gmail.com',
+    },
+]
+
+export const questsRestreio = [
+    {
+        id: 1, 
+        quest: 'Chora com frequência sem motivo aparente durante as aulas?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
+    },
+    {
+        id: 2, 
+        quest: 'Facilmente distraído por estímulos alheios à tarefa que deve ser realizada?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
+    },
+    {
+        id: 3, 
+        quest: 'Tem dificuldade em aguardar sua vez?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
+    },
+    {
+        id: 4, 
+        quest: 'Os materiais são geralmente desorganizados ou espalhados no chão?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
+    },
+    {
+        id: 5, 
+        quest: 'Se machuca com frequência, chegando a cair algumas vezes?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
+    },
+    {
+        id: 6, 
+        quest: 'Conversa muito com os coleguinhas, sempre tirando o foco da atividade proposta em sala?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
+    },
+    {
+        id: 7, 
+        quest: 'Sai do lugar o tempo inteiro, corre e/ou sobe em lugares inapropriados?',
+        options: [
+            {
+                id: 1,
+                text: 'Nunca'
+            },
+            {
+                id: 2,
+                text: 'Algumas vezes'
+            },
+            {
+                id: 3,
+                text: 'Sempre'
+            },
+        ]
     },
 ]

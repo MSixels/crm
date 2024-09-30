@@ -4,15 +4,16 @@ import Logo from '../../imgs/logoTextWhite.svg';
 import UserImg from '../../imgs/user.svg';
 import { useEffect, useState } from 'react';
 import UserModal from '../UserModal/UserModal';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import Cookies from 'js-cookie'
 
 function Header({ options }) {
     const [userId, setUserId] = useState('')
-    const [optId, setOptId] = useState(1);
+    const [optId, setOptId] = useState(2);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate()
+    const location = useLocation()
 
     const handleClickOption = (route) => {
         navigate(route)
@@ -27,7 +28,7 @@ function Header({ options }) {
         } else {
             console.log("Nenhum token encontrado nos cookies.");
         }
-    }, []);
+    }, [location]);
 
     return (
         <div className='containerHeader'>

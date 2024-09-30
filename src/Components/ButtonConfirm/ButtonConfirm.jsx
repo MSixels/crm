@@ -1,23 +1,24 @@
-import './ButtonSend.css'
+import './ButtonConfirm.css'
 import PropTypes from 'prop-types'
 
-function ButtonSend({title, icon, action}) {
+function ButtonConfirm({title, icon, action, disabled}) {
     const executeAction = () => {
         action(true)
     }
     return (
-        <div className='containerButtonSend'>
-            <button onClick={() => executeAction()} >
+        <div className='containerButtonConfirm'>
+            <button onClick={() => executeAction()} disabled={disabled}>
                 <span>{title}</span>
                 {icon}
             </button>
         </div>
     )
 }
-ButtonSend.propTypes = {
+ButtonConfirm.propTypes = {
     title: PropTypes.string.isRequired,
     icon: PropTypes.string.isRequired,
     action: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired,
 };
 
-export default ButtonSend
+export default ButtonConfirm

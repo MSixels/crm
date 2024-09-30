@@ -20,6 +20,7 @@
   --secondary100:#e7ebef;
   --secondary1000:#323f49;
   --secondary700:#7991a4;
+  --secondary500: #B6C3CD;
   --success:#1BA284;
   --secondary800:#637D92;
   --primary:#6732D1;
@@ -30,6 +31,7 @@
 }
 html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
 }
 *{
   margin: 0;

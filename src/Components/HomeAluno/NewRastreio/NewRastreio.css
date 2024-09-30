@@ -1,0 +1,118 @@
+.containerNewRastreio{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.containerNewRastreio .divContent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1500px;
+    padding: 32px;
+}
+.containerNewRastreio .divContent .divHeader{
+    display: flex;
+    flex-direction: column;
+    padding: 32px 0px;
+
+}
+.containerNewRastreio .divContent .listTopicos{
+    margin-left: 32px;
+}
+.containerNewRastreio .divContent .divBarPages{
+    display: flex;
+    border-top: solid 1px var(--secondary500);
+    margin-top: 32px;
+    gap: 32px;
+    padding-top: 32px;
+}
+.containerNewRastreio .divContent .divBarPages .bar{
+    width: 100%;
+    height: 10px;
+    background-color: var(--secondary500);
+    border-radius: 10px;
+}
+.containerNewRastreio .divContent .divBarPages .active{
+    background-color: var(--primary);
+}
+.containerNewRastreio .divContent .divOptions{
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    padding-top: 64px;
+    padding-bottom: 100px;
+}
+.containerNewRastreio .divContent .divOptions .divOption{
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+}
+.containerNewRastreio .divContent .divOptions .divOption .title{
+    font-weight: bold;
+}
+.containerNewRastreio .divContent .divOptions .divOption .btns{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 32px;
+}
+.containerNewRastreio .divContent .divOptions .divOption .btns .divBtn{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: var(--secondary500);
+}
+.containerNewRastreio .divContent .divOptions .divOption .btns .active{
+    color: #000;
+}
+.containerNewRastreio .divContent .divOptions .divOption .btns .divBtn .circle{
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    border: solid 3px var(--secondary500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.containerNewRastreio .divContent .divOptions .divOption .btns .active .circle{
+    border: solid 3px var(--primary);
+}
+.containerNewRastreio .divContent .divOptions .divOption .btns .circle .ball{
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    background-color: var(--primary);
+}
+
+.containerNewRastreio .footer{
+    display: flex;
+    padding: 32px;
+    border-top: solid 1px var(--secondary500);
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    width: calc(100% - 64px);
+    max-width: 1500px;
+    background-color: #FFF;
+    transform: translateX(-50%);
+}
+.containerNewRastreio .footer .backNext{
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.containerNewRastreio .footer .backNext .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    background-color: var(--primary);
+    color: #FFF;
+    cursor: pointer;
+}
+.containerNewRastreio .footer .backNext .blur{
+    background-color: var(--secondary500);
+}

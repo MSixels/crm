@@ -1,0 +1,78 @@
+.containerModalCreateRastreio{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    background-color: var(--blur);
+    font-size: 16px;
+}
+.containerModalCreateRastreio .modalCreate{
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background-color: #FFF;
+    border-radius: 4px;
+    gap: 18px;
+    width: 90%;
+    max-width: 650px;
+}
+.containerModalCreateRastreio .modalCreate .divheader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerModalCreateRastreio .modalCreate .divClose{
+    cursor: pointer;
+}
+.containerModalCreateRastreio .divOptionsFaixas{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    height: 110px;
+}
+.containerModalCreateRastreio .divOptionsFaixas .divFaixa{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    text-align: center;
+    border: solid 1px var(--secondary500);
+    border-radius: 4px;
+    height: 100%;
+    cursor: pointer;
+    transition: .2s;
+}
+.containerModalCreateRastreio .divOptionsFaixas .divFaixa .divIcon{
+    margin-bottom: 8px;
+}
+.containerModalCreateRastreio .divOptionsFaixas .divFaixa .divIcon .circle{
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    border: solid 3px var(--secondary500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.containerModalCreateRastreio .divOptionsFaixas .divFaixa .divIcon .circle .ball{
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    background-color: var(--primary);
+}
+.containerModalCreateRastreio .divOptionsFaixas .divFaixa .title{
+    white-space: nowrap;
+}
+.containerModalCreateRastreio .divOptionsFaixas .active{
+    background-color: var(--deep-purple50);
+    border: solid 1px var(--primary);
+}
+.containerModalCreateRastreio .divOptionsFaixas .active .divIcon .circle{
+    border: solid 3px var(--primary);
+}

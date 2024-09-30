@@ -1,0 +1,10 @@
+.containerRastreios{
+    width: 100%;
+    max-width: 1500px;
+    padding: 0px 24px;
+}
+.containerRastreios header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

@@ -1,7 +1,7 @@
 .containerCursos{
     display: flex;
     flex-direction: column;
-    padding: 64px 24px;
+    padding: 0px 24px;
 }
 .containerCursos header{
     display: flex;

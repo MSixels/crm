@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
 import { doc, getDoc } from 'firebase/firestore'
 import { firestore } from '../../services/firebaseConfig'
+import Rastreios from '../../Components/HomeAluno/Rastreios/Rastreios'
 
 function Home() {
     const navigate = useNavigate()
@@ -18,24 +19,24 @@ function Home() {
     const options = [
         {
             id: 1,
+            text: 'início',
+            route: '/aluno/home'
+        },
+        {
+            id: 2,
             text: 'Rastreio',
             route: '/aluno/rastreio'
         },
         {
-            id: 2,
-            text: 'Seus cursos',
-            route: '/aluno/home'
+            id: 3,
+            text: 'Módulos e aulas',
+            route: '/aluno/modulos'
         },
         
         {
-            id: 3,
+            id: 4,
             text: 'Ao vivo',
             route: '/aluno/aovivo'
-        },
-        {
-            id: 4,
-            text: 'Sobre',
-            route: '/aluno/sobre'
         },
     ]
 
@@ -88,25 +89,23 @@ function Home() {
             {page === 'home' && 
                 <div className='divContentHome'>
                     <HeadLine userName={userName}/>
+                    <Rastreios />
                     <Cursos />
                 </div>
             }
             {page === 'rastreio' && 
                 <div className='divContentHome'>
-                    <HeadLine userName={userName}/>
-                    Rastreio
+                    <Rastreios />
+                </div>
+            }
+            {page === 'modulos' && 
+                <div className='divContentHome'>
+                    <Cursos />
                 </div>
             }
             {page === 'aovivo' && 
                 <div className='divContentHome'>
-                    <HeadLine userName={userName}/>
                     Ao Vivo
-                </div>
-            }
-            {page === 'sobre' && 
-                <div className='divContentHome'>
-                    <HeadLine userName={userName}/>
-                    Sobre
                 </div>
             }
         </div>
