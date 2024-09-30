@@ -4,7 +4,21 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f0f0f0;
+  width: 100%;
+  background-color: var(--bg-1);
+  gap: 64px;
+}
+
+.divContentRecovery {
+  width: 456px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  color: var(--color-1);
+  padding: 32px;
+  background-color: var(--bg-White);
+  border-radius: 4px;
 }
 
 input {
@@ -13,20 +27,54 @@ input {
   width: 300px;
   border-radius: 5px;
   border: 1px solid #ccc;
+  width: 100%;
 }
 
-button {
-  border: none;
+.btn1 {
+    border: none;
+    width: 100%;
     padding: 20px;
-    font-size: 24px;
+    font-size: 1.1rem;
     border-radius: 4px;
-    margin-top: 32px;
     background-color: var(--bg-btnConfirm);
     color: #FFF;
     cursor: pointer;
     transition: .3s;
 }
 
-button:hover {
-  background-color: #45a049;
+.btn1:hover {
+  scale: 1.01;
+}
+
+.btn2 {
+    border: 1px solid var(--bg-btnConfirm);
+    width: 100%;
+    padding: 20px;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    background-color: var(--bg-White);
+    color: var(--bg-btnConfirm);
+    cursor: pointer;
+    transition: .3s;
+}
+.btn2:hover {
+  scale: 1.01;
+  background-color: var(--bg-btnConfirm);
+  color: var(--bg-White);
+}
+
+.linkRecovery {
+  color: var(--color-textLine);
+}
+
+.mailSending {
+  width: 456px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  color: var(--color-1);
+  padding: 32px;
+  background-color: var(--bg-White);
+  border-radius: 4px;
 }
