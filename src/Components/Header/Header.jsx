@@ -10,7 +10,7 @@ import Cookies from 'js-cookie'
 
 function Header({ options }) {
     const [userId, setUserId] = useState('')
-    const [optId, setOptId] = useState(2);
+    const [optId, setOptId] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate()
     const location = useLocation()
