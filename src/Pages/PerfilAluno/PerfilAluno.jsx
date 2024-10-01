@@ -52,7 +52,9 @@ export default function PerfilAluno() {
   const [alertNewPasswordInvalid, setAlertNewPasswordInvalid] = useState(false);
   const [alertInputInvalid, setAlertInputInvalid] = useState(false);
   const [alertPasswordInvalid, setAlertPasswordInvalid] = useState(false);
-  const [alertPasswordSuccess, setAlertPasswordSuccess] = useState(false); // Estado para o alerta de sucesso
+  const [alertPasswordSuccess, setAlertPasswordSuccess] = useState(false);
+
+  const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : 'A');
 
   const handleSave = async () => {
     if (!senhaAtual || !novaSenha || !confirmarSenha) {
@@ -82,7 +84,7 @@ export default function PerfilAluno() {
 
         await updatePassword(user, novaSenha);
 
-        setAlertPasswordSuccess(true); // Exibir alerta de sucesso
+        setAlertPasswordSuccess(true);
         setSenhaAtual('');
         setNovaSenha('');
         setConfirmarSenha('');
@@ -104,6 +106,27 @@ export default function PerfilAluno() {
       setRoute(`/professor/perfil/${userId}`);
       setRoutePage('/professor/dashbord');
       setTitle('Dashboard');
+    }
+    const fetchUserData = async () => {
+      setLoading(true);
+      try {
+        const userDoc = doc(firestore, 'users', userId);
+        const docSnap = await getDoc(userDoc);
+
+        if (docSnap.exists()) {
+          setUserData(docSnap.data());
+        } else {
+          console.log('Nenhum usuário encontrado!');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar usuário:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchUserData();
     }
   }, [location, userId]);
 
@@ -143,7 +166,7 @@ export default function PerfilAluno() {
           <div className="perfil__grid">
             <div className="perfil__card perfil__card--centered">
               <div className="perfil__avatar">
-                <div className="perfil__avatar-photo">V</div>
+                <div className="perfil__avatar-photo">{userData.name ? getInitial(userData.name) : 'A'} </div>
               </div>
               <div className="perfil__text-center">
                 <h3>Foto do perfil</h3>

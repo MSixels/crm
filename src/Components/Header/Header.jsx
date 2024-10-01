@@ -1,7 +1,8 @@
 import './Header.css';
 import PropTypes from 'prop-types';
 import Logo from '../../imgs/logoTextWhite.svg';
-import UserImg from '../../imgs/user.svg';
+import { doc, getDoc } from 'firebase/firestore';
+import { firestore } from '../../services/firebaseConfig';
 import { useEffect, useState } from 'react';
 import UserModal from '../UserModal/UserModal';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -10,10 +11,13 @@ import Cookies from 'js-cookie'
 
 function Header({ options }) {
     const [userId, setUserId] = useState('')
+    const [userData, setUserData] = useState(null);
     const [optId, setOptId] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate()
     const location = useLocation()
+
+    const getInitial = (name) => name ? name.charAt(0).toUpperCase() : '';
 
     const handleClickOption = (route, id, status) => {
         if(status === 'active'){
@@ -33,6 +37,26 @@ function Header({ options }) {
         }
     }, [location]);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (userId) {
+                try {
+                    const userDoc = doc(firestore, 'users', userId);
+                    const docSnap = await getDoc(userDoc);
+                    if (docSnap.exists()) {
+                        setUserData(docSnap.data());
+                    } else {
+                        console.log('Nenhum usuário encontrado');
+                    }
+                } catch (error) {
+                    console.error('Erro ao buscar usuário:', error);
+                }
+            }
+        };
+        fetchUserData();
+    }, [userId]);
+
+
     return (
         <div className='containerHeader'>
             <header>
@@ -43,8 +67,16 @@ function Header({ options }) {
                             <span key={o.id} onClick={() => handleClickOption(o.route, o.id, o.status)} style={{borderBottom: location.pathname === o.route ? '2px solid #FFF' : 'none', color: o.status === 'block' ? '#000' : ''}}>{o.text}</span>
                         ))}
                     </div>
-                    <img src={UserImg} alt="" onClick={() => setIsModalOpen(!isModalOpen)} className='avatar'/>
-                    {isModalOpen && <UserModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} userId={userId}/>}
+                    <div className='divUser'>
+                    <div className='avatar-placeholder' onClick={() => setIsModalOpen(!isModalOpen)}>
+                        {userData ? (
+                            <span className='letter'>{getInitial(userData.name)}</span>
+                        ) : (
+                            <span>A</span>
+                        )}
+                    </div>
+                    {isModalOpen && <UserModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} userId={userId} />}
+                    </div>
                 </div>
             </header>
         </div>
