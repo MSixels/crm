@@ -46,7 +46,7 @@ function ModalCreateAluno({ title, close }) {
         return password;
     };
 
-    const sendEmailtoSignOut = async (send) => {
+    const sendEmailtoSignUp = async (send) => {
         if (send) {
             if (name === '') {
                 setNameError(true);
@@ -72,8 +72,7 @@ function ModalCreateAluno({ title, close }) {
                     userId: userId,
                     password: randomPassword
                 });
-
-                //console.log("Usuário criado no Firestore com sucesso");
+                
                 close(false);
             })
             .catch((error) => {
@@ -93,7 +92,7 @@ function ModalCreateAluno({ title, close }) {
                 </div>
                 <InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />
                 <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
-                <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailtoSignOut} />
+                <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailtoSignUp} />
             </div>
         </div>
     );

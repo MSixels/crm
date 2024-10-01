@@ -88,8 +88,11 @@ function Login() {
             if (checkConect) {
                 Cookies.set('accessToken', accessToken, { expires: 7 });
             } else {
+                console.log('mandando os cookies')
                 Cookies.set('accessToken', accessToken, { expires: null }); 
             }
+        } else{
+            console.log('user não encontrado')
         }
     }, [user, type, navigate, checkConect]);
 
