@@ -133,131 +133,497 @@ export const professores = [
     },
 ]
 
-export const questsRestreio = [
+const optionsRastreios = [ 
+    { id: 1, text: 'Nunca' }, 
+    { id: 2, text: 'Algumas vezes' }, 
+    { id: 3, text: 'Sempre' }, 
+]
+
+export const questsRestreioType1 = [
     {
         id: 1, 
         quest: 'Chora com frequência sem motivo aparente durante as aulas?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        options: optionsRastreios
     },
     {
         id: 2, 
         quest: 'Facilmente distraído por estímulos alheios à tarefa que deve ser realizada?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        options: optionsRastreios
     },
     {
         id: 3, 
-        quest: 'Tem dificuldade em aguardar sua vez?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        quest: 'Faz perguntas ao professor o tempo inteiro, chegando a atrapalhar a dinâmica da aula?',
+        options: optionsRastreios    
     },
     {
         id: 4, 
-        quest: 'Os materiais são geralmente desorganizados ou espalhados no chão?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        quest: 'Tem dificuldade em aguardar sua vez?',
+        options: optionsRastreios    
     },
     {
         id: 5, 
-        quest: 'Se machuca com frequência, chegando a cair algumas vezes?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        quest: 'Os materiais são geralmente desorganizados ou espalhados no chão?',
+        options: optionsRastreios    
     },
     {
         id: 6, 
-        quest: 'Conversa muito com os coleguinhas, sempre tirando o foco da atividade proposta em sala?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        quest: 'Se machuca com frequência, chegando a cair algumas vezes?',
+        options: optionsRastreios    
     },
     {
         id: 7, 
+        quest: 'Conversa muito com os coleguinhas, sempre tirando o foco da atividade proposta em sala?',
+        options: optionsRastreios    
+    },
+    {
+        id: 8, 
         quest: 'Sai do lugar o tempo inteiro, corre e/ou sobe em lugares inapropriados?',
-        options: [
-            {
-                id: 1,
-                text: 'Nunca'
-            },
-            {
-                id: 2,
-                text: 'Algumas vezes'
-            },
-            {
-                id: 3,
-                text: 'Sempre'
-            },
-        ]
+        options: optionsRastreios    
+    },
+    {
+        id: 9, 
+        quest: 'Prefere ficar sozinho durante as atividades coletivas ou possui extrema dificuldade nas interações?',
+        options: optionsRastreios    
+    },
+    {
+        id: 10, 
+        quest: 'Faz movimentos repetidos (com as mãos ou girar em torno de si)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 11, 
+        quest: 'Parece não escutar quando chamado pelo nome?',
+        options: optionsRastreios    
+    },
+    {
+        id: 12, 
+        quest: 'Não mantem o contato visual durante os momentos de interação?',
+        options: optionsRastreios    
+    },
+    {
+        id: 13, 
+        quest: 'Não demonstra emoções, geralmente alheio ao educador ou profissionais que possuam contato prolongado?',
+        options: optionsRastreios    
+    },
+    {
+        id: 14, 
+        quest: 'Desconforto quando está em ambientes com barulhos e muitas pessoas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 15, 
+        quest: 'Empilha e/ou enfileira objetos?',
+        options: optionsRastreios    
+    },
+    {
+        id: 16, 
+        quest: 'Não se comunica-se através de gestos (apontando ou chamando)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 17, 
+        quest: 'Já reconhece letras?',
+        options: optionsRastreios    
+    },
+    {
+        id: 18, 
+        quest: 'Já reconhece números?',
+        options: optionsRastreios    
+    },
+    {
+        id: 19, 
+        quest: 'Já sabe contar até 5 ou 10?',
+        options: optionsRastreios    
+    },
+    {
+        id: 20, 
+        quest: 'Tem resposta emocional quando ouve um texto?',
+        options: optionsRastreios    
+    },
+    {
+        id: 21, 
+        quest: 'Vocabulário na maioria das vezes incompreensível?',
+        options: optionsRastreios    
+    },
+    {
+        id: 22, 
+        quest: 'A fala se assemelha a gagueira?',
+        options: optionsRastreios    
+    },
+    {
+        id: 23, 
+        quest: 'Fala poucas palavras comparado aos seus pares?',
+        options: optionsRastreios    
+    },
+    {
+        id: 24, 
+        quest: 'Forma poucas frases ou nenhuma?',
+        options: optionsRastreios    
+    },
+    {
+        id: 25, 
+        quest: 'Dificuldade em aceitar as regras e ordens?',
+        options: optionsRastreios    
+    },
+    {
+        id: 26, 
+        quest: 'Geralmente mais agressivo sem motivo aparente ou mantém irritabilidade mesmo sem estímulo?',
+        options: optionsRastreios    
+    },
+    {
+        id: 27, 
+        quest: 'Dificuldade em manter atenção nas rodas de história ou atividades lúdicas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 28, 
+        quest: 'Vocabulário reduzido ou incompreensível?',
+        options: optionsRastreios    
+    },
+    {
+        id: 29, 
+        quest: 'Tem pouco juízo para atividades de risco?',
+        options: optionsRastreios    
+    },
+    {
+        id: 30, 
+        quest: 'Pede ajuda para realizar atividades pessoais simples (p. ex. vestir a roupa)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 31, 
+        quest: 'Aprende pouco por mais que observe os outros?',
+        options: optionsRastreios    
+    },
+    {
+        id: 32, 
+        quest: 'Criança é geralmente manipulada pelos outros colegas?',
+        options: optionsRastreios    
+    },
+]
+
+export const questsRestreioType2 = [
+    {
+        id: 1, 
+        quest: 'Criança pede para sair da sala por motivos diversos, mais de uma vez na mesma aula?',
+        options: optionsRastreios    
+    },
+    {
+        id: 2, 
+        quest: 'Facilmente distraído por estímulos alheios à tarefa?',
+        options: optionsRastreios    
+    },
+    {
+        id: 3, 
+        quest: 'Dá respostas precipitadas antes da pergunta ser completada?',
+        options: optionsRastreios    
+    },
+    {
+        id: 4, 
+        quest: 'Tem dificuldade em aguardar sua vez?',
+        options: optionsRastreios    
+    },
+    {
+        id: 5, 
+        quest: 'Apresenta esquecimento em atividades feitas diariamente ou realizadas com frequência?',
+        options: optionsRastreios    
+    },
+    {
+        id: 6, 
+        quest: 'Deixa as atividades pela metade?',
+        options: optionsRastreios    
+    },
+    {
+        id: 7, 
+        quest: 'Perde ou esquece os materiais escolares com frequência?',
+        options: optionsRastreios    
+    },
+    {
+        id: 8, 
+        quest: 'Mantem conversa paralela durante as explicações?',
+        options: optionsRastreios    
+    },
+    {
+        id: 9, 
+        quest: 'Prefere ficar sozinho durante as atividades coletivas ou não interage de maneira produtiva?',
+        options: optionsRastreios    
+    },
+    {
+        id: 10, 
+        quest: 'Faz movimentos repetitivos (balança as mãos ou gira em torno de si)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 11, 
+        quest: 'Parece não escutar quando chamado pelo nome?',
+        options: optionsRastreios    
+    },
+    {
+        id: 12, 
+        quest: 'Não mantém o contato visual durante os momentos de interação?',
+        options: optionsRastreios    
+    },
+    {
+        id: 13, 
+        quest: 'Não demonstra emoções, geralmente alheio ao educador ou outros profissionais próximos?',
+        options: optionsRastreios    
+    },
+    {
+        id: 14, 
+        quest: 'Desconforto quando está em ambientes com barulhos e muitas pessoas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 15, 
+        quest: 'Empilha e/ou enfileira objetos?',
+        options: optionsRastreios    
+    },
+    {
+        id: 16, 
+        quest: 'Não se comunica-se através de gestos (apontando ou chamando)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 17, 
+        quest: 'Apresenta dificuldades na leitura de palavras/textos simples?',
+        options: optionsRastreios    
+    },
+    {
+        id: 18, 
+        quest: 'Dificuldade em fazer cálculos além do habitual para a idade?',
+        options: optionsRastreios    
+    },
+    {
+        id: 19, 
+        quest: 'Não consegue interpretar completamente partes essenciais do texto lido ou ouvido?',
+        options: optionsRastreios    
+    },
+    {
+        id: 20, 
+        quest: 'A escrita tem erros ortográficos ou pontuação, além do habitual para faixa etária?',
+        options: optionsRastreios    
+    },
+    {
+        id: 21, 
+        quest: 'Vocabulário na maioria das vezes incompreensível?',
+        options: optionsRastreios    
+    },
+    {
+        id: 22, 
+        quest: 'A fala se assemelha a gagueira?',
+        options: optionsRastreios    
+    },
+    {
+        id: 23, 
+        quest: 'Fala poucas palavras comparado aos seus pares?',
+        options: optionsRastreios    
+    },
+    {
+        id: 24, 
+        quest: 'Forma poucas frases ou nenhuma?',
+        options: optionsRastreios    
+    },
+    {
+        id: 25, 
+        quest: 'Dificuldade em aceitar as regras e ordens?',
+        options: optionsRastreios    
+    },
+    {
+        id: 26, 
+        quest: 'Geralmente mais agressivo com os colegas e educador sem motivo aparente?',
+        options: optionsRastreios    
+    },
+    {
+        id: 27, 
+        quest: 'Gosta de incomodar os outros ou se satisfaz com atitudes desconfortáveis para os colegas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 28, 
+        quest: 'Discute com o professor e outros adultos?',
+        options: optionsRastreios    
+    },
+    {
+        id: 29, 
+        quest: 'Tem pouco juízo para atividades de risco?',
+        options: optionsRastreios    
+    },
+    {
+        id: 30, 
+        quest: 'Pede ajuda para realizar atividades pessoais simples (amarrar o sapato...)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 31, 
+        quest: 'Aprende pouco por mais que observe os outros?',
+        options: optionsRastreios    
+    },
+    {
+        id: 32, 
+        quest: 'Geralmente manipulada pelos outros colegas ou não se manifesta diante da vontade dos outros?',
+        options: optionsRastreios    
+    },
+]
+
+export const questsRestreioType3 = [
+    {
+        id: 1, 
+        quest: 'O estudante se mantém inquieto, sai excessivamente ou dá frequentes desculpas para estar fora da sala de aula?',
+        options: optionsRastreios    
+    },
+    {
+        id: 2, 
+        quest: 'Facilmente distraído por estímulos alheios ao tema abordado ou comando direcionado?',
+        options: optionsRastreios    
+    },
+    {
+        id: 3, 
+        quest: 'Dá respostas precipitadas antes da pergunta ser completada?',
+        options: optionsRastreios    
+    },
+    {
+        id: 4, 
+        quest: 'Tem dificuldade em aguardar sua vez?',
+        options: optionsRastreios    
+    },
+    {
+        id: 5, 
+        quest: 'Apresenta esquecimento em atividades feitas diariamente?',
+        options: optionsRastreios    
+    },
+    {
+        id: 6, 
+        quest: 'Deixa as atividades pela metade? ',
+        options: optionsRastreios    
+    },
+    {
+        id: 7, 
+        quest: 'Perde ou esquece itens necessários para a realização de suas atividades, dentro ou fora de sala? ',
+        options: optionsRastreios    
+    },
+    {
+        id: 8, 
+        quest: 'Mantém conversa paralela durante as explicações? ',
+        options: optionsRastreios    
+    },
+    {
+        id: 9, 
+        quest: 'Possui dificuldades de desempenho ou relação interpessoal nas atividades em grupo?',
+        options: optionsRastreios    
+    },
+    {
+        id: 10, 
+        quest: 'Apresenta movimentos repetitivos como pernas inquietas ou bater de lápis, canetas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 11, 
+        quest: 'Possui dificuldade em direcionar a atenção quando é chamado em ambiente com outros estímulos?',
+        options: optionsRastreios    
+    },
+    {
+        id: 12, 
+        quest: 'Não mantem o contato visual durante os momentos de interação?',
+        options: optionsRastreios    
+    },
+    {
+        id: 13, 
+        quest: 'Não demonstra emoções, geralmente alheio ao educador ou colegas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 14, 
+        quest: 'Apresenta desconforto quando está em ambientes com barulho excessivo e muitas pessoas?',
+        options: optionsRastreios    
+    },
+    {
+        id: 15, 
+        quest: 'Apresenta padrões rígidos ou repetitivos de comportamento?',
+        options: optionsRastreios    
+    },
+    {
+        id: 16, 
+        quest: 'Não possui habilidade de comunicação não verbal?',
+        options: optionsRastreios    
+    },
+    {
+        id: 17, 
+        quest: 'Apresenta dificuldades na leitura de palavras/textos simples?',
+        options: optionsRastreios    
+    },
+    {
+        id: 18, 
+        quest: 'Dificuldade em fazer cálculos além do habitual para a idade?',
+        options: optionsRastreios    
+    },
+    {
+        id: 19, 
+        quest: 'Não consegue interpretar completamente partes essenciais do texto lido ou ouvido?',
+        options: optionsRastreios    
+    },
+    {
+        id: 20, 
+        quest: 'A escrita apresenta erros ortográficos ou pontuação, além do habitual para faixa etária?',
+        options: optionsRastreios    
+    },
+    {
+        id: 21, 
+        quest: 'Vocabulário na maioria das vezes incompreensível?',
+        options: optionsRastreios    
+    },
+    {
+        id: 22, 
+        quest: 'A fala se assemelha a gagueira?',
+        options: optionsRastreios    
+    },
+    {
+        id: 23, 
+        quest: 'Fala poucas palavras comparado aos seus pares?',
+        options: optionsRastreios    
+    },
+    {
+        id: 24, 
+        quest: 'Forma poucas frases ou nenhuma?',
+        options: optionsRastreios    
+    },
+    {
+        id: 25, 
+        quest: 'Dificuldade em aceitar as regras e ordens?',
+        options: optionsRastreios    
+    },
+    {
+        id: 26, 
+        quest: 'Geralmente mais agressivo com os colegas e educador sem motivo aparente?',
+        options: optionsRastreios    
+    },
+    {
+        id: 27, 
+        quest: 'Gosta de incomodar os colegas e fica feliz por isso?',
+        options: optionsRastreios    
+    },
+    {
+        id: 28, 
+        quest: 'Discute com o professor e outros adultos? ',
+        options: optionsRastreios    
+    },
+    {
+        id: 29, 
+        quest: 'Tem pouco juízo para atividades de risco?',
+        options: optionsRastreios    
+    },
+    {
+        id: 30, 
+        quest: 'Pede ou precisa ajuda para realizar atividades pessoais simples (amarrar o sapato...)?',
+        options: optionsRastreios    
+    },
+    {
+        id: 31, 
+        quest: 'Aprende pouco por mais que observe os outros?',
+        options: optionsRastreios    
+    },
+    {
+        id: 32, 
+        quest: 'Geralmente manipulada pelos outros colegas?',
+        options: optionsRastreios    
     },
 ]

@@ -11,3 +11,7 @@
     flex-direction: column;
     gap: 50px;
 }
+.containerHome .divContentHome .borderB{
+    border-bottom: solid 1px var(--color-2);
+    padding-bottom: 32px;
+}

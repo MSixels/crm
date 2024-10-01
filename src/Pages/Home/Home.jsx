@@ -6,9 +6,10 @@ import './Home.css'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
-import { doc, getDoc } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../services/firebaseConfig'
 import Rastreios from '../../Components/HomeAluno/Rastreios/Rastreios'
+import RastreiosSmall from '../../Components/HomeAluno/RastreiosSmall/RastreiosSmall'
 
 function Home() {
     const navigate = useNavigate()
@@ -16,6 +17,7 @@ function Home() {
     const page = params.page
     const [userId, setUserId] = useState('')
     const [userName, setUserName] = useState('usuário')
+    const [rastreios, setRastreios] = useState([])
     const options = [
         {
             id: 1,
@@ -66,21 +68,55 @@ function Home() {
     }, [navigate]);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-          try {
-            const userDoc = doc(firestore, "users", userId);
-            const docSnap = await getDoc(userDoc);
+        getRastreios(userId)
+        console.log(userId)
+    }, [userId])
+
+    useEffect(() => {
+        console.log(rastreios)
+    }, [rastreios])
+
+    const getRastreios = async (userId) => {
+        try {
+            const q = query(collection(firestore, "rastreios"), where("userId", "==", userId));
+            const querySnapshot = await getDocs(q);
+            
+            const allRastreios = [];
     
-            if (docSnap.exists()) {
-              setUserName(docSnap.data().name?.split(" ")[0]);
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                    allRastreios.push(doc.data());
+                });
+                
+                setRastreios(allRastreios);
             } else {
-              console.log("Nenhum usuário encontrado!");
+                console.log("Nenhum rastreio encontrado para este usuário!");
+                setRastreios([]); 
             }
-          } catch (error) {
-            console.error("Erro ao buscar usuário:", error);
-          } finally {
+        } catch (error) {
+            console.error("Erro ao buscar rastreios:", error);
+        } finally {
             //setLoading(false); 
-          }
+        }
+    }
+    
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userDoc = doc(firestore, "users", userId);
+                const docSnap = await getDoc(userDoc);
+        
+                if (docSnap.exists()) {
+                setUserName(docSnap.data().name?.split(" ")[0]);
+                } else {
+                console.log("Nenhum usuário encontrado!");
+                }
+            } catch (error) {
+                console.error("Erro ao buscar usuário:", error);
+            } finally {
+                //setLoading(false); 
+            }
         };
     
         if (userId) {
@@ -92,14 +128,18 @@ function Home() {
             <Header options={options} />
             {page === 'home' && 
                 <div className='divContentHome'>
-                    <HeadLine userName={userName}/>
-                    <Rastreios />
+                    <div className='borderB'>
+                        <HeadLine userName={userName}/>
+                    </div>
+                    <div className='borderB'>
+                        <RastreiosSmall data={[rastreios]}/>
+                    </div>
                     <Cursos />
                 </div>
             }
             {page === 'rastreio' && 
                 <div className='divContentHome'>
-                    <Rastreios />
+                    <Rastreios data={[rastreios]}/>
                 </div>
             }
             {page === 'modulos' && 

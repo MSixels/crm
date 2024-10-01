@@ -40,7 +40,7 @@ function Header({ options }) {
                 <div className='divUser'>
                     <div className='divOptions'>
                         {options && options.map((o) => (
-                            <span key={o.id} onClick={() => handleClickOption(o.route, o.id, o.status)} style={{borderBottom: optId === o.id ? '2px solid #FFF' : 'none', color: o.status === 'block' ? '#000' : ''}}>{o.text}</span>
+                            <span key={o.id} onClick={() => handleClickOption(o.route, o.id, o.status)} style={{borderBottom: location.pathname === o.route ? '2px solid #FFF' : 'none', color: o.status === 'block' ? '#000' : ''}}>{o.text}</span>
                         ))}
                     </div>
                     <img src={UserImg} alt="" onClick={() => setIsModalOpen(!isModalOpen)} className='avatar'/>

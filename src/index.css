@@ -24,11 +24,13 @@
   --success:#1BA284;
   --secondary800:#637D92;
   --secondary900:#4A5E6D;
+  --secondary1000:#323F49;
   --primary:#6732D1;
   --success-light:#e4faf5;
   --warning200:#EDA145;
   --warning50:#fceede;
   --blur:#00000048;
+  --error: #D32F2F;
   
 }
 html {

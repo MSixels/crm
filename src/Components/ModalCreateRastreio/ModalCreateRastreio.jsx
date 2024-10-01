@@ -34,11 +34,11 @@ function ModalCreateRastreio({ title, close }) {
     const novoRastreio = async (send) => {
         if (send) {
             if(optionSelected === 1){
-                navigate(`/aluno/rastreio/novo-rastreio-tipo-1`)
+                navigate(`/aluno/rastreio/novo-rastreio-tipo-1?patient=${name}`)
             } else if(optionSelected === 2){
-                navigate(`/aluno/rastreio/novo-rastreio-tipo-2`)
+                navigate(`/aluno/rastreio/novo-rastreio-tipo-2?patient=${name}`)
             } else if(optionSelected === 3) {
-                navigate(`/aluno/rastreio/novo-rastreio-tipo-3`)
+                navigate(`/aluno/rastreio/novo-rastreio-tipo-3?patient=${name}`)
             }
         }
     };

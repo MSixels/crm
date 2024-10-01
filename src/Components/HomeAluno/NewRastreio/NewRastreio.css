@@ -97,6 +97,8 @@
 
 .containerNewRastreio .footer{
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 32px;
     border-top: solid 1px var(--secondary500);
     /*position: fixed;

@@ -96,7 +96,7 @@ function Login() {
     useEffect(() => {
         if(user && typeUser){
             if (type === 'aluno' && typeUser === 3) {
-                navigate(`/${type}/rastreio`);
+                navigate(`/${type}/home`);
             } else if(type === 'professor' && typeUser === 2){
                 navigate(`/${type}/dashboard`);
             } else if (type === 'professor' && typeUser === 1){

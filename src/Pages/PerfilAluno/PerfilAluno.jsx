@@ -95,15 +95,15 @@ export default function PerfilAluno() {
 
   useEffect(() => {
     if (location.pathname.startsWith('/aluno')) {
-      setRoute('/aluno/perfil');
+      setRoute(`/aluno/perfil/${userId}`);
       setRoutePage('/aluno/home');
       setTitle('Início');
     } else if (location.pathname.startsWith('/professor')) {
-      setRoute('/professor/perfil');
+      setRoute(`/professor/perfil/${userId}`);
       setRoutePage('/professor/dashbord');
       setTitle('Dashboard');
     }
-  }, [location]);
+  }, [location, userId]);
 
   useEffect(() => {
     const fetchUserData = async () => {
