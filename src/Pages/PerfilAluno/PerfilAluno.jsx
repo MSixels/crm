@@ -7,6 +7,8 @@ import { useLocation, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
+import PropTypes from 'prop-types';
+
 
 function PasswordInput({ id, placeholder, value, onChange, erro }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -259,3 +261,11 @@ export default function PerfilAluno() {
     </>
   );
 }
+
+PasswordInput.propTypes = {
+  id: PropTypes.string.isRequired,
+  placeholder: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  erro: PropTypes.bool,
+};
