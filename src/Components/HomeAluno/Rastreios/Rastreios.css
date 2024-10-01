@@ -60,13 +60,25 @@
 }
 .containerRastreios .divConcluidos .divHeaderValues .divTitle{
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-right: 3px;
+    font-weight: 500;
+}
+.containerRastreios .divConcluidos .divHeaderValues .divTitle .iconClick{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 .containerRastreios .divConcluidos .divValues .divPatient{
-    padding:16px;
+    padding: 16px;
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--color-2);
+    position: relative;
 }
 .containerRastreios .divConcluidos .divValues .divPatient .divlineValue{
     font-size: 14px;
@@ -102,6 +114,128 @@
 .containerRastreios .containerGraficMini .red{
     background-color: var(--error);
 }
-
-
+.containerRastreios .mini{
+    display: flex;
+    gap: 2px;
+    align-items: end;
+}
+.containerRastreios .mini .bar{
+    width: 2px;
+    background-color: var(--secondary500);
+    border-radius: 2px;
+}
+.containerRastreios .mini .bar-1{
+    height: 3px;
+}
+.containerRastreios .mini .bar-2{
+    height: 6px
+}
+.containerRastreios .mini .bar-3{
+    height: 9px;
+}
+.containerRastreios .mini .bar-4{
+    height: 12px;
+}
+.containerRastreios .mini .green{
+    background-color: var(--success);
+}
+.containerRastreios .mini .yellow{
+    background-color: var(--warning200);
+}
+.containerRastreios .mini .red{
+    background-color: var(--error);
+}
+.containerRastreios .legendas{
+    display: flex;
+    align-items: center;
+    gap:32px;
+    padding: 16px;
+    font-size: 12px;
+}
+.containerRastreios .legendas .l_graficos{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.containerRastreios .divPatient .btnEditPatient{
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid 1px var(--color-2);
+    padding: 8px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.containerRastreios .divPatient .modalEditPatient{
+    position: absolute;
+    right: 30px;
+    padding: 3px;
+    border: solid 1px var(--color-2);
+    border-radius: 4px;
+    background-color: #FFF;
+    z-index: 2000;
+}
+.containerRastreios .divPatient .modalEditPatient p{
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: .3s;
+}
+.containerRastreios .divPatient .modalEditPatient .alert{
+    color: var(--error);
+}
+.containerRastreios .divPatient .modalEditPatient .alert:hover{
+    background-color: var(--errorHover);
+}
+.containerRastreios .containerModalConfirmDelete{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    background-color: var(--blur);
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF;
+    padding: 24px;
+    border-radius: 4px;
+    gap: 24px;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .titleAlert{
+    font-size: 18px;
+    font-weight: 500;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 32px;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: .3s;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .delete{
+    color: var(--error);
+    font-weight: 500;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .delete:hover{
+    background-color: var(--errorHover);
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .close:hover{
+    background-color: #00000025;
+}
 

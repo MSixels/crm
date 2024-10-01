@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { IoChevronBackSharp } from "react-icons/io5";
 import { GrFormNext } from "react-icons/gr";
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
@@ -103,34 +103,41 @@ function NewRastreio() {
         if (!allAnswered) {
             return;
         }
-
+    
         const responses = paginatedQuestions.map(q => ({
             id: q.id,
-            quest: q.id, 
-            value: selectedOptions[q.id], 
+            quest: q.id,
+            value: selectedOptions[q.id],
         }));
-
+    
         setAllResponses(prevResponses => [...prevResponses, ...responses]);
-
+    
         if (currentPage < pagesViews.length) {
             setCurrentPage(prev => prev + 1);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
             try {
-                if(patient && allResponses){
-                    await addDoc(collection(firestore, "rastreios"), {
-                        patient: patient,   
-                        userId: userId, 
-                        typeQuest: typeQuestSelected,          
-                        responses: allResponses.concat(responses), 
-                        createdAt: new Date() 
+                if (patient && allResponses) {
+                    const docRef = await addDoc(collection(firestore, "rastreios"), {
+                        patient: patient,
+                        userId: userId,
+                        typeQuest: typeQuestSelected,
+                        responses: allResponses.concat(responses),
+                        createdAt: new Date()
                     });
-                    
-                    navigate('/aluno/home')
+    
+                    const documentId = docRef.id; 
+    
+                    await updateDoc(doc(firestore, "rastreios", documentId), {
+                        id: documentId 
+                    });
+    
+                    console.log("Documento adicionado com ID: ", documentId);
+    
+                    navigate('/aluno/home');
                 } else {
-                    console.log('Verifique se você marcou todas as questões!')
+                    console.log('Verifique se você marcou todas as questões!');
                 }
-                
             } catch (e) {
                 console.error("Erro ao adicionar documento: ", e);
             }
