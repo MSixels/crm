@@ -165,6 +165,17 @@ function Rastreios({ data }) {
 
             const updatedPatients = sortedPatients.filter((_, i) => i !== index);
             setPatients(updatedPatients)
+            const total = updatedPatients.length;
+            const typeQuest1 = updatedPatients.filter(rastreio => rastreio.typeQuest === 1).length;
+            const typeQuest2 = updatedPatients.filter(rastreio => rastreio.typeQuest === 2).length;
+            const typeQuest3 = updatedPatients.filter(rastreio => rastreio.typeQuest === 3).length;
+        
+            setRastreioCounts({
+                total,
+                typeQuest1,
+                typeQuest2,
+                typeQuest3,
+            });
             
 
             setConfirmDeleteIndex(null);
@@ -282,7 +293,7 @@ function Rastreios({ data }) {
                             {renderMiniGrafic('p')}
                         </div>
                         <div className='l_graficos'>
-                            <p>Muito Provável</p>
+                            <p>Muito provável</p>
                             {renderMiniGrafic('mp')}
                         </div>
                     </div>
