@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useLocation, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
+import { updateDoc } from 'firebase/firestore';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
 import PropTypes from 'prop-types';
@@ -57,33 +58,39 @@ export default function PerfilAluno() {
   const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : 'A');
 
   const handleSave = async () => {
-    if (!senhaAtual || !novaSenha || !confirmarSenha) {
+    if (!senhaAtual || !novaSenha || !confirmarSenha || !userData.cpf || !userData.dataNascimento) {
       setErro(true);
       return;
     }
-
+  
     if (novaSenha !== confirmarSenha) {
       setAlertInputInvalid(true);
       setErro(true);
       return;
     }
-
+  
     setErro(false);
-
+  
     try {
       const user = auth.currentUser;
       if (user) {
         const credential = EmailAuthProvider.credential(user.email, senhaAtual);
-
+  
         await reauthenticateWithCredential(user, credential);
-
+  
         if (senhaAtual === novaSenha) {
           setAlertNewPasswordInvalid(true);
           return;
         }
-
+  
         await updatePassword(user, novaSenha);
 
+          const userRef = doc(firestore, 'users', userId);
+        await updateDoc(userRef, {
+          cpf: userData.cpf,
+          dataNascimento: userData.dataNascimento
+        });
+  
         setAlertPasswordSuccess(true);
         setSenhaAtual('');
         setNovaSenha('');
@@ -94,6 +101,7 @@ export default function PerfilAluno() {
       setAlertPasswordInvalid(true);
     }
   };
+  
 
   const location = useLocation();
 
@@ -192,29 +200,29 @@ export default function PerfilAluno() {
                     <input id="nome-completo" placeholder="Seu nome" value={userData.name} />
                   </div>
                   <div className="perfil__input-group">
-                    <label htmlFor="cidade">Cidade</label>
-                    <input id="cidade" placeholder="Palmas" />
+                  <label htmlFor="data-nascimento">Data de nascimento*</label>
+                  <InputMask mask="99/99/9999" id="data-nascimento" placeholder="01/01/1990"
+                    value={userData.dataNascimento || ''}
+                    onChange={(e) => setUserData({ ...userData, dataNascimento: e.target.value })}
+                    required
+                  />
                   </div>
                 </div>
                 <div className="perfil__grid-input">
-                  <div className="perfil__input-group">
-                    <label htmlFor="data-nascimento">Data de nascimento</label>
-                    <InputMask mask="99/99/9999" id="data-nascimento" placeholder="01/01/1990" />
+                <div className="perfil__input-group">
+                    <label htmlFor="cpf">CPF*</label>
+                    <InputMask mask="999.999.999-99" id="cpf" placeholder="025.***.***-80"
+                      value={userData.cpf || ''}
+                      onChange={(e) => setUserData({ ...userData, cpf: e.target.value })}
+                      required
+                    />
                   </div>
-                  <div className="perfil__input-group">
-                    <label htmlFor="cpf">CPF</label>
-                    <InputMask mask="999.999.999-99" id="cpf" placeholder="025.***.***-80" />
-                  </div>
-                </div>
-                <div className="perfil__grid-input">
                   <div className="perfil__input-group">
                     <label htmlFor="email">E-mail (deve ser o mesmo do login)</label>
                     <input id="email" placeholder="Seu email" disabled value={userData.email} />
                   </div>
-                  <div className="perfil__input-group">
-                    <label htmlFor="telefone">Telefone/Celular</label>
-                    <InputMask mask="+55 99999-9999" id="telefone" placeholder="+55 9999996381" />
-                  </div>
+                </div>
+                <div className="perfil__grid-input">
                 </div>
               </div>
               <div className="perfil__button-save">
@@ -274,7 +282,7 @@ export default function PerfilAluno() {
               </div>
             </div>
             <div className="perfil__button-save">
-              <button className="perfil__button" onClick={handleSave}>
+              <button className="perfil__button-password" onClick={handleSave}>
                 Salvar
               </button>
             </div>
