@@ -72,8 +72,7 @@ function ModalCreateAluno({ title, close }) {
                     userId: userId,
                     password: randomPassword
                 });
-
-                //console.log("Usuário criado no Firestore com sucesso");
+                
                 close(false);
             })
             .catch((error) => {

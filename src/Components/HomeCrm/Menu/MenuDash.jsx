@@ -31,27 +31,27 @@ function MenuDash({page}) {
     const options = [
         {
             id: 1,
-            icon: <GoHomeFill size={25}/>, 
+            icon: <GoHomeFill size={20}/>, 
             name: 'Dashboard'
         },
         {
             id: 2,
-            icon: <PiStudentBold size={25}/>, 
+            icon: <PiStudentBold size={20}/>, 
             name: 'Alunos'
         },
         {
             id: 3,
-            icon: <FaUsers size={30}/>, 
+            icon: <FaUsers size={20}/>, 
             name: 'Turmas'
         },
         {
             id: 4,
-            icon: <FaBookOpen size={25}/>, 
+            icon: <FaBookOpen size={20}/>, 
             name: 'Módulos'
         },
         {
             id: 5,
-            icon: <FaUserAlt size={25}/>, 
+            icon: <FaUserAlt size={20}/>, 
             name: 'Usuários'
         },
     ]
