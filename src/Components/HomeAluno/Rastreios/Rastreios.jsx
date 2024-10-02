@@ -190,6 +190,14 @@ function Rastreios({ data }) {
         setConfirmDeleteIndex(null); 
     };
 
+    const renderDataClean = () => {
+        return(
+            <div className='divRastreioClean'>
+                <h3>Você ainda não tem nenhum rastreios cadastrado</h3>
+            </div>
+        )
+    }
+
     return (
         <div className='containerRastreios'>
             {showModal && <ModalCreateRastreio title='Novo rastreio' close={closeBtn}/> }
@@ -204,12 +212,12 @@ function Rastreios({ data }) {
                 {cards.map((c) => (
                     <div key={c.id} className='divCard'>
                         <p className='title'>{c.title}</p>
-                        <p className='value'>{c.icon} {c.value} rastreios</p>
+                        <p className='value'>{c.icon} {c.value} {c.value > 1 ? 'rastreios' : 'rastreio'}</p>
                     </div>
                 ))}
             </div>
             <h3 style={{fontSize: 20, marginTop: 64}}>Rastreios concluídos</h3>
-            <div className='divConcluidos'>
+            <div className='divConcluidosRastreio'>
                 <div className='divContent'>
                     <header>
                         <InputText title='Pesquisar nome' placeH='' onSearchChange={handleSearchChange} />
@@ -227,60 +235,63 @@ function Rastreios({ data }) {
                         ))}
                     </div>
                     <div className='divValues'>
-                    {sortedPatients.map((patient, index) => {
-                        const createdAtDate = new Date(patient.createdAt.seconds * 1000 + patient.createdAt.nanoseconds / 1000000);
-                        const day = String(createdAtDate.getDate()).padStart(2, '0'); 
-                        const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
-                        const year = createdAtDate.getFullYear();
-                        const formattedDate = `${day}/${month}/${year}`;
+                    {sortedPatients.length === 0 ? (
+                        renderDataClean()
+                    ) : (
+                        sortedPatients.map((patient, index) => {
+                            const createdAtDate = new Date(patient.createdAt.seconds * 1000 + patient.createdAt.nanoseconds / 1000000);
+                            const day = String(createdAtDate.getDate()).padStart(2, '0'); 
+                            const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
+                            const year = createdAtDate.getFullYear();
+                            const formattedDate = `${day}/${month}/${year}`;
 
-                        const { tdahPotential } = evaluateTDAHPotential(patient.responses);
-                        const { teaPotential } = evaluateTEAPotential(patient.responses);
-                        const { teapPotential } = evaluateTEAPPotential(patient.responses);
-                        const { tlPotential } = evaluateTLPotential(patient.responses);
-                        const { todPotential } = evaluateTODPotential(patient.responses);
-                        const { tdiPotential } = evaluateTDIPotential(patient.responses);
+                            const { tdahPotential } = evaluateTDAHPotential(patient.responses);
+                            const { teaPotential } = evaluateTEAPotential(patient.responses);
+                            const { teapPotential } = evaluateTEAPPotential(patient.responses);
+                            const { tlPotential } = evaluateTLPotential(patient.responses);
+                            const { todPotential } = evaluateTODPotential(patient.responses);
+                            const { tdiPotential } = evaluateTDIPotential(patient.responses);
 
-                        return (
-                            <div key={index} className='divPatient'>
-                                <p className='divlineValue'>{patient.patient}</p>
-                                <p className='divlineValue'>
-                                    {patient.typeQuest === 1 ? '3 a 6 anos' : patient.typeQuest === 2 ? 'Até 8 anos' : patient.typeQuest === 3 ? 'Acima de 8 anos' : ''}
-                                </p>
-                                <p className='divlineValue'>{formattedDate}</p> 
+                            return (
+                                <div key={index} className='divPatient'>
+                                    <p className='divlineValue'>{patient.patient}</p>
+                                    <p className='divlineValue'>
+                                        {patient.typeQuest === 1 ? '3 a 6 anos' : patient.typeQuest === 2 ? 'Até 8 anos' : patient.typeQuest === 3 ? 'Acima de 8 anos' : ''}
+                                    </p>
+                                    <p className='divlineValue'>{formattedDate}</p> 
 
-                                {renderGrafic(tdahPotential)}
-                                {renderGrafic(teaPotential)}
-                                {renderGrafic(teapPotential)}
-                                {renderGrafic(tlPotential)}
-                                {renderGrafic(todPotential)}
-                                {renderGrafic(tdiPotential)}
+                                    {renderGrafic(tdahPotential)}
+                                    {renderGrafic(teaPotential)}
+                                    {renderGrafic(teapPotential)}
+                                    {renderGrafic(tlPotential)}
+                                    {renderGrafic(todPotential)}
+                                    {renderGrafic(tdiPotential)}
 
-                                <div className='btnEditPatient' onClick={() => openModalEdit(index)}>
-                                    <BsThreeDotsVertical />
-                                </div>
-
-                                {activeModalIndex === index && 
-                                    <div className='modalEditPatient'>
-                                        <p className='alert' onClick={() => openConfirmDeleteModal(index)}>Excluir Rastreio</p>
+                                    <div className='btnEditPatient' onClick={() => openModalEdit(index)}>
+                                        <BsThreeDotsVertical />
                                     </div>
-                                }
 
-                                {confirmDeleteIndex === index && (
-                                    <div className='containerModalConfirmDelete'>
-                                        <div className='modalConfirmDelete'>
-                                            <p className='titleAlert'>Tem certeza que deseja excluir o rastreio?</p>
-                                            <div className='divBtns'>
-                                                <button onClick={() => handleDelete(index)} className='delete'>Confirmar</button>
-                                                <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
-                                            </div>
-                                            
+                                    {activeModalIndex === index && 
+                                        <div className='modalEditPatient'>
+                                            <p className='alert' onClick={() => openConfirmDeleteModal(index)}>Excluir Rastreio</p>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                                    }
+
+                                    {confirmDeleteIndex === index && (
+                                        <div className='containerModalConfirmDelete'>
+                                            <div className='modalConfirmDelete'>
+                                                <p className='titleAlert'>Tem certeza que deseja excluir o rastreio?</p>
+                                                <div className='divBtns'>
+                                                    <button onClick={() => handleDelete(index)} className='delete'>Confirmar</button>
+                                                    <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })
+                    )}
                     </div>
                     <div className='legendas'>
                         <p>Legenda de diagnóstico</p>

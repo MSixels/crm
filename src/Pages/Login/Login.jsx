@@ -84,11 +84,12 @@ function Login() {
             console.log("Access Token:", user.user.accessToken);
             fetchUserType(user.user.uid);
             const accessToken = user.user.accessToken;
+            //Cookies.set('accessToken', accessToken, { expires: 7 });
     
             if (checkConect) {
                 Cookies.set('accessToken', accessToken, { expires: 7 });
             } else {
-                console.log('mandando os cookies')
+                //console.log('mandando os cookies')
                 Cookies.set('accessToken', accessToken, { expires: null }); 
             }
         } else{
@@ -108,12 +109,16 @@ function Login() {
                 setInputEmail(true)
                 setInputSenha(true)
                 setAlertText(true)
-                Cookies.remove('accessToken');
-                
                 setTypeUser(null)
+                Cookies.remove('accessToken');
             }
         }
     }, [typeUser, user, type, navigate])
+
+    const notPermission = async (route) => {
+        Cookies.remove('accessToken')
+        navigate(route)
+    }
 
     return (
         <div className='containerLogin'>
@@ -153,13 +158,13 @@ function Login() {
                     {alertText && type === 'professor' &&
                         <div style={{marginBottom: 20}}>
                             <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
-                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => {navigate(`/login/aluno`); window.location.reload();}}>portal do aluno</span> e tente novamente</p>
+                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => notPermission(`/login/aluno`)}>portal do aluno</span> e tente novamente</p>
                         </div>
                     }
                     {alertText && type === 'aluno' &&
                         <div style={{marginBottom: 20}}>
                             <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
-                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => {navigate(`/login/professor`); window.location.reload();}}>portal do professor</span> e tente novamente</p>
+                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => notPermission(`/login/professor`)}>portal do professor</span> e tente novamente</p>
                         </div>
                     }
                     {alertCredentialInvalid && 
