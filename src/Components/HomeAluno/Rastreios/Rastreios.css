@@ -39,7 +39,7 @@
     gap: 16px;
     font-weight: 600;
 }
-.containerRastreios .divConcluidos{
+.containerRastreios .divConcluidosRastreio{
     display: flex;
     flex-direction: column;
     margin-top: 24px;
@@ -47,18 +47,18 @@
     border-radius: 4px;
     margin-bottom: 64px;
 }
-.containerRastreios .divConcluidos header{
+.containerRastreios .divConcluidosRastreio header{
     padding: 16px;
     margin-top: 24px;
 }
-.containerRastreios .divConcluidos .divHeaderValues{
+.containerRastreios .divConcluidosRastreio .divHeaderValues{
     padding: 16px;
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--color-2);
 }
-.containerRastreios .divConcluidos .divHeaderValues .divTitle{
+.containerRastreios .divConcluidosRastreio .divHeaderValues .divTitle{
     font-size: 14px;
     display: flex;
     align-items: center;
@@ -66,13 +66,13 @@
     margin-right: 3px;
     font-weight: 500;
 }
-.containerRastreios .divConcluidos .divHeaderValues .divTitle .iconClick{
+.containerRastreios .divConcluidosRastreio .divHeaderValues .divTitle .iconClick{
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
 }
-.containerRastreios .divConcluidos .divValues .divPatient{
+.containerRastreios .divConcluidosRastreio .divValues .divPatient{
     padding: 16px;
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
@@ -80,7 +80,7 @@
     border-bottom: solid 1px var(--color-2);
     position: relative;
 }
-.containerRastreios .divConcluidos .divValues .divPatient .divlineValue{
+.containerRastreios .divConcluidosRastreio .divValues .divPatient .divlineValue{
     font-size: 14px;
 }
 .containerRastreios .containerGraficMini{
@@ -237,5 +237,12 @@
 }
 .containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .close:hover{
     background-color: #00000025;
+}
+.containerRastreios .divRastreioClean{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 32px;
 }
 
