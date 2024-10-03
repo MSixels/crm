@@ -1,0 +1,254 @@
+.containerRastreios .divConcluidosRastreio{
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    border: solid 1px var(--color-2);
+    border-radius: 4px;
+    margin-bottom: 64px;
+}
+.containerRastreios .divConcluidosRastreio header{
+    padding: 16px;
+    margin-top: 24px;
+}
+.containerRastreios .divConcluidosRastreio .divHeaderValues{
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);;
+    align-items: center;
+    border-bottom: solid 1px var(--color-2);
+}
+.containerRastreios .divConcluidosRastreio .divHeaderValues .divTitle{
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-right: 3px;
+    font-weight: 500;
+}
+.containerRastreios .divConcluidosRastreio .divHeaderValues .divTitle .iconClick{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.containerRastreios .divConcluidosRastreio .divValues .divPatient{
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);;
+    align-items: center;
+    border-bottom: solid 1px var(--color-2);
+    position: relative;
+}
+.containerRastreios .divConcluidosRastreio .divValues .divPatient .divlineValue{
+    font-size: 14px;
+}
+.containerRastreios .containerGraficMini{
+    display: flex;
+    gap: 2px;
+    align-items: end;
+}
+.containerRastreios .containerGraficMini .bar{
+    width: 4px;
+    background-color: var(--secondary500);
+    border-radius: 4px;
+}
+.containerRastreios .containerGraficMini .bar-1{
+    height: 5px;
+}
+.containerRastreios .containerGraficMini .bar-2{
+    height: 10px
+}
+.containerRastreios .containerGraficMini .bar-3{
+    height: 15px;
+}
+.containerRastreios .containerGraficMini .bar-4{
+    height: 20px;
+}
+.containerRastreios .containerGraficMini .green{
+    background-color: var(--success);
+}
+.containerRastreios .containerGraficMini .yellow{
+    background-color: var(--warning200);
+}
+.containerRastreios .containerGraficMini .red{
+    background-color: var(--error);
+}
+.containerRastreios .mini{
+    display: flex;
+    gap: 2px;
+    align-items: end;
+}
+.containerRastreios .mini .bar{
+    width: 2px;
+    background-color: var(--secondary500);
+    border-radius: 2px;
+}
+.containerRastreios .mini .bar-1{
+    height: 3px;
+}
+.containerRastreios .mini .bar-2{
+    height: 6px
+}
+.containerRastreios .mini .bar-3{
+    height: 9px;
+}
+.containerRastreios .mini .bar-4{
+    height: 12px;
+}
+.containerRastreios .mini .green{
+    background-color: var(--success);
+}
+.containerRastreios .mini .yellow{
+    background-color: var(--warning200);
+}
+.containerRastreios .mini .red{
+    background-color: var(--error);
+}
+.containerRastreios .footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+.containerRastreios .legendas{
+    display: flex;
+    align-items: center;
+    gap:32px;
+    font-size: 12px;
+}
+.containerRastreios .legendas .bold{
+    font-weight: bold;
+}
+.containerRastreios .legendas .divBtnBackNext{
+    cursor: pointer;
+}
+.containerRastreios .legendas .l_graficos{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.containerRastreios .divPatient .btnEditPatient{
+    position: absolute;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid 1px var(--color-2);
+    padding: 8px 0px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.containerRastreios .divPatient .modalEditPatient{
+    position: absolute;
+    right: 30px;
+    padding: 3px;
+    border: solid 1px var(--color-2);
+    border-radius: 4px;
+    background-color: #FFF;
+    z-index: 2000;
+}
+.containerRastreios .divPatient .modalEditPatient p{
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: .3s;
+}
+.containerRastreios .divPatient .modalEditPatient .alert{
+    color: var(--error);
+}
+.containerRastreios .divPatient .modalEditPatient .alert:hover{
+    background-color: var(--errorHover);
+}
+.containerRastreios .containerModalConfirmDelete{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    background-color: var(--blur);
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF;
+    padding: 24px;
+    border-radius: 4px;
+    gap: 24px;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .titleAlert{
+    font-size: 18px;
+    font-weight: 500;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 32px;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: .3s;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .delete{
+    color: var(--error);
+    font-weight: 500;
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .delete:hover{
+    background-color: var(--errorHover);
+}
+.containerRastreios .containerModalConfirmDelete .modalConfirmDelete .divBtns .close:hover{
+    background-color: #00000025;
+}
+.containerRastreios .divRastreioClean{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 32px;
+}
+.containerRastreios .divNumberLines{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.containerRastreios .divNumberLines .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+.containerRastreios .containerRenderModalNumberLiner{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    bottom: 15px;
+    right: 10px;
+    background-color: #FFF;
+    z-index: 2000;
+    border: solid 1px var(--color-2);
+    padding: 3px;
+    border-radius: 4px;
+}
+.containerRastreios .containerRenderModalNumberLiner .option{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 2px;
+}
+.containerRastreios .containerRenderModalNumberLiner .option:hover{
+    background-color: var(--deep-purple50);
+}

@@ -132,9 +132,9 @@ function Home() {
                         <HeadLine userName={userName}/>
                     </div>
                     <div className='borderB'>
-                        <RastreiosSmall data={[rastreios]}/>
+                        <Cursos />
                     </div>
-                    <Cursos />
+                    <RastreiosSmall data={[rastreios]}/>
                 </div>
             }
             {page === 'rastreio' && 
