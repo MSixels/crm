@@ -57,50 +57,48 @@ export default function PerfilAluno() {
 
   const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : 'A');
 
-  const handleSave = async () => {
-    if (!senhaAtual || !novaSenha || !confirmarSenha || !userData.cpf || !userData.dataNascimento) {
+  const handleSaveData = async () => {
+    try {
+      if (!userData.cpf || !userData.dataNascimento) {
+        setErro(true);
+        return;
+      }
+  
+      const userRef = doc(firestore, 'users', userId);
+      await updateDoc(userRef, {
+        cpf: userData.cpf,
+        dataNascimento: userData.dataNascimento
+      });
+      setErro(false);
+    } catch (error) {
+      console.error("Erro ao salvar dados:", error);
+    }
+  };
+  const handleSavePassword = async () => {
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
       setErro(true);
       return;
     }
   
     if (novaSenha !== confirmarSenha) {
       setAlertInputInvalid(true);
-      setErro(true);
       return;
     }
-  
-    setErro(false);
   
     try {
       const user = auth.currentUser;
       if (user) {
         const credential = EmailAuthProvider.credential(user.email, senhaAtual);
-  
         await reauthenticateWithCredential(user, credential);
-  
-        if (senhaAtual === novaSenha) {
-          setAlertNewPasswordInvalid(true);
-          return;
-        }
-  
         await updatePassword(user, novaSenha);
-
-          const userRef = doc(firestore, 'users', userId);
-        await updateDoc(userRef, {
-          cpf: userData.cpf,
-          dataNascimento: userData.dataNascimento
-        });
-  
         setAlertPasswordSuccess(true);
-        setSenhaAtual('');
-        setNovaSenha('');
-        setConfirmarSenha('');
       }
     } catch (error) {
       console.error("Erro ao alterar senha:", error);
       setAlertPasswordInvalid(true);
     }
   };
+  
   
 
   const location = useLocation();
@@ -226,10 +224,10 @@ export default function PerfilAluno() {
                 </div>
               </div>
               <div className="perfil__button-save">
-                <button className="perfil__button" onClick={handleSave}>
-                  Salvar
-                </button>
-              </div>
+              <button className="perfil__button" onClick={handleSaveData}>
+                Salvar Dados
+              </button>
+            </div>
             </div>
           </div>
           <div className="perfil__card-password">
@@ -282,8 +280,8 @@ export default function PerfilAluno() {
               </div>
             </div>
             <div className="perfil__button-save">
-              <button className="perfil__button-password" onClick={handleSave}>
-                Salvar
+              <button className="perfil__button-password" onClick={handleSavePassword}>
+                Alterar Senha
               </button>
             </div>
           </div>
