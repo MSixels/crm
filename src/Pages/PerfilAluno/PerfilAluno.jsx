@@ -98,8 +98,6 @@ export default function PerfilAluno() {
       setAlertPasswordInvalid(true);
     }
   };
-  
-  
 
   const location = useLocation();
 
