@@ -3,13 +3,14 @@ import InputText from '../../InputText/InputText'
 import './Alunos.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
 import { FaCirclePlus } from "react-icons/fa6";
-import { alunos, turmas } from '../../../database'
+import { turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
-import { firestore } from '../../../services/firebaseConfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { auth, firestore } from '../../../services/firebaseConfig';
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import Loading from '../../Loading/Loading';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function Alunos() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -33,10 +34,12 @@ function Alunos() {
         setSearchTerm(newSearchTerm);
     };
 
+    /*
     const handleDropChange = (newDrop) => {
         setSearchDrop(newDrop);
     };
-
+    */
+    
     const clickBtn = (openModal) => {
         setShowModal(openModal)
     }
@@ -51,6 +54,7 @@ function Alunos() {
             const querySnapshot = await getDocs(q);
             const alunosList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); // Mapear os dados
             setAlunos(alunosList);
+            console.log(alunosList)
             setLoading(false);
         } catch (error) {
             console.error("Erro ao buscar alunos:", error);
@@ -60,6 +64,7 @@ function Alunos() {
 
     useEffect(() => {
         fetchAlunosFromFirestore()
+        
     }, [])
 
     const filtered = alunos.filter(a => {
@@ -84,7 +89,7 @@ function Alunos() {
                 <div className='header'>
                     <div className='divInputs'>
                         <InputText title='Pesquisa na lista' placeH='Nome do aluno' onSearchChange={handleSearchChange}/>
-                        <DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />
+                        {/*<DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />*/}
                     </div>
                     <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
                 </div>
@@ -102,9 +107,9 @@ function Alunos() {
                             <div key={a.id} className='divAlunos'>
                                 <span className='spanBox'>{a.name}</span>
                                 <span className='spanBox'>{a.email}</span>
-                                <span className='spanBox'><span className={`text ${a.status === 'active' ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.status === 'active' ? 'Ativo' : 'Pendente'}</span></span>
-                                <span className='spanBox'><span className={`bold ${a.media < 60 ? 'ruim' : 'boa'}`}>{a.media}</span> / 100</span>
-                                <span className='spanBox'>{turma ? turma.name : 'N/A'}</span>
+                                <span className='spanBox'><span className={`text ${a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.isActive ? 'Ativo' : 'Pendente'}</span></span>
+                                <span className='spanBox'><span className={`${a.media < 50 ? 'ruim' : a.media >= 50 ? 'boa' : ''}`}>{a.media ? a.media : 'N'}</span> / {a.media ? '100' : 'A'}</span>
+                                <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
                             </div>
                         )
                     })}

@@ -70,7 +70,8 @@ function ModalCreateAluno({ title, close }) {
                     email: email,
                     type: 3,
                     userId: userId,
-                    password: randomPassword
+                    password: randomPassword,
+                    isActive: false
                 });
                 
                 close(false);

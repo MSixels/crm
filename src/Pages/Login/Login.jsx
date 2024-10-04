@@ -105,7 +105,7 @@ function Login() {
                         sessao && location.pathname === '/login/professor' && 
                         docSnap.data().type === 1 || docSnap.data().type === 2
                     ) {
-                        navigate('/professor/dashboard');
+                        navigate('/professor/alunos');
                     }
                 } else {
                     console.log("Nenhum usuário encontrado!");
@@ -147,9 +147,9 @@ function Login() {
             if (type === 'aluno' && typeUser === 3) {
                 navigate(`/${type}/home`);
             } else if(type === 'professor' && typeUser === 2){
-                navigate(`/${type}/dashboard`);
+                navigate(`/${type}/alunos`);
             } else if (type === 'professor' && typeUser === 1){
-                navigate(`/${type}/dashboard`);
+                navigate(`/${type}/alunos`);
             } else {
                 setInputEmail(true)
                 setInputSenha(true)

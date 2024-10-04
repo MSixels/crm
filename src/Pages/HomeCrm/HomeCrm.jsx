@@ -10,6 +10,9 @@ import Usuarios from '../../Components/HomeCrm/Usuarios/Usuarios'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useEffect, useState } from 'react'
+import { auth, firestore } from '../../services/firebaseConfig'
+import { onAuthStateChanged } from 'firebase/auth'
+import { doc, updateDoc } from 'firebase/firestore'
 
 function HomeCrm() {
     const { page } = useParams()
@@ -36,6 +39,13 @@ function HomeCrm() {
             navigate('/login/professor');
         }
     }, [navigate]);
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userRef = doc(firestore, 'users', user.uid);
+            await updateDoc(userRef, { isActive: true });
+        }
+    });
 
     /*
     useEffect(() => {
@@ -67,11 +77,13 @@ function HomeCrm() {
             <Header userId={userId}/>
             <div className='divContent'>
                 <MenuDash page={page}/>
-                {page === 'dashboard' && <DashProf />}
-                {page === 'alunos' && <Alunos />}
-                {page === 'turmas' && <Turmas />}
-                {page === 'modulos' && <Modulos />}
-                {page === 'usuarios' && <Usuarios />}
+                <div className='divPages'>
+                    {page === 'dashboard' && <DashProf />}
+                    {page === 'alunos' && <Alunos />}
+                    {page === 'turmas' && <Turmas />}
+                    {page === 'modulos' && <Modulos />}
+                    {page === 'usuarios' && <Usuarios />}
+                </div>
             </div>
         </div>
     )

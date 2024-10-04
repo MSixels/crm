@@ -32,51 +32,58 @@ function MenuDash({page}) {
         {
             id: 1,
             icon: <GoHomeFill size={20}/>, 
-            name: 'Dashboard'
+            name: 'Dashboard',
+            status: 'block'
         },
         {
             id: 2,
             icon: <PiStudentBold size={20}/>, 
-            name: 'Alunos'
+            name: 'Alunos',
+            status: 'active'
         },
         {
             id: 3,
             icon: <FaUsers size={20}/>, 
-            name: 'Turmas'
+            name: 'Turmas',
+            status: 'block'
         },
         {
             id: 4,
             icon: <FaBookOpen size={20}/>, 
-            name: 'Módulos'
+            name: 'Módulos',
+            status: 'block'
         },
         {
             id: 5,
             icon: <FaUserAlt size={20}/>, 
-            name: 'Usuários'
+            name: 'Usuários',
+            status: 'active'
         },
     ]
 
-    const openPage = (id) => {
-        setSelectedOption(id);
-        if (id === 1) {
-            navigate('/professor/dashboard');
-        } else if (id === 2) {
-            navigate('/professor/alunos');
-        } else if (id === 3) {
-            navigate('/professor/turmas');
-        } else if (id === 4) {
-            navigate('/professor/modulos');
-        } else if (id === 5) {
-            navigate('/professor/usuarios');
-        } else {
-            navigate('/professor/dashboard');
+    const openPage = (id, status) => {
+        if(status === 'active'){
+            setSelectedOption(id);
+            if (id === 1) {
+                navigate('/professor/dashboard');
+            } else if (id === 2) {
+                navigate('/professor/alunos');
+            } else if (id === 3) {
+                navigate('/professor/turmas');
+            } else if (id === 4) {
+                navigate('/professor/modulos');
+            } else if (id === 5) {
+                navigate('/professor/usuarios');
+            } else {
+                navigate('/professor/dashboard');
+            }
         }
     };
     return (
         <div className='containerMenuDash'>
             <div className='divOptions'>
                 {options.map((o) => (
-                    <div key={o.id} className={`divOption ${selectedOption === o.id ? 'active' : ''}`} onClick={() => openPage(o.id)}>
+                    <div key={o.id} className={`divOption ${selectedOption === o.id ? 'active' : ''} ${o.status === 'block' && 'block'}`} onClick={() => openPage(o.id, o.status)}>
                         <div className='divIcon'>
                             {o.icon}
                         </div>

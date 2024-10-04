@@ -107,12 +107,12 @@ function Usuarios() {
                                 <span className='spanBox'>{a.name}</span>
                                 <span className='spanBox'>{a.email}</span>
                                 <span className='spanBox'>
-                                    <span className={`text ${a.status === 'active' ? 'ativo' : 'pendente'}`}>
+                                    <span className={`text ${a.isActive ? 'ativo' : 'pendente'}`}>
                                         <GoDotFill size={40} />
-                                        {a.status === 'active' ? 'Ativo' : 'Pendente'}
+                                        {a.isActive ? 'Ativo' : 'Pendente'}
                                     </span>
                                 </span>
-                                <span className={`spanBox ${a.type === 1 ? 'adm' : 'prof'}`}>{a.type === 1 ? 'Adm' : 'Professor'}</span>
+                                <span className={`textAdm ${a.type === 1 ? 'adm' : 'prof'}`}>{a.type === 1 ? 'Adm' : 'Professor'}</span>
                             </div>
                         );
                     })}

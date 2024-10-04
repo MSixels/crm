@@ -6,10 +6,11 @@ import './Home.css'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
-import { firestore } from '../../services/firebaseConfig'
+import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { auth, firestore } from '../../services/firebaseConfig'
 import Rastreios from '../../Components/HomeAluno/Rastreios/Rastreios'
 import RastreiosSmall from '../../Components/HomeAluno/RastreiosSmall/RastreiosSmall'
+import { onAuthStateChanged } from 'firebase/auth'
 
 function Home() {
     const navigate = useNavigate()
@@ -45,6 +46,13 @@ function Home() {
             status: 'block'
         },
     ]
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userRef = doc(firestore, 'users', user.uid);
+            await updateDoc(userRef, { isActive: true });
+        }
+    });
 
     useEffect(() => {
         const sessao = Cookies.get('accessToken');

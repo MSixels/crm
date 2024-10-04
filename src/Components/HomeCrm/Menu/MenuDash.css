@@ -6,6 +6,8 @@
     color: var(--secondary800);
     flex-shrink: 0;
     background-color: #FFF;
+    height: 100%;
+    position: fixed;
 }
 .containerMenuDash .divOptions{
     display: flex;
@@ -28,4 +30,7 @@
 .containerMenuDash .active{
     color: var(--deep-purple500);
     border-right: solid 3px var(--deep-purple500);
+}
+.containerMenuDash .divOptions .block{
+    color: var(--color-2);
 }
