@@ -119,7 +119,7 @@ function Login() {
           fetchUserData();
         }
 
-    }, [userId, navigate]);
+    }, [userId, navigate, location]);
 
     useEffect(() => {
         console.log(location.pathname)

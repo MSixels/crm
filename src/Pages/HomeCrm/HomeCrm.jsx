@@ -27,6 +27,7 @@ function HomeCrm() {
             navigate('/login/professor');
         }
     }, [navigate]);
+    
 
     useEffect(() => {
         const accessToken = Cookies.get('accessToken');
