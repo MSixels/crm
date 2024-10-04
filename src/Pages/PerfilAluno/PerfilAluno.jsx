@@ -43,6 +43,9 @@ export default function PerfilAluno() {
   const { userId } = useParams();
   const [userData, setUserData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [senhaAtual, setSenhaAtual] = useState('');
   const [novaSenha, setNovaSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
@@ -57,23 +60,39 @@ export default function PerfilAluno() {
 
   const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : 'A');
 
+
   const handleSaveData = async () => {
     try {
       if (!userData.cpf || !userData.dataNascimento) {
         setErro(true);
         return;
       }
-  
       const userRef = doc(firestore, 'users', userId);
       await updateDoc(userRef, {
         cpf: userData.cpf,
-        dataNascimento: userData.dataNascimento
+        dataNascimento: userData.dataNascimento,
+        name: userData.name,
       });
       setErro(false);
+      setIsChanged(false);
+      setSaveSuccess(true);
+      setEditMode(false);
+      setTimeout(() => setSaveSuccess(false), 2000);
     } catch (error) {
       console.error("Erro ao salvar dados:", error);
     }
   };
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+    setIsChanged(false);
+  };
+
+  const handleInputChange = (e) => {
+    setUserData({ ...userData, [e.target.id]: e.target.value });
+    setIsChanged(true);
+  };
+
   const handleSavePassword = async () => {
     if (!senhaAtual || !novaSenha || !confirmarSenha) {
       setErro(true);
@@ -192,40 +211,68 @@ export default function PerfilAluno() {
               <div className="perfil__content">
                 <div className="perfil__grid-input">
                   <div className="perfil__input-group">
-                    <label htmlFor="nome-completo">Nome completo</label>
-                    <input id="nome-completo" placeholder="Seu nome" value={userData.name} />
-                  </div>
-                  <div className="perfil__input-group">
-                  <label htmlFor="data-nascimento">Data de nascimento*</label>
-                  <InputMask mask="99/99/9999" id="data-nascimento" placeholder="01/01/1990"
-                    value={userData.dataNascimento || ''}
-                    onChange={(e) => setUserData({ ...userData, dataNascimento: e.target.value })}
-                    required
-                  />
-                  </div>
-                </div>
-                <div className="perfil__grid-input">
-                <div className="perfil__input-group">
-                    <label htmlFor="cpf">CPF*</label>
-                    <InputMask mask="999.999.999-99" id="cpf" placeholder="025.***.***-80"
-                      value={userData.cpf || ''}
-                      onChange={(e) => setUserData({ ...userData, cpf: e.target.value })}
-                      required
+                    <label htmlFor="name">Nome completo</label>
+                    <input
+                      id="name"
+                      placeholder="Seu nome"
+                      value={userData.name || ''}
+                      onChange={handleInputChange}
+                      disabled={!editMode}
                     />
                   </div>
                   <div className="perfil__input-group">
-                    <label htmlFor="email">E-mail (deve ser o mesmo do login)</label>
-                    <input id="email" placeholder="Seu email" disabled value={userData.email} />
+                    <label htmlFor="dataNascimento">Data de nascimento*</label>
+                    <InputMask
+                      mask="99/99/9999"
+                      id="dataNascimento"
+                      placeholder="01/01/1990"
+                      value={userData.dataNascimento || ''}
+                      onChange={handleInputChange}
+                      disabled={!editMode}
+                      required
+                    />
                   </div>
                 </div>
                 <div className="perfil__grid-input">
+                  <div className="perfil__input-group">
+                    <label htmlFor="cpf">CPF*</label>
+                    <InputMask
+                      mask="999.999.999-99"
+                      id="cpf"
+                      placeholder="025.***.***-80"
+                      value={userData.cpf || ''}
+                      onChange={handleInputChange}
+                      disabled={!editMode}
+                      required
+                    />
+                    {saveSuccess && <p style={{ color: 'green' }}>Dados salvos com sucesso!</p>}
+                  </div>
+                  <div className="perfil__input-group">
+                    <label htmlFor="email">E-mail (deve ser o mesmo do login)</label>
+                    <input id="email" placeholder="Seu email" value={userData.email || ''} disabled />
+                  </div>
                 </div>
               </div>
               <div className="perfil__button-save">
-              <button className="perfil__button" onClick={handleSaveData}>
-                Salvar Dados
-              </button>
-            </div>
+                <button
+                  className="perfil__button"
+                  onClick={toggleEditMode}
+                  style={{ backgroundColor: editMode ? 'red' : '', marginRight: '16px' }}
+                >
+                  {editMode ? 'Cancelar' : 'Editar dados'}
+                </button>
+                <button
+                  className="perfil__button"
+                  onClick={handleSaveData}
+                  disabled={!isChanged}
+                  style={{
+                    backgroundColor: isChanged ? 'var(--bg-btnConfirm)' : '#ccc',
+                    cursor: isChanged ? 'pointer' : 'not-allowed',
+                  }}
+                >
+                  Salvar Dados
+                </button>
+              </div>
             </div>
           </div>
           <div className="perfil__card-password">
