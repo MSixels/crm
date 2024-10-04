@@ -97,7 +97,8 @@ function NewRastreio() {
     const allQuestions = selectedList(); 
     const paginatedQuestions = allQuestions.slice((currentPage - 1) * 8, currentPage * 8);
 
-    const handleNext = async () => {
+    const handleNext = async (e) => {
+        e.preventDefault()
         const allAnswered = paginatedQuestions.every(q => selectedOptions[q.id] !== undefined);
     
         if (!allAnswered) {
@@ -134,7 +135,7 @@ function NewRastreio() {
     
                     console.log("Documento adicionado com ID: ", documentId);
     
-                    navigate('/aluno/home');
+                    navigate('/aluno/rastreio');
                 } else {
                     console.log('Verifique se você marcou todas as questões!');
                 }
@@ -225,12 +226,10 @@ function NewRastreio() {
                         </div>
                     </div>
                     <div>
-                        <ButtonConfirm 
-                            title={currentPage === pagesViews.length ? 'Salvar' : 'Avançar'} 
-                            icon={<GrFormNext />} 
-                            action={handleNext} 
-                            disabled={disabled} 
-                        />
+                        <div onClick={handleNext} className={`btnNextSave ${disabled && 'disabled'}`}>
+                            <span>{currentPage === pagesViews.length ? 'Salvar' : 'Avançar'}</span>
+                            <GrFormNext />
+                        </div>
                     </div>
                 </div>
             </div>

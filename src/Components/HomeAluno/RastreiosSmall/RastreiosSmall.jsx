@@ -5,8 +5,10 @@ import { useEffect, useState } from 'react'
 import ModalCreateRastreio from '../../ModalCreateRastreio/ModalCreateRastreio'
 import PropTypes from 'prop-types'
 import { FaCircleCheck } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom'
 
 function RastreiosSmall({ data }) {
+    const navigate = useNavigate()
     const [showModal, setShowModal] = useState(false)
     const [rastreioCounts, setRastreioCounts] = useState({
         total: 0,
@@ -67,7 +69,7 @@ function RastreiosSmall({ data }) {
             </header>
             <div className='divCrads'>
                 {cards.map((c) => (
-                    <div key={c.id} className='divCard'>
+                    <div key={c.id} className='divCard' onClick={() => navigate('/aluno/rastreio')}>
                         <p className='title'>{c.title}</p>
                         <p className='value'>{c.icon} {c.value} rastreios</p>
                     </div>

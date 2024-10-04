@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './Login.css'
 import LogoText from '../../imgs/logoText.svg'
 import { HiAcademicCap } from "react-icons/hi2";
@@ -11,10 +11,13 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode';
 
 function Login() {
     const navigate = useNavigate()
     const { type } = useParams()
+    const location = useLocation()
+    const [userId, setUserId] = useState('')
     const [alertText, setAlertText] = useState(false)
     const [checkConect, setCheckConect] = useState(false)
     const [inputEmail, setInputEmail] = useState(false)
@@ -72,11 +75,55 @@ function Login() {
     };
 
     useEffect(() => {
-        const sessao = Cookies.get('accessToken')
-        if (sessao) {
-            navigate('/aluno/rastreio');
+        const accessToken = Cookies.get('accessToken');
+
+        if (accessToken) {
+            const decodedToken = jwtDecode(accessToken);
+            console.log(decodedToken.user_id)
+            setUserId(decodedToken.user_id)
+
+        } else {
+            console.log("Nenhum token encontrado nos cookies.");
         }
-    }, [navigate])
+    }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userDoc = doc(firestore, "users", userId);
+                const docSnap = await getDoc(userDoc);
+        
+                if (docSnap.exists()) {
+                    console.log(docSnap.data().type)
+                    const sessao = Cookies.get('accessToken')
+                    if (
+                        sessao && docSnap.data().type === 3 && 
+                        location.pathname === '/login/aluno'
+                    ) {
+                        navigate('/aluno/home');
+                    } else if(
+                        sessao && location.pathname === '/login/professor' && 
+                        docSnap.data().type === 1 || docSnap.data().type === 2
+                    ) {
+                        navigate('/professor/dashboard');
+                    }
+                } else {
+                    console.log("Nenhum usuário encontrado!");
+                }
+            } catch (error) {
+                console.error("Erro ao buscar usuário:", error);
+            }
+        };
+    
+        if (userId) {
+          fetchUserData();
+        }
+
+    }, [userId, navigate]);
+
+    useEffect(() => {
+        console.log(location.pathname)
+    }, [location])
 
     useEffect(() => {
         if (user) {
@@ -84,12 +131,10 @@ function Login() {
             console.log("Access Token:", user.user.accessToken);
             fetchUserType(user.user.uid);
             const accessToken = user.user.accessToken;
-            //Cookies.set('accessToken', accessToken, { expires: 7 });
     
             if (checkConect) {
                 Cookies.set('accessToken', accessToken, { expires: 7 });
             } else {
-                //console.log('mandando os cookies')
                 Cookies.set('accessToken', accessToken, { expires: null }); 
             }
         } else{
@@ -158,13 +203,13 @@ function Login() {
                     {alertText && type === 'professor' &&
                         <div style={{marginBottom: 20}}>
                             <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
-                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => notPermission(`/login/aluno`)}>portal do aluno</span> e tente novamente</p>
+                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => notPermission(`/`)}>portal do aluno</span> e tente novamente</p>
                         </div>
                     }
                     {alertText && type === 'aluno' &&
                         <div style={{marginBottom: 20}}>
                             <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
-                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => notPermission(`/login/professor`)}>portal do professor</span> e tente novamente</p>
+                            <p style={{color: 'red'}}>Vá para <span style={{textDecoration: 'underline', color: 'blue', cursor: 'pointer'}} onClick={() => notPermission(`/`)}>portal do professor</span> e tente novamente</p>
                         </div>
                     }
                     {alertCredentialInvalid && 

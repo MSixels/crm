@@ -129,3 +129,27 @@
 .containerNewRastreio .footer .backNext .blur{
     background-color: var(--secondary500);
 }
+.containerNewRastreio .btnNextSave{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    border: none;
+    background-color: var(--primary);
+    padding: 12px 32px;
+    border-radius: 4px;
+    color: #FFF;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .3s;
+    font-weight: bold
+}
+.containerNewRastreio .btnNextSave:hover{
+    scale: 1.01;
+}
+.containerNewRastreio .disabled{
+    background-color: var(--bg-block);
+    color: var(--color-block);
+    scale: 1;
+}
