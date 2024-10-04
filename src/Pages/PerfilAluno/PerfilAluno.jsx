@@ -42,6 +42,7 @@ function PasswordInput({ id, placeholder, value, onChange, erro }) {
 export default function PerfilAluno() {
   const { userId } = useParams();
   const [userData, setUserData] = useState([]);
+  const [originalData, setOriginalData] = useState({});
   const [loading, setLoading] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
@@ -84,6 +85,11 @@ export default function PerfilAluno() {
   };
 
   const toggleEditMode = () => {
+    if (!editMode) {
+      setOriginalData({ ...userData });
+    } else {
+      setUserData({ ...originalData });
+    }
     setEditMode(!editMode);
     setIsChanged(false);
   };
