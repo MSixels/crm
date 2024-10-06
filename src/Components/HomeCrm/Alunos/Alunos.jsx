@@ -11,8 +11,9 @@ import { auth, firestore } from '../../../services/firebaseConfig';
 import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import Loading from '../../Loading/Loading';
 import { onAuthStateChanged } from 'firebase/auth';
+import PropTypes from 'prop-types'
 
-function Alunos() {
+function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [showModal, setShowModal] = useState(false)
@@ -91,7 +92,7 @@ function Alunos() {
                         <InputText title='Pesquisa na lista' placeH='Nome do aluno' onSearchChange={handleSearchChange}/>
                         {/*<DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />*/}
                     </div>
-                    <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
+                    {userType === 1 && <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
                 </div>
                 <div className='divInfos'>
                     <div className='divHeader'>
@@ -118,5 +119,9 @@ function Alunos() {
         </div>
     )
 }
+
+Alunos.propTypes = {
+    userType: PropTypes.number.isRequired,
+};
 
 export default Alunos

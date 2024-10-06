@@ -18,7 +18,9 @@ function Home() {
     const page = params.page
     const [userId, setUserId] = useState('')
     const [userName, setUserName] = useState('usuário')
+    const [userType, setUserType] = useState(null)
     const [rastreios, setRastreios] = useState([])
+    const validPages = ['home', 'rastreio', 'modulos']; 
     const options = [
         {
             id: 1,
@@ -38,7 +40,6 @@ function Home() {
             route: '/aluno/modulos',
             status: 'active'
         },
-        
         {
             id: 4,
             text: 'Ao vivo',
@@ -53,15 +54,13 @@ function Home() {
             await updateDoc(userRef, { isActive: true });
         }
     });
-
+    
     useEffect(() => {
         const sessao = Cookies.get('accessToken');
-        if (sessao) {
-            return;
-        } else {
+        if (!sessao) {
             navigate('/login/aluno');
         }
-    }, [navigate]);
+    }, [userType, navigate]);
 
     useEffect(() => {
         const accessToken = Cookies.get('accessToken');
@@ -103,12 +102,9 @@ function Home() {
             }
         } catch (error) {
             console.error("Erro ao buscar rastreios:", error);
-        } finally {
-            //setLoading(false); 
         }
     }
     
-
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -116,21 +112,25 @@ function Home() {
                 const docSnap = await getDoc(userDoc);
         
                 if (docSnap.exists()) {
-                setUserName(docSnap.data().name?.split(" ")[0]);
+                    setUserName(docSnap.data().name?.split(" ")[0]);
+                    setUserType(docSnap.data().type)
                 } else {
-                console.log("Nenhum usuário encontrado!");
+                    console.log("Nenhum usuário encontrado!");
                 }
             } catch (error) {
                 console.error("Erro ao buscar usuário:", error);
-            } finally {
-                //setLoading(false); 
             }
         };
     
         if (userId) {
           fetchUserData();
         }
-      }, [userId]);
+    }, [userId]);
+
+    if (!validPages.includes(page)) {
+        return null;
+    }
+
     return (
         <div className='containerHome'>
             <Header options={options} />
@@ -164,4 +164,4 @@ function Home() {
     )
 }
 
-export default Home
+export default Home;

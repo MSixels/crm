@@ -19,7 +19,7 @@ function Rastreios({ data }) {
     useEffect(() => {
         if (data) {
             try{
-                console.log('Data useEffect: ', data[0])
+                //console.log('Data useEffect: ', data[0])
                 const rastreiosArray = data[0];
                 const total = rastreiosArray.length;
                 //console.log(total)

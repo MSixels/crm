@@ -9,8 +9,9 @@ import { GoDotFill } from 'react-icons/go'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
+import PropTypes from 'prop-types'
 
-function Usuarios() {
+function Usuarios({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [showModal, setShowModal] = useState(false)
@@ -91,7 +92,7 @@ function Usuarios() {
                         <InputText title='Pesquisa na lista' placeH='Nome do usuário' onSearchChange={handleSearchChange}/>
                         <DropDown title='Cargo' type='Selecione' options={dropDownOptions} onTurmaChange={handleDropChange} />
                     </div>
-                    <ButtonBold title='Novo usuário' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
+                    {userType === 1 && <ButtonBold title='Novo usuário' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
                 </div>
                 <div className='divInfos'>
                     <div className='divHeader'>
@@ -121,5 +122,8 @@ function Usuarios() {
         </div>
     )
 }
+Usuarios.propTypes = {
+    userType: PropTypes.number.isRequired,
+};
 
 export default Usuarios
