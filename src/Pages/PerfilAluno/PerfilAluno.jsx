@@ -6,7 +6,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useLocation, useParams } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { updateDoc } from 'firebase/firestore';
-import { auth, firestore } from '../../services/firebaseConfig';
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";import { auth, firestore } from '../../services/firebaseConfig';
 import { reauthenticateWithCredential, updatePassword, EmailAuthProvider } from 'firebase/auth';
 import PropTypes from 'prop-types';
 
@@ -44,6 +44,8 @@ export default function PerfilAluno() {
   const [userData, setUserData] = useState([]);
   const [originalData, setOriginalData] = useState({});
   const [loading, setLoading] = useState(false);
+  const storage = getStorage();
+  const [selectedImage, setSelectedImage] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -61,6 +63,19 @@ export default function PerfilAluno() {
 
   const getInitial = (name) => (name ? name.charAt(0).toUpperCase() : 'A');
 
+  const handleImageChange = (event) => {
+    setSelectedImage(event.target.files[0])
+    const file = event.target.files[0];
+    const storageRef = ref(storage, `avatars/${file.name}`);
+    uploadBytes(storageRef, file).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        const userRef = doc(firestore, 'users', userId);
+        updateDoc(userRef, {
+          avatar: url,
+        });
+      });
+    });
+  };
 
   const handleSaveData = async () => {
     try {
@@ -161,14 +176,19 @@ export default function PerfilAluno() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      setLoading(true);
       try {
         const userDoc = doc(firestore, "users", userId);
         const docSnap = await getDoc(userDoc);
 
         if (docSnap.exists()) {
-          setUserData(docSnap.data());
+          const data = docSnap.data();
+          setUserData(data);
+          if (data.avatar) {
+            setSelectedImage(data.avatar);
+          }
         } else {
-          console.log("Nenhum usuário encontrado!");
+          console.log('Nenhum usuário encontrado!');
         }
       } catch (error) {
         console.error("Erro ao buscar usuário:", error);
@@ -195,16 +215,45 @@ export default function PerfilAluno() {
           <div className="perfil__grid">
             <div className="perfil__card perfil__card--centered">
               <div className="perfil__avatar">
-                <div className="perfil__avatar-photo">{userData.name ? getInitial(userData.name) : 'A'} </div>
+              <div className="perfil__avatar-photo">
+              {selectedImage ? (
+                typeof selectedImage === "string" ? (
+                  <img src={selectedImage} alt="Avatar" style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '50%',
+                  }} />
+                ) : (
+                  <img src={URL.createObjectURL(selectedImage)} alt="Avatar" style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '50%',
+                  }} />
+                )
+              ) : (
+                <div>{getInitial(userData.name) || 'A'}</div>
+              )}
+            </div>
               </div>
               <div className="perfil__text-center">
                 <h3>Foto do perfil</h3>
                 <p className="perfil__description">
                   Recomendamos que a foto tenha um tamanho máximo de 250x250px. O arquivo não pode ter tamanho superior a 2MB.
                 </p>
-                <button className="perfil__button">
-                  Fazer upload de foto
-                </button>
+                <label
+                  htmlFor="avatar-input"
+                  className="perfil__button"
+                > Alterar foto de perfil
+                <input
+                  type="file"
+                  id="avatar-input"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                />
+                </label>
               </div>
             </div>
             <div className="perfil__card">
