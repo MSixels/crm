@@ -2,15 +2,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100%;
+    min-height: 100vh;
     width: 100%;
     background-color: var(--bg-1);
+    padding-block: 32px;
 }
 .containerLogin .divContent{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 64px;
+    gap: 32px;
 }
 .containerLogin .divForm{
     color: var(--color-1);

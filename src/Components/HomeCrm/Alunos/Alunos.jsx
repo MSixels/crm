@@ -12,6 +12,8 @@ import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/fire
 import Loading from '../../Loading/Loading';
 import { onAuthStateChanged } from 'firebase/auth';
 import PropTypes from 'prop-types'
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { deleteUserFromAuth, deleteUserFromFirestore } from '../../../functions/functions';
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,6 +21,8 @@ function Alunos({ userType }) {
     const [showModal, setShowModal] = useState(false)
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeModalId, setActiveModalId] = useState(null)
+    const [confirmDeleteId, setConfirmDeleteId] = useState(false)
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -78,6 +82,38 @@ function Alunos({ userType }) {
         return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
     
+    const openEditModal = (id) => {
+        setActiveModalId(previd => previd === id ? null : id);
+    }
+
+    const openConfirmDeleteModal = (id) => {
+        setConfirmDeleteId(id);
+    };
+
+    const closeConfirmDeleteModal = () => {
+        setActiveModalId(null)
+        setConfirmDeleteId(null); 
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            console.log('Iniciando exclusão de usuário com ID:', id);
+        
+            await deleteUserFromFirestore(id);
+            console.log('Usuário excluído do Firestore com sucesso');
+        
+            //await deleteUserFromAuth(id);
+            //console.log('Usuário excluído do Firebase Authentication com sucesso');
+            
+            await fetchAlunosFromFirestore();
+            setActiveModalId(null)
+            setConfirmDeleteId(null);
+        } catch (error) {
+            console.error('Erro ao excluir o usuário:', error);
+            alert('Erro ao excluir o usuário.');
+        }
+    };
+
     if (loading) {
         return <Loading />
     }
@@ -111,6 +147,28 @@ function Alunos({ userType }) {
                                 <span className='spanBox'><span className={`text ${a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.isActive ? 'Ativo' : 'Pendente'}</span></span>
                                 <span className='spanBox'><span className={`${a.media < 50 ? 'ruim' : a.media >= 50 ? 'boa' : ''}`}>{a.media ? a.media : 'N'}</span> / {a.media ? '100' : 'A'}</span>
                                 <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
+                                {userType === 1 && 
+                                <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
+                                    <BsThreeDotsVertical />
+                                </div>
+                                }
+                                
+                                {activeModalId === a.id && 
+                                    <div className='modalEditUser'>
+                                        <p className='alert' onClick={() => openConfirmDeleteModal(a.id)}>Excluir Aluno</p>
+                                    </div>
+                                }
+                                {confirmDeleteId === a.id && (
+                                    <div className='containerModalConfirmDelete'>
+                                        <div className='modalConfirmDelete'>
+                                            <p className='titleAlert'>Tem certeza que deseja excluir esse aluno?</p>
+                                            <div className='divBtns'>
+                                                <button onClick={() => handleDelete(a.id)} className='delete'>Confirmar</button>
+                                                <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )
                     })}

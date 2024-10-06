@@ -24,7 +24,7 @@ function HomeCrm() {
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            const userRef = doc(firestore, 'users', user.uid);
+            const userRef = doc(firestore, 'users', userId);
             await updateDoc(userRef, { isActive: true });
         }
     });

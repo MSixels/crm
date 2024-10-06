@@ -1,8 +1,8 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './Login.css'
 import LogoText from '../../imgs/logoText.svg'
-import { HiAcademicCap } from "react-icons/hi2";
-import { AiFillHome } from "react-icons/ai";
+import { MdSchool } from "react-icons/md";
+import { FaBookOpen } from "react-icons/fa6";
 import { ImCheckboxUnchecked } from "react-icons/im";
 import { ImCheckboxChecked } from "react-icons/im";
 import { TfiReload } from "react-icons/tfi";
@@ -172,7 +172,7 @@ function Login() {
                 <div className='divForm'>
                     <div className='divTitle'>
                         <div className='divIcon'>
-                            {type === 'aluno' ? <HiAcademicCap size={25}/> : <AiFillHome size={25}/>}
+                            {type === 'aluno' ? <MdSchool size={25}/> : <FaBookOpen size={25}/>}
                         </div>
                         <span className='title'>{type === 'aluno' ? 'Portal do aluno' : 'Portal do professor'}</span>
                     </div>

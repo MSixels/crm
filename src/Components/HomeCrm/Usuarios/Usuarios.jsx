@@ -10,6 +10,8 @@ import { collection, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
 import PropTypes from 'prop-types'
+import { BsThreeDotsVertical } from 'react-icons/bs'
+import { deleteUserFromAuth, deleteUserFromFirestore } from '../../../functions/functions'
 
 function Usuarios({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -17,6 +19,8 @@ function Usuarios({ userType }) {
     const [showModal, setShowModal] = useState(false)
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeModalId, setActiveModalId] = useState(null)
+    const [confirmDeleteId, setConfirmDeleteId] = useState(false)
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -78,6 +82,38 @@ function Usuarios({ userType }) {
         return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
 
+    const openEditModal = (id) => {
+        setActiveModalId(previd => previd === id ? null : id);
+    }
+
+    const openConfirmDeleteModal = (id) => {
+        setConfirmDeleteId(id);
+    };
+
+    const closeConfirmDeleteModal = () => {
+        setActiveModalId(null)
+        setConfirmDeleteId(null); 
+    };
+
+    const handleDelete = async (id) => {
+        try {
+            console.log('Iniciando exclusão de usuário com ID:', id);
+        
+            await deleteUserFromFirestore(id);
+            console.log('Usuário excluído do Firestore com sucesso');
+        
+            //await deleteUserFromAuth(id);
+            //console.log('Usuário excluído do Firebase Authentication com sucesso');
+
+            await fetchUsersFromFirestore();
+            setActiveModalId(null)
+            setConfirmDeleteId(null);
+        } catch (error) {
+            console.error('Erro ao excluir o usuário:', error);
+            alert('Erro ao excluir o usuário.');
+        }
+    };
+
     if (loading) {
         return <Loading />; 
     }
@@ -114,6 +150,28 @@ function Usuarios({ userType }) {
                                     </span>
                                 </span>
                                 <span className={`textAdm ${a.type === 1 ? 'adm' : 'prof'}`}>{a.type === 1 ? 'Adm' : 'Professor'}</span>
+                                {userType === 1 && 
+                                <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
+                                    <BsThreeDotsVertical />
+                                </div>
+                                }
+                                
+                                {activeModalId === a.id && 
+                                    <div className='modalEditUser'>
+                                        <p className='alert' onClick={() => openConfirmDeleteModal(a.id)}>Excluir Usuário</p>
+                                    </div>
+                                }
+                                {confirmDeleteId === a.id && (
+                                    <div className='containerModalConfirmDelete'>
+                                        <div className='modalConfirmDelete'>
+                                            <p className='titleAlert'>Tem certeza que deseja excluir esse usuário?</p>
+                                            <div className='divBtns'>
+                                                <button onClick={() => handleDelete(a.id)} className='delete'>Confirmar</button>
+                                                <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         );
                     })}

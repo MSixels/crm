@@ -1,3 +1,6 @@
+import { deleteDoc, doc } from "firebase/firestore";
+import { auth, firestore } from "../services/firebaseConfig";
+
 export const evaluateTDAHPotential = (responses) => {
     let tdahScores = { never: 0, sometimes: 0, always: 0 };
 
@@ -185,3 +188,30 @@ export const evaluateTDIPotential = (responses) => {
     return { tdiPotential };
 };
 
+export const deleteUserFromFirestore = async (id) => {
+    try {
+        console.log('Tentando excluir usuário do Firestore com ID:', id);
+        const userDoc = doc(firestore, 'users', id);  // Criando referência ao documento do usuário
+        await deleteDoc(userDoc);  // Excluindo o documento
+        console.log('Usuário excluído do Firestore com sucesso');
+    } catch (error) {
+        console.error('Erro ao excluir o usuário do Firestore:', error.message);
+        throw new Error('Erro ao excluir o usuário do Firestore');
+    }
+};
+
+export const deleteUserFromAuth = async (uid) => {
+    try {
+        console.log('Tentando excluir usuário do Firebase Authentication com UID:', uid);
+        const user = auth.currentUser;  // Obtendo o usuário autenticado
+        if (user && user.uid === uid) {
+            await user.delete();  // Excluindo o usuário autenticado
+            console.log('Usuário excluído do Firebase Authentication com sucesso');
+        } else {
+            throw new Error('O usuário atual não está autenticado ou não tem permissão para deletar.');
+        }
+    } catch (error) {
+        console.error('Erro ao excluir o usuário da autenticação:', error.message);
+        throw new Error('Erro ao excluir o usuário da autenticação');
+    }
+};

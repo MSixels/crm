@@ -77,7 +77,8 @@ function ModalCreateUser({ title, close }) {
                     email: email,
                     type: selectedCargo,
                     userId: userId,
-                    password: randomPassword
+                    password: randomPassword,
+                    isActive: false
                 });
 
                 close(false);

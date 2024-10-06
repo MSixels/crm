@@ -4,7 +4,6 @@ import { questsRestreioType1, questsRestreioType2, questsRestreioType3 } from '.
 import { useEffect, useState } from 'react';
 import { IoChevronBackSharp } from "react-icons/io5";
 import { GrFormNext } from "react-icons/gr";
-import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig'
 import Cookies from 'js-cookie'
@@ -135,7 +134,7 @@ function NewRastreio() {
     
                     console.log("Documento adicionado com ID: ", documentId);
     
-                    navigate('/aluno/rastreio');
+                    navigate(`/aluno/rastreio?success=true&name=${patient}&idade=${typeQuestSelected}`);
                 } else {
                     console.log('Verifique se você marcou todas as questões!');
                 }

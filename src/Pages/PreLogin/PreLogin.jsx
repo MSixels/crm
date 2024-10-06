@@ -1,6 +1,6 @@
 import './PreLogin.css'
-import { HiAcademicCap } from "react-icons/hi2";
-import { AiFillHome } from "react-icons/ai";
+import { FaBookOpen } from "react-icons/fa6";
+import { MdSchool } from "react-icons/md";
 import Logo from '../../imgs/logo.svg'
 import { useNavigate } from 'react-router-dom';
 
@@ -9,14 +9,14 @@ function PreLogin() {
     const options = [
         {
             id: 1,
-            icon: <HiAcademicCap size={30}/>,
+            icon: <MdSchool size={30}/>,
             title: 'Aluno',
             subtitle: 'Acesso aos módulos de aulas e provas',
             type:'aluno'
         },
         {
             id: 2,
-            icon: <AiFillHome size={30}/>,
+            icon: <FaBookOpen size={30}/>,
             title: 'Professor',
             subtitle: 'Configure a plataforma, adicione conteúdos e mais',
             type:'professor'
