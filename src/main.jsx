@@ -1,19 +1,19 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import App from './App.jsx'
+import App from './App.jsx';
 import Login from './Pages/Login/Login.jsx';
 import RecuperarSenha from './Pages/RecuperarSenha/RecuperarSenha.jsx';
 import Home from './Pages/Home/Home.jsx';
-import Modulo from './Pages/Modulo/Modulo.jsx';
 import HomeCrm from './Pages/HomeCrm/HomeCrm.jsx';
-import PerfilAluno from './Pages/PerfilAluno/PerfilAluno.jsx'
+import PerfilAluno from './Pages/PerfilAluno/PerfilAluno.jsx';
 import NewRastreio from './Components/HomeAluno/NewRastreio/NewRastreio.jsx';
+import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
 
 const router = createBrowserRouter([
   {
-    path:`/`,
+    path: `/`,
     element: <App />,
   },
   {
@@ -26,37 +26,74 @@ const router = createBrowserRouter([
   },
   {
     path: `/aluno/:page`,
-    element: <Home />,
+    element: (
+      <ProtectedRoute
+        element={<Home />}
+        typeUser={3} 
+        allowedTypes={[3]} 
+      />
+    ),
   },
   {
     path: `/aluno/rastreio/:page`,
-    element: <NewRastreio />,
+    element: (
+      <ProtectedRoute
+        element={<NewRastreio />}
+        typeUser={3}
+        allowedTypes={[3]} 
+      />
+    ),
   },
   {
     path: `/aluno/perfil/:userId`,
-    element: <PerfilAluno />,
-  },
-  {
-    path: `/aluno/:moduloid`,
-    element: <Modulo />,
+    element: (
+      <ProtectedRoute
+        element={<PerfilAluno />}
+        typeUser={3} 
+        allowedTypes={[3]} 
+      />
+    ),
   },
   {
     path: `/professor/:page`,
-    element: <HomeCrm />,
+    element: (
+      <ProtectedRoute
+        element={<HomeCrm />}
+        typeUser={2} 
+        allowedTypes={[1, 2]} 
+      />
+    ),
   },
   {
     path: `/professor/perfil/:userId`,
-    element: <PerfilAluno />,
+    element: (
+      <ProtectedRoute
+        element={<PerfilAluno />}
+        typeUser={2} 
+        allowedTypes={[1, 2]} 
+      />
+    ),
   },
   {
     path: `/professor`,
-    element: <Navigate to="/professor/dashboard" replace />,
+    element: (
+      <Navigate to="/professor/alunos" replace />
+    ),
+  },
+  {
+    path: `/aluno`,
+    element: (
+      <Navigate to="/aluno/home" replace />
+    ),
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />,
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
-  </React.StrictMode>,
-)
-
+    <RouterProvider router={router} />
+  </React.StrictMode>
+);

@@ -1,0 +1,47 @@
+.containerPopUpRastreioSuccess{
+    display: flex;
+    position: fixed;
+    right: 16px;
+    top: 100px;
+    background-color: #FFF;
+    z-index: 2000;
+    padding: 16px;
+    border: solid 1px var(--success);
+    border-radius: 4px;
+    gap: 12px;
+    padding-right: 64px;
+    opacity: 0;
+    transition: .3s;
+}
+.activePopUpRastreio{
+    opacity: 1;
+}
+.containerPopUpRastreioSuccess .divIcon{
+    color: var(--success);
+    margin-top: 3px;
+}
+.containerPopUpRastreioSuccess .divText{
+    display: flex;
+    flex-direction: column;
+}
+.containerPopUpRastreioSuccess .divText .title{
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+.containerPopUpRastreioSuccess .divText .text{
+    font-size: 14px;
+    font-weight: bold;
+}
+.containerPopUpRastreioSuccess .small{
+    margin-top: 16px;
+    font-size: 14px;
+}
+.containerPopUpRastreioSuccess .divClose{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
+}

@@ -1,3 +1,6 @@
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { auth, firestore } from "../services/firebaseConfig";
+
 export const evaluateTDAHPotential = (responses) => {
     let tdahScores = { never: 0, sometimes: 0, always: 0 };
 
@@ -183,4 +186,27 @@ export const evaluateTDIPotential = (responses) => {
     }
 
     return { tdiPotential };
+};
+
+export const disableUserInFirestore = async (id) => {
+    try {
+        console.log('Tentando desativar usuário do Firestore com ID:', id);
+        const userDoc = doc(firestore, 'users', id); 
+        await updateDoc(userDoc, { disable: true }); 
+        console.log('Usuário desativado do Firestore com sucesso');
+    } catch (error) {
+        console.error('Erro ao desativar o usuário do Firestore:', error.message);
+        throw new Error('Erro ao desativar o usuário do Firestore');
+    }
+};
+export const reactivateUserInFirestore = async (id) => {
+    try {
+        console.log('Tentando reativar usuário do Firestore com ID:', id);
+        const userDoc = doc(firestore, 'users', id); 
+        await updateDoc(userDoc, { disable: false }); 
+        console.log('Usuário reativado do Firestore com sucesso');
+    } catch (error) {
+        console.error('Erro ao reativar o usuário do Firestore:', error.message);
+        throw new Error('Erro ao reativar o usuário do Firestore');
+    }
 };

@@ -31,7 +31,7 @@ function RastreiosConcluidos({ data }) {
     useEffect(() => {
         if (data) {
             try{
-                console.log('Data useEffect: ', data[0])
+                //console.log('Data useEffect: ', data[0])
                 const rastreiosArray = data[0];
                 setPatients(rastreiosArray)
             }catch{
@@ -42,6 +42,8 @@ function RastreiosConcluidos({ data }) {
             console.error('Expected data to be an array or an object, but got:', data);
         }
     }, [data]);
+
+    
 
     const handleSearchChange = (newSearchTerm) => {
         setSearchTerm(newSearchTerm); 
@@ -138,6 +140,7 @@ function RastreiosConcluidos({ data }) {
             const updatedPatients = sortedPatients.filter((_, i) => i !== index);
             setPatients(updatedPatients)
             setConfirmDeleteIndex(null);
+            setActiveModalIndex(null)
         } catch (error) {
             console.error("Erro ao excluir o paciente:", error);
         }
@@ -179,6 +182,7 @@ function RastreiosConcluidos({ data }) {
     return (
         <>
             <h3 style={{fontSize: 20, marginTop: 64}}>Rastreios concluídos</h3>
+            
             <div className='divConcluidosRastreio'>
                 <div className='divContent'>
                     <header>

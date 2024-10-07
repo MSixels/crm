@@ -6,9 +6,17 @@ import ModalCreateRastreio from '../../ModalCreateRastreio/ModalCreateRastreio'
 import PropTypes from 'prop-types'
 import { FaCircleCheck } from "react-icons/fa6";
 import RastreiosConcluidos from '../RastreiosConcluidos/RastreiosConcluidos'
+import PopUpRastreioSuccess from '../PopUpRastreioSuccess/PopUpRastreioSuccess'
+import { useNavigate } from 'react-router-dom'
+import LastRastreio from '../LastRastreio/LastRastreio'
 
 function Rastreios({ data }) {
+    const navigate = useNavigate()
     const [showModal, setShowModal] = useState(false)
+    const [showNewRastreio, setShowNewRastreio] = useState(false)
+    const [showPopUp, setShowPopUp] = useState(false)
+    const [namePopUp, setNamePopUp] = useState('')
+    const [idadePopUp, setIdadePopUp] = useState('')
     const [rastreioCounts, setRastreioCounts] = useState({
         total: 0,
         typeQuest1: 0,
@@ -17,9 +25,48 @@ function Rastreios({ data }) {
     });
 
     useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const successValue = params.get('success'); 
+        const nameValue = params.get('name')
+        const idadeValue = params.get('idade')
+
+        if(successValue === 'true'){
+            setShowNewRastreio(true)
+            setNamePopUp(nameValue)
+            if(idadeValue === '1'){
+                setIdadePopUp('3 a 6 anos')
+            } else if(idadeValue === '2'){
+                setIdadePopUp('Até 8 anos')
+            } else if(idadeValue === '3'){
+                setIdadePopUp('Acima de 8 anos')
+            } else{
+                setIdadePopUp('')
+            }
+            setTimeout(() => {
+                //setShowPopUp(false)
+                //navigate('/aluno/rastreio');
+            }, 10000)
+        } else {
+            //setShowPopUp(false)
+        }
+    }, [navigate]);
+
+    const closeNewRastreio = () => {
+        setShowNewRastreio(false)
+        setShowPopUp(true)
+    }
+
+    const closePopUp = (action) => {
+        if(action){
+            setShowPopUp(false)
+            navigate('/aluno/rastreio');
+        }
+        
+    }
+    useEffect(() => {
         if (data) {
             try{
-                console.log('Data useEffect: ', data[0])
+                //console.log('Data useEffect: ', data[0])
                 const rastreiosArray = data[0];
                 const total = rastreiosArray.length;
                 //console.log(total)
@@ -66,6 +113,8 @@ function Rastreios({ data }) {
 
     return (
         <div className='containerRastreios'>
+            {showNewRastreio && <LastRastreio data={data} close={closeNewRastreio}/>}
+            {showPopUp && <PopUpRastreioSuccess title='Ratreio Salvo com sucesso' name={namePopUp} idade={idadePopUp} details='Veja mais detales na listagem' close={closePopUp}/>}
             {showModal && <ModalCreateRastreio title='Novo rastreio' close={closeBtn}/> }
             <header>
                 <div>

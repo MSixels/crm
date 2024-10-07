@@ -12,26 +12,32 @@ import { jwtDecode } from 'jwt-decode'
 import { useEffect, useState } from 'react'
 import { auth, firestore } from '../../services/firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
-import { doc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 
 function HomeCrm() {
     const { page } = useParams()
     const [userId, setUserId] = useState('')
     const navigate = useNavigate()
+    const [userType, setUserType] = useState(null)
+
+    const validPages = ['alunos', 'usuarios']; 
+
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userRef = doc(firestore, 'users', userId);
+            await updateDoc(userRef, { isActive: true });
+        }
+    });
 
     useEffect(() => {
         const sessao = Cookies.get('accessToken');
-        if (sessao) {
-            return;
-        } else {
+        if (!sessao) {
             navigate('/login/professor');
         }
-    }, [navigate]);
-    
+    }, [userType, navigate]);
 
     useEffect(() => {
         const accessToken = Cookies.get('accessToken');
-
         if (accessToken) {
             const decodedToken = jwtDecode(accessToken);
             setUserId(decodedToken.user_id)
@@ -41,14 +47,6 @@ function HomeCrm() {
         }
     }, [navigate]);
 
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            const userRef = doc(firestore, 'users', user.uid);
-            await updateDoc(userRef, { isActive: true });
-        }
-    });
-
-    /*
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -56,23 +54,25 @@ function HomeCrm() {
                 const docSnap = await getDoc(userDoc);
         
                 if (docSnap.exists()) {
-                setUserName(docSnap.data().name?.split(" ")[0]);
+                    setUserType(docSnap.data().type)
                 } else {
-                console.log("Nenhum usuário encontrado!");
+                    console.log("Nenhum usuário encontrado!");
                 }
             } catch (error) {
                 console.error("Erro ao buscar usuário:", error);
-            } finally {
-                //setLoading(false); 
             }
         };
     
         if (userId) {
-          fetchUserData();
+            fetchUserData();
         }
     }, [userId]);
-    */
+
     
+    if (!validPages.includes(page)) {
+        return null;
+    }
+
     return (
         <div className='containerHomeCrm'>
             <Header userId={userId}/>
@@ -80,14 +80,14 @@ function HomeCrm() {
                 <MenuDash page={page}/>
                 <div className='divPages'>
                     {page === 'dashboard' && <DashProf />}
-                    {page === 'alunos' && <Alunos />}
+                    {page === 'alunos' && <Alunos userType={userType}/>}
                     {page === 'turmas' && <Turmas />}
                     {page === 'modulos' && <Modulos />}
-                    {page === 'usuarios' && <Usuarios />}
+                    {page === 'usuarios' && <Usuarios userType={userType}/>}
                 </div>
             </div>
         </div>
     )
 }
 
-export default HomeCrm
+export default HomeCrm;

@@ -16,8 +16,8 @@ function ButtonBold({title, icon, action}) {
 }
 ButtonBold.propTypes = {
     title: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    action: PropTypes.string.isRequired,
+    icon: PropTypes.node.isRequired,
+    action: PropTypes.func.isRequired,
 };
 
 export default ButtonBold

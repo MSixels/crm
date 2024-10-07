@@ -9,13 +9,19 @@ import { GoDotFill } from 'react-icons/go'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
+import PropTypes from 'prop-types'
+import { BsThreeDotsVertical } from 'react-icons/bs'
+import { disableUserInFirestore, reactivateUserInFirestore } from '../../../functions/functions'
 
-function Usuarios() {
+function Usuarios({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [showModal, setShowModal] = useState(false)
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeModalId, setActiveModalId] = useState(null)
+    const [confirmId, setConfirmId] = useState(null)
+    const [actionType, setActionType] = useState('')
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -77,6 +83,52 @@ function Usuarios() {
         return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
 
+    const openEditModal = (id) => {
+        setActiveModalId(previd => previd === id ? null : id);
+    }
+
+    const openConfirmModal = (id, actionType) => {
+        setConfirmId(id);
+        setActionType(actionType); 
+    };
+
+    const closeConfirmModal = () => {
+        setActiveModalId(null)
+        setConfirmId(null); 
+    };
+
+    const handleDisable = async (id) => {
+        try {
+            console.log('Iniciando desativação do usuário com ID:', id);
+            
+            await disableUserInFirestore(id); 
+            console.log('Usuário desativado do Firestore com sucesso');
+            
+            await fetchUsersFromFirestore(); 
+            setActiveModalId(null);
+            setConfirmId(null);
+        } catch (error) {
+            console.error('Erro ao desativar o usuário:', error);
+            alert('Erro ao desativar o usuário.');
+        }
+    };
+    
+    const handleReactivate = async (id) => {
+        try {
+            console.log('Iniciando reativação do usuário com ID:', id);
+            
+            await reactivateUserInFirestore(id); 
+            console.log('Usuário reativado do Firestore com sucesso');
+            
+            await fetchUsersFromFirestore(); 
+            setActiveModalId(null);
+            setConfirmId(null);
+        } catch (error) {
+            console.error('Erro ao reativar o usuário:', error);
+            alert('Erro ao reativar o usuário.');
+        }
+    };
+
     if (loading) {
         return <Loading />; 
     }
@@ -91,7 +143,7 @@ function Usuarios() {
                         <InputText title='Pesquisa na lista' placeH='Nome do usuário' onSearchChange={handleSearchChange}/>
                         <DropDown title='Cargo' type='Selecione' options={dropDownOptions} onTurmaChange={handleDropChange} />
                     </div>
-                    <ButtonBold title='Novo usuário' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
+                    {userType === 1 && <ButtonBold title='Novo usuário' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
                 </div>
                 <div className='divInfos'>
                     <div className='divHeader'>
@@ -107,12 +159,36 @@ function Usuarios() {
                                 <span className='spanBox'>{a.name}</span>
                                 <span className='spanBox'>{a.email}</span>
                                 <span className='spanBox'>
-                                    <span className={`text ${a.isActive ? 'ativo' : 'pendente'}`}>
+                                    <span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}>
                                         <GoDotFill size={40} />
-                                        {a.isActive ? 'Ativo' : 'Pendente'}
+                                        {a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}
                                     </span>
                                 </span>
                                 <span className={`textAdm ${a.type === 1 ? 'adm' : 'prof'}`}>{a.type === 1 ? 'Adm' : 'Professor'}</span>
+                                {userType === 1 && 
+                                <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
+                                    <BsThreeDotsVertical />
+                                </div>
+                                }
+                                
+                                {activeModalId === a.id && 
+                                    <div className='modalEditUser'>
+                                        {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
+                                    </div>
+                                }
+                                {confirmId === a.id && (
+                                    <div className='containerModalConfirmDelete'>
+                                        <div className='modalConfirmDelete'>
+                                            <p className='titleAlert'>Tem certeza que deseja {actionType === 'active' ? 'reativar' : 'desativar'} esse usuário?</p>
+                                            <div className='divBtns'>
+                                                <button onClick={() => actionType === 'active' ? handleReactivate(a.id) : handleDisable(a.id)} className='delete'>
+                                                    Confirmar
+                                                </button>
+                                                <button onClick={closeConfirmModal} className='close'>Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         );
                     })}
@@ -121,5 +197,8 @@ function Usuarios() {
         </div>
     )
 }
+Usuarios.propTypes = {
+    userType: PropTypes.number.isRequired,
+};
 
 export default Usuarios

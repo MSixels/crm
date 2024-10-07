@@ -148,8 +148,8 @@ export default function PerfilAluno() {
       setTitle('Início');
     } else if (location.pathname.startsWith('/professor')) {
       setRoute(`/professor/perfil/${userId}`);
-      setRoutePage('/professor/dashbord');
-      setTitle('Dashboard');
+      setRoutePage('/professor/alunos');
+      setTitle('Alunos');
     }
     const fetchUserData = async () => {
       setLoading(true);

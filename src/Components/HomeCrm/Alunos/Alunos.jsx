@@ -7,17 +7,22 @@ import { turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
-import { auth, firestore } from '../../../services/firebaseConfig';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { firestore } from '../../../services/firebaseConfig';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import Loading from '../../Loading/Loading';
-import { onAuthStateChanged } from 'firebase/auth';
+import PropTypes from 'prop-types'
+import { BsThreeDotsVertical } from 'react-icons/bs';
+import { disableUserInFirestore, reactivateUserInFirestore } from '../../../functions/functions';
 
-function Alunos() {
+function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [showModal, setShowModal] = useState(false)
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [activeModalId, setActiveModalId] = useState(null)
+    const [confirmId, setConfirmId] = useState(null)
+    const [actionType, setActionType] = useState('')
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -77,6 +82,52 @@ function Alunos() {
         return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
     
+    const openEditModal = (id) => {
+        setActiveModalId(previd => previd === id ? null : id);
+    }
+
+    const openConfirmModal = (id, actionType) => {
+        setConfirmId(id);
+        setActionType(actionType); 
+    };
+
+    const closeConfirmModal = () => {
+        setActiveModalId(null)
+        setConfirmId(null); 
+    };
+
+    const handleDisable = async (id) => {
+        try {
+            console.log('Iniciando desativação do usuário com ID:', id);
+            
+            await disableUserInFirestore(id); 
+            console.log('Usuário desativado do Firestore com sucesso');
+            
+            await fetchAlunosFromFirestore(); 
+            setActiveModalId(null);
+            setConfirmId(null);
+        } catch (error) {
+            console.error('Erro ao desativar o usuário:', error);
+            alert('Erro ao desativar o usuário.');
+        }
+    };
+
+    const handleReactivate = async (id) => {
+        try {
+            console.log('Iniciando reativação do usuário com ID:', id);
+            
+            await reactivateUserInFirestore(id); 
+            console.log('Usuário reativado do Firestore com sucesso');
+            
+            await fetchAlunosFromFirestore(); 
+            setActiveModalId(null);
+            setConfirmId(null);
+        } catch (error) {
+            console.error('Erro ao reativar o usuário:', error);
+            alert('Erro ao reativar o usuário.');
+        }
+    };
+
     if (loading) {
         return <Loading />
     }
@@ -91,7 +142,7 @@ function Alunos() {
                         <InputText title='Pesquisa na lista' placeH='Nome do aluno' onSearchChange={handleSearchChange}/>
                         {/*<DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />*/}
                     </div>
-                    <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
+                    {userType === 1 && <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
                 </div>
                 <div className='divInfos'>
                     <div className='divHeader'>
@@ -107,9 +158,33 @@ function Alunos() {
                             <div key={a.id} className='divAlunos'>
                                 <span className='spanBox'>{a.name}</span>
                                 <span className='spanBox'>{a.email}</span>
-                                <span className='spanBox'><span className={`text ${a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.isActive ? 'Ativo' : 'Pendente'}</span></span>
+                                <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
                                 <span className='spanBox'><span className={`${a.media < 50 ? 'ruim' : a.media >= 50 ? 'boa' : ''}`}>{a.media ? a.media : 'N'}</span> / {a.media ? '100' : 'A'}</span>
                                 <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
+                                {userType === 1 && 
+                                <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
+                                    <BsThreeDotsVertical />
+                                </div>
+                                }
+                                
+                                {activeModalId === a.id && 
+                                    <div className='modalEditUser'>
+                                        {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
+                                    </div>
+                                }
+                                {confirmId === a.id && (
+                                    <div className='containerModalConfirmDelete'>
+                                        <div className='modalConfirmDelete'>
+                                            <p className='titleAlert'>Tem certeza que deseja {actionType === 'active' ? 'reativar' : 'desativar'} esse usuário?</p>
+                                            <div className='divBtns'>
+                                                <button onClick={() => actionType === 'active' ? handleReactivate(a.id) : handleDisable(a.id)} className='delete'>
+                                                    Confirmar
+                                                </button>
+                                                <button onClick={closeConfirmModal} className='close'>Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )
                     })}
@@ -118,5 +193,9 @@ function Alunos() {
         </div>
     )
 }
+
+Alunos.propTypes = {
+    userType: PropTypes.number.isRequired,
+};
 
 export default Alunos
