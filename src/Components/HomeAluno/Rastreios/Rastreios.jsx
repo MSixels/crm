@@ -8,10 +8,12 @@ import { FaCircleCheck } from "react-icons/fa6";
 import RastreiosConcluidos from '../RastreiosConcluidos/RastreiosConcluidos'
 import PopUpRastreioSuccess from '../PopUpRastreioSuccess/PopUpRastreioSuccess'
 import { useNavigate } from 'react-router-dom'
+import LastRastreio from '../LastRastreio/LastRastreio'
 
 function Rastreios({ data }) {
     const navigate = useNavigate()
     const [showModal, setShowModal] = useState(false)
+    const [showNewRastreio, setShowNewRastreio] = useState(false)
     const [showPopUp, setShowPopUp] = useState(false)
     const [namePopUp, setNamePopUp] = useState('')
     const [idadePopUp, setIdadePopUp] = useState('')
@@ -29,7 +31,7 @@ function Rastreios({ data }) {
         const idadeValue = params.get('idade')
 
         if(successValue === 'true'){
-            setShowPopUp(true)
+            setShowNewRastreio(true)
             setNamePopUp(nameValue)
             if(idadeValue === '1'){
                 setIdadePopUp('3 a 6 anos')
@@ -41,13 +43,18 @@ function Rastreios({ data }) {
                 setIdadePopUp('')
             }
             setTimeout(() => {
-                setShowPopUp(false)
-                navigate('/aluno/rastreio');
+                //setShowPopUp(false)
+                //navigate('/aluno/rastreio');
             }, 10000)
         } else {
-            setShowPopUp(false)
+            //setShowPopUp(false)
         }
     }, [navigate]);
+
+    const closeNewRastreio = () => {
+        setShowNewRastreio(false)
+        setShowPopUp(true)
+    }
 
     const closePopUp = (action) => {
         if(action){
@@ -106,6 +113,7 @@ function Rastreios({ data }) {
 
     return (
         <div className='containerRastreios'>
+            {showNewRastreio && <LastRastreio data={data} close={closeNewRastreio}/>}
             {showPopUp && <PopUpRastreioSuccess title='Ratreio Salvo com sucesso' name={namePopUp} idade={idadePopUp} details='Veja mais detales na listagem' close={closePopUp}/>}
             {showModal && <ModalCreateRastreio title='Novo rastreio' close={closeBtn}/> }
             <header>

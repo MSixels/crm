@@ -43,6 +43,8 @@ function RastreiosConcluidos({ data }) {
         }
     }, [data]);
 
+    
+
     const handleSearchChange = (newSearchTerm) => {
         setSearchTerm(newSearchTerm); 
     };
@@ -180,6 +182,7 @@ function RastreiosConcluidos({ data }) {
     return (
         <>
             <h3 style={{fontSize: 20, marginTop: 64}}>Rastreios concluídos</h3>
+            
             <div className='divConcluidosRastreio'>
                 <div className='divContent'>
                     <header>
