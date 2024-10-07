@@ -31,7 +31,11 @@ function Header({ options }) {
 
         if (accessToken) {
             const decodedToken = jwtDecode(accessToken);
-            setUserId(decodedToken.user_id)
+            if(decodedToken.user_id != undefined){
+                setUserId(decodedToken.user_id)
+            }
+            
+            
         } else {
             console.log("Nenhum token encontrado nos cookies.");
         }
@@ -90,7 +94,7 @@ Header.propTypes = {
         route: PropTypes.string.isRequired,
         status: PropTypes.string.isRequired,
     })).isRequired,
-    userId: PropTypes.string.isRequired,
+    userId: PropTypes.string
 };
 
 export default Header;
