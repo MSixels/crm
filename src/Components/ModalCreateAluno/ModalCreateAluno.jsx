@@ -8,6 +8,7 @@ import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
+import emailjs from 'emailjs-com';
 
 function ModalCreateAluno({ title, close }) {
     const [name, setName] = useState('');
@@ -46,7 +47,7 @@ function ModalCreateAluno({ title, close }) {
         return password;
     };
 
-    const sendEmailtoSignUp = async (send) => {
+    const sendEmailToSignUp = async (send) => {
         if (send) {
             if (name === '') {
                 setNameError(true);
@@ -65,6 +66,7 @@ function ModalCreateAluno({ title, close }) {
             .then(async (userCredential) => {
                 const userId = userCredential.user.uid;
 
+                // Registra o usuário no Firestore
                 await setDoc(doc(firestore, 'users', userId), {
                     name: name,
                     email: email,
@@ -73,13 +75,31 @@ function ModalCreateAluno({ title, close }) {
                     password: randomPassword,
                     isActive: false
                 });
-                
+                sendEmail(name, email, randomPassword);
+
                 close(false);
             })
             .catch((error) => {
                 console.error("Erro ao criar usuário no Firebase Auth:", error);
             });
         }
+    };
+
+    const sendEmail = (name, email, password) => {
+        const templateParams = {
+            to_name: name,
+            to_email: email,
+            message: `Olá ${name}, sua conta foi criada com sucesso. Utilize o seguinte email e senha para acessar a plataforma: `,
+            email: email,
+            password: password,
+        };
+
+        emailjs.send('service_yw1cwq7', 'template_4q2q4zg', templateParams, 'dWO-tVRZLU_OAvoOM')
+            .then((response) => {
+                console.log('Email enviado com sucesso!', response.status, response.text);
+            }, (err) => {
+                console.error('Erro ao enviar email:', err);
+            });
     };
 
     return (
@@ -93,7 +113,7 @@ function ModalCreateAluno({ title, close }) {
                 </div>
                 <InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />
                 <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
-                <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailtoSignUp} />
+                <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailToSignUp} />
             </div>
         </div>
     );
