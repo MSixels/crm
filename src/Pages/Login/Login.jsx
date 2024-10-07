@@ -19,6 +19,7 @@ function Login() {
     const location = useLocation()
     const [userId, setUserId] = useState('')
     const [alertText, setAlertText] = useState(false)
+    const [alertAccountDisabled, setAlertAccountDisabled] = useState(false);
     const [checkConect, setCheckConect] = useState(false)
     const [inputEmail, setInputEmail] = useState(false)
     const [inputSenha, setInputSenha] = useState(false)
@@ -84,10 +85,8 @@ function Login() {
                     ) {
                         navigate('/professor/alunos');
                     } else if(disable){
-                        console.log('disable: ', disable)
-                        console.log('DocSnap: ', docSnap.data().email)
-                        setEmail(docSnap.data().email)
-                        alert(`A conta com email ${docSnap.data().email} está desativada!`)
+                        setEmail(docSnap.data().email);
+                        setAlertAccountDisabled(true);
                         Cookies.remove('accessToken');
                     }
                 } else {
@@ -97,9 +96,8 @@ function Login() {
                 console.error("Erro ao buscar usuário:", error);
             }
         };
-    
         if (userId) {
-          fetchUserData(userId);
+        fetchUserData(userId);
         }
 
     }, [userId, navigate, location]);
@@ -139,9 +137,8 @@ function Login() {
                 Cookies.remove('accessToken');
             }
         } else if(disable){
-            
-            alert('Sua Conta está desativada: ', disable)
-            Cookies.remove('accessToken');
+                    setAlertAccountDisabled(true);
+                    Cookies.remove('accessToken');
         } else {
             console.log('')
         }
@@ -215,6 +212,12 @@ function Login() {
                             style={{borderColor: inputSenha && 'red'}}
                         />
                     </div>
+                    {alertAccountDisabled &&
+                        <div style={{marginBottom: 20}}>
+                            <p style={{color: 'red'}}>Este usuário está desativado no momento.</p>
+                            <p style={{color: 'red'}}>Entre em contato com o suporte para reativá-lo.</p>
+                        </div>
+                    }
                     {alertText && type === 'professor' &&
                         <div style={{marginBottom: 20}}>
                             <p style={{color: 'red'}}>Você não possui as permissões necessárias para acessar.</p>
