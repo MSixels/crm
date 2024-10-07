@@ -7,13 +7,12 @@ import { turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
-import { auth, firestore } from '../../../services/firebaseConfig';
-import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { firestore } from '../../../services/firebaseConfig';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import Loading from '../../Loading/Loading';
-import { onAuthStateChanged } from 'firebase/auth';
 import PropTypes from 'prop-types'
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { deleteUserFromAuth, deleteUserFromFirestore } from '../../../functions/functions';
+import { disableUserInFirestore, reactivateUserInFirestore } from '../../../functions/functions';
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -22,7 +21,8 @@ function Alunos({ userType }) {
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeModalId, setActiveModalId] = useState(null)
-    const [confirmDeleteId, setConfirmDeleteId] = useState(false)
+    const [confirmId, setConfirmId] = useState(null)
+    const [actionType, setActionType] = useState('')
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -86,31 +86,45 @@ function Alunos({ userType }) {
         setActiveModalId(previd => previd === id ? null : id);
     }
 
-    const openConfirmDeleteModal = (id) => {
-        setConfirmDeleteId(id);
+    const openConfirmModal = (id, actionType) => {
+        setConfirmId(id);
+        setActionType(actionType); 
     };
 
-    const closeConfirmDeleteModal = () => {
+    const closeConfirmModal = () => {
         setActiveModalId(null)
-        setConfirmDeleteId(null); 
+        setConfirmId(null); 
     };
 
-    const handleDelete = async (id) => {
+    const handleDisable = async (id) => {
         try {
-            console.log('Iniciando exclusão de usuário com ID:', id);
-        
-            await deleteUserFromFirestore(id);
-            console.log('Usuário excluído do Firestore com sucesso');
-        
-            //await deleteUserFromAuth(id);
-            //console.log('Usuário excluído do Firebase Authentication com sucesso');
+            console.log('Iniciando desativação do usuário com ID:', id);
             
-            await fetchAlunosFromFirestore();
-            setActiveModalId(null)
-            setConfirmDeleteId(null);
+            await disableUserInFirestore(id); 
+            console.log('Usuário desativado do Firestore com sucesso');
+            
+            await fetchAlunosFromFirestore(); 
+            setActiveModalId(null);
+            setConfirmId(null);
         } catch (error) {
-            console.error('Erro ao excluir o usuário:', error);
-            alert('Erro ao excluir o usuário.');
+            console.error('Erro ao desativar o usuário:', error);
+            alert('Erro ao desativar o usuário.');
+        }
+    };
+
+    const handleReactivate = async (id) => {
+        try {
+            console.log('Iniciando reativação do usuário com ID:', id);
+            
+            await reactivateUserInFirestore(id); 
+            console.log('Usuário reativado do Firestore com sucesso');
+            
+            await fetchAlunosFromFirestore(); 
+            setActiveModalId(null);
+            setConfirmId(null);
+        } catch (error) {
+            console.error('Erro ao reativar o usuário:', error);
+            alert('Erro ao reativar o usuário.');
         }
     };
 
@@ -144,7 +158,7 @@ function Alunos({ userType }) {
                             <div key={a.id} className='divAlunos'>
                                 <span className='spanBox'>{a.name}</span>
                                 <span className='spanBox'>{a.email}</span>
-                                <span className='spanBox'><span className={`text ${a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.isActive ? 'Ativo' : 'Pendente'}</span></span>
+                                <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
                                 <span className='spanBox'><span className={`${a.media < 50 ? 'ruim' : a.media >= 50 ? 'boa' : ''}`}>{a.media ? a.media : 'N'}</span> / {a.media ? '100' : 'A'}</span>
                                 <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
                                 {userType === 1 && 
@@ -155,16 +169,18 @@ function Alunos({ userType }) {
                                 
                                 {activeModalId === a.id && 
                                     <div className='modalEditUser'>
-                                        <p className='alert' onClick={() => openConfirmDeleteModal(a.id)}>Excluir Aluno</p>
+                                        {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
                                     </div>
                                 }
-                                {confirmDeleteId === a.id && (
+                                {confirmId === a.id && (
                                     <div className='containerModalConfirmDelete'>
                                         <div className='modalConfirmDelete'>
-                                            <p className='titleAlert'>Tem certeza que deseja excluir esse aluno?</p>
+                                            <p className='titleAlert'>Tem certeza que deseja {actionType === 'active' ? 'reativar' : 'desativar'} esse usuário?</p>
                                             <div className='divBtns'>
-                                                <button onClick={() => handleDelete(a.id)} className='delete'>Confirmar</button>
-                                                <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
+                                                <button onClick={() => actionType === 'active' ? handleReactivate(a.id) : handleDisable(a.id)} className='delete'>
+                                                    Confirmar
+                                                </button>
+                                                <button onClick={closeConfirmModal} className='close'>Cancelar</button>
                                             </div>
                                         </div>
                                     </div>

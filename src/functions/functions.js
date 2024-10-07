@@ -1,4 +1,4 @@
-import { deleteDoc, doc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { auth, firestore } from "../services/firebaseConfig";
 
 export const evaluateTDAHPotential = (responses) => {
@@ -188,30 +188,25 @@ export const evaluateTDIPotential = (responses) => {
     return { tdiPotential };
 };
 
-export const deleteUserFromFirestore = async (id) => {
+export const disableUserInFirestore = async (id) => {
     try {
-        console.log('Tentando excluir usuário do Firestore com ID:', id);
-        const userDoc = doc(firestore, 'users', id);  // Criando referência ao documento do usuário
-        await deleteDoc(userDoc);  // Excluindo o documento
-        console.log('Usuário excluído do Firestore com sucesso');
+        console.log('Tentando desativar usuário do Firestore com ID:', id);
+        const userDoc = doc(firestore, 'users', id); 
+        await updateDoc(userDoc, { disable: true }); 
+        console.log('Usuário desativado do Firestore com sucesso');
     } catch (error) {
-        console.error('Erro ao excluir o usuário do Firestore:', error.message);
-        throw new Error('Erro ao excluir o usuário do Firestore');
+        console.error('Erro ao desativar o usuário do Firestore:', error.message);
+        throw new Error('Erro ao desativar o usuário do Firestore');
     }
 };
-
-export const deleteUserFromAuth = async (uid) => {
+export const reactivateUserInFirestore = async (id) => {
     try {
-        console.log('Tentando excluir usuário do Firebase Authentication com UID:', uid);
-        const user = auth.currentUser;  // Obtendo o usuário autenticado
-        if (user && user.uid === uid) {
-            await user.delete();  // Excluindo o usuário autenticado
-            console.log('Usuário excluído do Firebase Authentication com sucesso');
-        } else {
-            throw new Error('O usuário atual não está autenticado ou não tem permissão para deletar.');
-        }
+        console.log('Tentando reativar usuário do Firestore com ID:', id);
+        const userDoc = doc(firestore, 'users', id); 
+        await updateDoc(userDoc, { disable: false }); 
+        console.log('Usuário reativado do Firestore com sucesso');
     } catch (error) {
-        console.error('Erro ao excluir o usuário da autenticação:', error.message);
-        throw new Error('Erro ao excluir o usuário da autenticação');
+        console.error('Erro ao reativar o usuário do Firestore:', error.message);
+        throw new Error('Erro ao reativar o usuário do Firestore');
     }
 };

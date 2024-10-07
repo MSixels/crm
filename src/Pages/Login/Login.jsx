@@ -25,6 +25,7 @@ function Login() {
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
     const [typeUser, setTypeUser] = useState(null)
+    const [disable, setDisable] = useState(null)
     const [alertCredentialInvalid, setAlertCredentialInvalid] = useState(false)
     const [
         signInWithEmailAndPassword,
@@ -32,18 +33,6 @@ function Login() {
         loading,
         error,
     ] = useSignInWithEmailAndPassword(auth);
-
-    const openHome = (email, senha) => {
-        if(email === ''){
-            setInputEmail(true)
-        }
-        if(senha === ''){
-            setInputSenha(true)
-        }
-        if(email != '' && senha != ''){
-            signInWithEmailAndPassword(email, senha)
-        }
-    }
 
     useEffect(() => {
         if (error) {
@@ -58,21 +47,7 @@ function Login() {
         }
     }, [error]);
 
-    const fetchUserType = async (userId) => {
-        try {
-            const userDocRef = doc(firestore, 'users', userId); 
-            const userDoc = await getDoc(userDocRef);
-            if (userDoc.exists()) {
-                const userData = userDoc.data();
-                console.log("Tipo de usuário:", userData.type);
-                setTypeUser(userData.type)
-            } else {
-                console.log("Usuário não encontrado no Firestore");
-            }
-        } catch (err) {
-            console.log("Erro ao buscar dados do usuário:");
-        }
-    };
+    
 
     useEffect(() => {
         const accessToken = Cookies.get('accessToken');
@@ -88,24 +63,32 @@ function Login() {
     }, []);
 
     useEffect(() => {
-        const fetchUserData = async () => {
+        const fetchUserData = async (userId) => {
             try {
                 const userDoc = doc(firestore, "users", userId);
                 const docSnap = await getDoc(userDoc);
         
                 if (docSnap.exists()) {
-                    console.log(docSnap.data().type)
+                    const userType = docSnap.data().type
+                    const disable = docSnap.data().disable
+                    console.log('disable: ', disable)
                     const sessao = Cookies.get('accessToken')
                     if (
-                        sessao && docSnap.data().type === 3 && 
-                        location.pathname === '/login/aluno'
+                        sessao && userType === 3 && 
+                        location.pathname === '/login/aluno' && !disable
                     ) {
                         navigate('/aluno/home');
                     } else if(
                         sessao && location.pathname === '/login/professor' && 
-                        docSnap.data().type === 1 || docSnap.data().type === 2
+                        userType === 1 || userType === 2 && !disable
                     ) {
                         navigate('/professor/alunos');
+                    } else if(disable){
+                        console.log('disable: ', disable)
+                        console.log('DocSnap: ', docSnap.data().email)
+                        setEmail(docSnap.data().email)
+                        alert(`A conta com email ${docSnap.data().email} está desativada!`)
+                        Cookies.remove('accessToken');
                     }
                 } else {
                     console.log("Nenhum usuário encontrado!");
@@ -116,7 +99,7 @@ function Login() {
         };
     
         if (userId) {
-          fetchUserData();
+          fetchUserData(userId);
         }
 
     }, [userId, navigate, location]);
@@ -127,8 +110,6 @@ function Login() {
 
     useEffect(() => {
         if (user) {
-            console.log("Usuário logado:", user);
-            console.log("Access Token:", user.user.accessToken);
             fetchUserType(user.user.uid);
             const accessToken = user.user.accessToken;
     
@@ -140,10 +121,10 @@ function Login() {
         } else{
             console.log('user não encontrado')
         }
-    }, [user, type, navigate, checkConect]);
+    }, [user, type, checkConect]);
 
     useEffect(() => {
-        if(user && typeUser){
+        if(user && typeUser && !disable){
             if (type === 'aluno' && typeUser === 3) {
                 navigate(`/${type}/home`);
             } else if(type === 'professor' && typeUser === 2){
@@ -157,8 +138,42 @@ function Login() {
                 setTypeUser(null)
                 Cookies.remove('accessToken');
             }
+        } else if(disable){
+            
+            alert('Sua Conta está desativada: ', disable)
+            Cookies.remove('accessToken');
+        } else {
+            console.log('')
         }
-    }, [typeUser, user, type, navigate])
+    }, [typeUser, user, type, navigate, disable])
+
+    const openHome = (email, senha) => {
+        if(email === ''){
+            setInputEmail(true)
+        }
+        if(senha === ''){
+            setInputSenha(true)
+        }
+        if(email != '' && senha != ''){
+            signInWithEmailAndPassword(email, senha)
+        }
+    }
+
+    const fetchUserType = async (userId) => {
+        try {
+            const userDocRef = doc(firestore, 'users', userId); 
+            const userDoc = await getDoc(userDocRef);
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                setTypeUser(userData.type)
+                setDisable(userData.disable)
+            } else {
+                console.log("Usuário não encontrado no Firestore");
+            }
+        } catch (err) {
+            console.log("Erro ao buscar dados do usuário:");
+        }
+    };
 
     const notPermission = async (route) => {
         Cookies.remove('accessToken')

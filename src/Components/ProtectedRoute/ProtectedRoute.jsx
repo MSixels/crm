@@ -10,6 +10,7 @@ import Loading from '../Loading/Loading';
 const ProtectedRoute = ({ element, typeUser, allowedTypes }) => {
     const [userType, setUserType] = useState(null);
     const [loading, setLoading] = useState(true); 
+    const [disable, setDisable] = useState(null)
 
     useEffect(() => {
         const accessToken = Cookies.get('accessToken');
@@ -34,6 +35,8 @@ const ProtectedRoute = ({ element, typeUser, allowedTypes }) => {
 
             if (docSnap.exists()) {
                 setUserType(docSnap.data().type);
+                setDisable(docSnap.data().disable)
+                console.log('Conta desativada: ', docSnap.data().disable)
             } else {
                 console.log("Nenhum usuário encontrado!");
             }
@@ -46,6 +49,10 @@ const ProtectedRoute = ({ element, typeUser, allowedTypes }) => {
 
     if (loading) {
         return <Loading />
+    }
+
+    if(disable){
+        return <Navigate to='/' replace />;
     }
 
     if (!userType) {
