@@ -16,8 +16,9 @@ function ButtonSend({title, icon, action}) {
 }
 ButtonSend.propTypes = {
     title: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    action: PropTypes.string.isRequired,
+    icon: PropTypes.element.isRequired,
+    action: PropTypes.func.isRequired,
 };
+
 
 export default ButtonSend
