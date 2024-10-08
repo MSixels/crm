@@ -94,7 +94,7 @@ function ModalCreateAluno({ title, close }) {
             password: password,
         };
 
-        emailjs.send('service_yw1cwq7', 'template_4q2q4zg', templateParams, 'dWO-tVRZLU_OAvoOM')
+        emailjs.send('service_i42b7rx', 'template_ul9y5w5', templateParams, 'dWO-tVRZLU_OAvoOM')
             .then((response) => {
                 console.log('Email enviado com sucesso!', response.status, response.text);
             }, (err) => {
