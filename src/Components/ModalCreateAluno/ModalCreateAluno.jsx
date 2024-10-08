@@ -8,14 +8,13 @@ import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
-import { getFunctions, httpsCallable } from "firebase/functions";
+import emailjs from 'emailjs-com';
 
 function ModalCreateAluno({ title, close }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [nameError, setNameError] = useState(false);
-    const functions = getFunctions();
     const [
         createUserWithEmailAndPassword,
         user,
@@ -75,15 +74,7 @@ function ModalCreateAluno({ title, close }) {
                     password: randomPassword,
                     isActive: false
                 });
-
-                const sendWelcomeEmail = httpsCallable(functions, 'sendWelcomeEmail');
-                await sendWelcomeEmail({ email, name, password: randomPassword })
-                    .then((result) => {
-                        console.log(result.data.message);
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao enviar email:", error);
-                    });
+                sendEmail(name, email, randomPassword);
 
                 close(false);
             })
@@ -91,6 +82,23 @@ function ModalCreateAluno({ title, close }) {
                 console.error("Erro ao criar usuário no Firebase Auth:", error);
             });
         }
+    };
+
+    const sendEmail = (name, email, password) => {
+        const templateParams = {
+            to_name: name,
+            to_email: email,
+            message: `Olá ${name}, sua conta foi criada com sucesso. Utilize o seguinte email e senha para acessar a plataforma: `,
+            email: email,
+            password: password,
+        };
+
+        emailjs.send('service_ald967s', 'template_ul9y5w5', templateParams, 'dWO-tVRZLU_OAvoOM')
+            .then((response) => {
+                console.log('Email enviado com sucesso!', response.status, response.text);
+            }, (err) => {
+                console.error('Erro ao enviar email:', err);
+            });
     };
 
     return (
