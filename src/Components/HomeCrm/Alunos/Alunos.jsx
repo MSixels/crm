@@ -51,6 +51,7 @@ function Alunos({ userType }) {
 
     const closeBtn = (close) => {
         setShowModal(close)
+        fetchAlunosFromFirestore()
     }
 
     const fetchAlunosFromFirestore = async () => {
