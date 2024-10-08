@@ -49,6 +49,7 @@ function Usuarios({ userType }) {
     }
     const closeBtn = (close) => {
         setShowModal(close)
+        fetchUsersFromFirestore();
     }
 
     const fetchUsersFromFirestore = async () => {
