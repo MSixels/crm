@@ -83,7 +83,7 @@ function ModalCreateAluno({ title, close }) {
     };
 
     const sendEmail = (name, email, password) => {
-        fetch('sendemails-production-9546.up.railway.app/send', {
+        fetch('https://sendemails-production-9546.up.railway.app/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', 
