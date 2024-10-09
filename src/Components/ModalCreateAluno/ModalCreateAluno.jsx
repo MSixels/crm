@@ -8,7 +8,6 @@ import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
-import emailjs from 'emailjs-com';
 
 function ModalCreateAluno({ title, close }) {
     const [name, setName] = useState('');
@@ -84,20 +83,17 @@ function ModalCreateAluno({ title, close }) {
     };
 
     const sendEmail = (name, email, password) => {
-        const templateParams = {
-            to_name: name,        // Nome do usuário
-            to_email: email,      // Email do usuário
-            message: `Olá ${name}, sua conta foi criada com sucesso. Utilize o seguinte email e senha para acessar a plataforma: `,
-            user_email: email,    // Usado no template
-            user_password: password, // Usado no template
-        };
-    
-        emailjs.send('service_ald967s', 'template_ul9y5w5', templateParams, 'dWO-tVRZLU_OAvoOM')
-            .then((response) => {
-                console.log('Email enviado com sucesso!', response.status, response.text);
-            }, (err) => {
-                console.error('Erro ao enviar email:', err);
-            });
+        fetch('sendemails-production-9546.up.railway.app/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', 
+            },
+            body: JSON.stringify({name, email, password})
+        })
+        .then(response => response.json())
+        .then(data => console.log('Email enviado com sucesso', data))
+        .catch((error) => console.error('Erro ao enviar email:', error));
+
     };
     
 
