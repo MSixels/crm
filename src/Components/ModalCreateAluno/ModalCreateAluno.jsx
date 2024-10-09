@@ -75,7 +75,6 @@ function ModalCreateAluno({ title, close }) {
                     isActive: false
                 });
                 sendEmail(name, email, randomPassword);
-
                 close(false);
             })
             .catch((error) => {
@@ -86,13 +85,13 @@ function ModalCreateAluno({ title, close }) {
 
     const sendEmail = (name, email, password) => {
         const templateParams = {
-            to_name: name,
-            to_email: email,
+            to_name: name,        // Nome do usuário
+            to_email: email,      // Email do usuário
             message: `Olá ${name}, sua conta foi criada com sucesso. Utilize o seguinte email e senha para acessar a plataforma: `,
-            email: email,
-            password: password,
+            user_email: email,    // Usado no template
+            user_password: password, // Usado no template
         };
-
+    
         emailjs.send('service_ald967s', 'template_ul9y5w5', templateParams, 'dWO-tVRZLU_OAvoOM')
             .then((response) => {
                 console.log('Email enviado com sucesso!', response.status, response.text);
@@ -100,6 +99,7 @@ function ModalCreateAluno({ title, close }) {
                 console.error('Erro ao enviar email:', err);
             });
     };
+    
 
     return (
         <div className='containerModalCreateAluno'>
