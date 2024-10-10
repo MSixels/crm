@@ -10,6 +10,7 @@ import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { IoCheckbox } from "react-icons/io5";
+import emailjs from 'emailjs-com';
 
 function ModalCreateUser({ title, close }) {
     const [name, setName] = useState('');
@@ -68,25 +69,57 @@ function ModalCreateUser({ title, close }) {
             setEmailError(false);
             const randomPassword = generateRandomPassword();
 
-            createUserWithEmailAndPassword(email, randomPassword)
-            .then(async (userCredential) => {
-                const userId = userCredential.user.uid;
+            try {
+                await sendEmail(name, email, randomPassword);
+                
+                createUserWithEmailAndPassword(email, randomPassword)
+                .then(async (userCredential) => {
+                    const userId = userCredential.user.uid;
 
-                await setDoc(doc(firestore, 'users', userId), {
-                    name: name,
-                    email: email,
-                    type: selectedCargo,
-                    userId: userId,
-                    password: randomPassword,
-                    isActive: false
+                    await setDoc(doc(firestore, 'users', userId), {
+                        name: name,
+                        email: email,
+                        type: selectedCargo,
+                        userId: userId,
+                        isActive: false
+                    });
+
+                    close(false);
+                })
+                .catch((error) => {
+                    console.error("Erro ao criar usuário no Firebase Auth:", error);
                 });
+                
+    
+            } catch (error) {
+                console.error('Erro ao enviar e-mail:', error);
+            }
+        }
+    };
 
-                close(false);
+    const sendEmail = (name, email, password) => {
+        return new Promise((resolve, reject) => {
+            const serviceID = 'service_yu2qcoh';
+            const templateID = 'template_k0dirrv'; 
+            const userID = 'XQKknTXcK4xvRN9B3'; 
+    
+            const templateParams = {
+                to_name: name,
+                to_email: email,
+                to_password: password,
+                to_type: 'professor'
+            };
+    
+            emailjs.send(serviceID, templateID, templateParams, userID)
+            .then((response) => {
+                console.log('E-mail enviado com sucesso!', response.status, response.text);
+                resolve(); 
             })
             .catch((error) => {
-                console.error("Erro ao criar usuário no Firebase Auth:", error);
+                console.error('Erro ao enviar e-mail:', error);
+                reject(error); 
             });
-        }
+        });
     };
 
     const renderCargo = () => {
