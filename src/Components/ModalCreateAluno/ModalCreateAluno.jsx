@@ -100,6 +100,7 @@ function ModalCreateAluno({ title, close }) {
                 to_name: name,
                 to_email: email,
                 to_password: password,
+                to_type: 'aluno'
             };
     
             emailjs.send(serviceID, templateID, templateParams, userID)
