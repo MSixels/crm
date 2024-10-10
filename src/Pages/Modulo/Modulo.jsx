@@ -6,20 +6,30 @@ import Header from '../../Components/Header/Header'
 import { modulos } from '../../database'
 
 function Modulo() {
-    const { moduloid } = useParams()
+    const { moduloId } = useParams()
 
     const options = [
         {
             id: 1,
-            text: 'Seus cursos'
+            text: 'início',
+            route: '/aluno/home',
+            status: 'active'
         },
         {
             id: 2,
-            text: 'Sobre'
+            text: 'Rastreio',
+            route: '/aluno/rastreio',
+            status: 'active'
+        },
+        {
+            id: 3,
+            text: 'Módulos e aulas',
+            route: `/aluno/modulo/${moduloId}`,
+            status: 'active'
         },
     ]
 
-    const selectedModulo = modulos.find(m => m.id === parseInt(moduloid));
+    const selectedModulo = modulos.find(m => m.id === parseInt(moduloId));
     return (
         <div className='containerModulo'>
             <Header options={options}/>

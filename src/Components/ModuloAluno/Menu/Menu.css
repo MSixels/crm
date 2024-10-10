@@ -6,6 +6,7 @@
     box-shadow: 10px 0 10px 0 #ddd;
     color: var(--secondary800);
     flex-shrink: 0;
+    padding-top: 100px;
 }
 .containerMenu .divContentMenu{
     display: flex;

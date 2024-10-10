@@ -10,6 +10,7 @@ import HomeCrm from './Pages/HomeCrm/HomeCrm.jsx';
 import PerfilAluno from './Pages/PerfilAluno/PerfilAluno.jsx';
 import NewRastreio from './Components/HomeAluno/NewRastreio/NewRastreio.jsx';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
+import Modulo from './Pages/Modulo/Modulo.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,16 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute
         element={<Home />}
+        typeUser={3} 
+        allowedTypes={[3]} 
+      />
+    ),
+  },
+  {
+    path: `/aluno/modulo/:moduloId`,
+    element: (
+      <ProtectedRoute
+        element={<Modulo />}
         typeUser={3} 
         allowedTypes={[3]} 
       />

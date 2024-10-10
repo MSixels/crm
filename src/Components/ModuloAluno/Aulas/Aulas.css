@@ -3,6 +3,7 @@
     flex-direction: column;
     padding: 32px;
     flex-grow: 1;
+    padding-top: 100px;
 }
 .containerAulas .divContent{
     height: 100%;

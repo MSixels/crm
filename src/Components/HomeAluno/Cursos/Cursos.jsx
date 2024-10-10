@@ -34,7 +34,7 @@ function Cursos() {
     };
 
     const openModulo = (id) => {
-        navigate(`/aluno/${id}`)
+        navigate(`/aluno/modulo/${id}`)
     }
 
     return (
