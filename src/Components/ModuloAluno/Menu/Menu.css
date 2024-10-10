@@ -49,8 +49,8 @@
     width: 50px;
 }
 .containerMenu .divOptions .active{
-    color: var(--deep-purple500);
-    border-right: solid 3px var(--deep-purple500);
+    color: var(--yellow-1);
+    border-right: solid 3px var(--yellow-1);
 }
 .containerMenu .divBtnBack{
     display: flex;

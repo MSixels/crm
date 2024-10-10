@@ -3,7 +3,7 @@ import { sendPasswordResetEmail } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom'; // Import para redirecionamento
 import { auth } from '../../services/firebaseConfig';
 import './RecuperarSenha.css';
-import LogoText from '../../imgs/logoText.svg';
+import LogoText from '../../imgs/logoText.png';
 
 function RecuperarSenha() {
     const [email, setEmail] = useState('');
@@ -23,7 +23,7 @@ function RecuperarSenha() {
 
     return (
         <div className="containerRecuperarSenha">
-            <img src={LogoText} alt="logo" />
+            <img src={LogoText} alt="logo" style={{width: '186px'}} />
             
             {!isEmailSent ? (
                 <div className="divContentRecovery">

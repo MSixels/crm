@@ -82,8 +82,8 @@
     color: #FFF;
 }
 .containerCursos .divProgressInfos .provaStart{
-    background-color: var(--deep-purple50);
-    color: var(--deep-purple500);
+    background-color: var(--primary-200);
+    color: var(--primary-700);
 }
 .containerCursos .divProgressInfos .provaBlock{
     background-color: var(--secondary200);

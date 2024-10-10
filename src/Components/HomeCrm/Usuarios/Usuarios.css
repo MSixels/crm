@@ -37,7 +37,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
-    border-bottom: solid 1px var(--color-2);
+    border-bottom: solid 1px var(--primary-200);
 }
 .containerUsuarios .divHeader .title,
 .containerUsuarios .divAlunos .spanBox {
@@ -63,7 +63,7 @@
     color: var(--warning200);
 }
 .containerUsuarios .divAlunos .spanBox .inativo{
-    background-color: var(--color-2);
+    background-color: var(--primary-200);
     color: var(--color-block);
 }
 .containerUsuarios .bold{
@@ -102,7 +102,7 @@
 .containerUsuarios .divAlunos .btnEditUser{
     position: absolute;
     right: 16px;
-    border: solid 1px var(--color-2);
+    border: solid 1px var(--primary-200);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,7 +115,7 @@
     right: 36px;
     top: 20px;
     padding: 3px;
-    border: solid 1px var(--color-2);
+    border: solid 1px var(--primary-200);
     border-radius: 4px;
     background-color: #FFF;
     z-index: 2000;
@@ -134,7 +134,7 @@
     background-color: var(--errorHover);
 }
 .containerUsuarios .divAlunos .modalEditUser .text:hover{
-    background-color: var(--color-2);
+    background-color: var(--primary-200);
 }
 .containerUsuarios .containerModalConfirmDelete{
     position: fixed;

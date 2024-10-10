@@ -1,6 +1,6 @@
 import './Header.css';
 import PropTypes from 'prop-types';
-import Logo from '../../imgs/logoTextWhite.svg';
+import Logo from '../../imgs/logoTextWhite.png';
 import { doc, getDoc } from 'firebase/firestore';
 import { firestore } from '../../services/firebaseConfig';
 import { useEffect, useState } from 'react';

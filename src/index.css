@@ -1,13 +1,14 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --bg-1:#EBEBEB;
+  --bg-1:#EBEDFA;
   --color-1:#323F49;
   --bg-White:#FFF;
-  --color-2:#DAE1E7;
+  --yellow-1: #FDB415;
+  --primary-200:#DAE1E7;
   --color-3:#B6C3CD;
-  --bg-btnConfirm:#6732D1;
+  --bg-btnConfirm:#222D7E;
   --color-textLine:#007AFF;
-  --bg-principal:#6732D1;
+  --bg-principal:#222D7E;
   --bg-principal-light:#c1afe0;
   --bg-success:#1BA284;
   --bg-block:#C2CDD6;
@@ -15,8 +16,6 @@
   --secondary200:#DAE1E7;
   --indigo50:#e8eaf6;
   --indigo500:#3f51b5;
-  --deep-purple50:#ede7f6;
-  --deep-purple500:#673ab7;
   --secondary100:#e7ebef;
   --secondary1000:#323f49;
   --secondary700:#7991a4;
@@ -25,7 +24,16 @@
   --secondary800:#637D92;
   --secondary900:#4A5E6D;
   --secondary1000:#323F49;
-  --primary:#6732D1;
+  --primary:#222D7E;
+  --primary-200: #C3C8EF;
+  --primary-300: #9BA3E4;
+  --primary-400: #727FD9;
+  --primary-500: #4A5ACE;
+  --primary-600: #3141B5;
+  --primary-700: #26328D;
+  --primary-800: #1B2464;
+  --primary-900: #10163C;
+  --primary-1000: #050714;
   --success-light:#e4faf5;
   --warning200:#EDA145;
   --warning50:#fceede;
@@ -52,7 +60,7 @@ html::-webkit-scrollbar-track {
 }
 
 html::-webkit-scrollbar-thumb {
-  background-color: #6732D1;
+  background-color: var(--primary);
   border-radius: 10px;
   border: 5px solid #DAE1E7;
 }
@@ -63,7 +71,7 @@ html::-webkit-scrollbar-thumb:hover {
 
 html {
   scrollbar-width: thin;
-  scrollbar-color: #6732D1 #DAE1E7;
+  scrollbar-color: var(--primary) #DAE1E7;
 }
 
 html {

@@ -1,7 +1,7 @@
 import './PreLogin.css'
 import { FaBookOpen } from "react-icons/fa6";
 import { MdSchool } from "react-icons/md";
-import Logo from '../../imgs/logo.svg'
+import Logo from '../../imgs/logo.png'
 import { useNavigate } from 'react-router-dom';
 
 function PreLogin() {

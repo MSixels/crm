@@ -1,6 +1,6 @@
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './Login.css'
-import LogoText from '../../imgs/logoText.svg'
+import LogoText from '../../imgs/logoText.png'
 import { MdSchool } from "react-icons/md";
 import { FaBookOpen } from "react-icons/fa6";
 import { ImCheckboxUnchecked } from "react-icons/im";
@@ -180,7 +180,7 @@ function Login() {
     return (
         <div className='containerLogin'>
             <div className='divContent'>
-                <img src={LogoText} alt="logo" />
+                <img src={LogoText} alt="logo" style={{width: '186px'}}/>
                 <div className='divForm'>
                     <div className='divTitle'>
                         <div className='divIcon'>

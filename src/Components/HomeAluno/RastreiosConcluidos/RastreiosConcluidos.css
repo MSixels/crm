@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     margin-top: 24px;
-    border: solid 1px var(--color-2);
+    border: solid 1px var(--primary-200);
     border-radius: 4px;
     margin-bottom: 64px;
 }
@@ -15,7 +15,7 @@
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
     align-items: center;
-    border-bottom: solid 1px var(--color-2);
+    border-bottom: solid 1px var(--primary-200);
 }
 .containerRastreios .divConcluidosRastreio .divHeaderValues .divTitle{
     font-size: 14px;
@@ -36,7 +36,7 @@
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
     align-items: center;
-    border-bottom: solid 1px var(--color-2);
+    border-bottom: solid 1px var(--primary-200);
     position: relative;
 }
 .containerRastreios .divConcluidosRastreio .divValues .divPatient .divlineValue{
@@ -133,7 +133,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: solid 1px var(--color-2);
+    border: solid 1px var(--primary-200);
     padding: 8px 0px;
     border-radius: 4px;
     cursor: pointer;
@@ -142,7 +142,7 @@
     position: absolute;
     right: 30px;
     padding: 3px;
-    border: solid 1px var(--color-2);
+    border: solid 1px var(--primary-200);
     border-radius: 4px;
     background-color: #FFF;
     z-index: 2000;
@@ -236,7 +236,7 @@
     right: 10px;
     background-color: #FFF;
     z-index: 2000;
-    border: solid 1px var(--color-2);
+    border: solid 1px var(--primary-200);
     padding: 3px;
     border-radius: 4px;
 }
@@ -250,5 +250,5 @@
     border-radius: 2px;
 }
 .containerRastreios .containerRenderModalNumberLiner .option:hover{
-    background-color: var(--deep-purple50);
+    background-color: var(--primary-200);
 }

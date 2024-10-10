@@ -39,20 +39,20 @@
     align-items: center;
     padding: 24px;
     gap: 24px;
-    border: 1px solid var(--color-2);
+    border: 1px solid var(--primary-200);
     border-radius: 4px;
     cursor: pointer;
     transition: .3s;
 }
 .containerPreLogin .divOption:hover{
-    border: solid 1px rgb(179, 169, 221);
-    background-color: rgb(253, 248, 255);
+    border: solid 1px var(--primary-300);
+    background-color: var(--bg-1);
 }
 .containerPreLogin .divOption:hover .divIcon{
-    background-color: rgb(179, 169, 221);
+    background-color: var(--primary-300);
 }
 .containerPreLogin .divOption .divIcon{
-    background-color: var(--color-2);
+    background-color: var(--primary-200);
     padding: 9px;
     border-radius: 4px;
     display: flex;
