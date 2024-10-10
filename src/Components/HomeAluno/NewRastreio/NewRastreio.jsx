@@ -8,6 +8,8 @@ import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
+import Header from '../../Header/Header'
+import { IoChevronBack } from "react-icons/io5";
 
 function NewRastreio() {
     const { page } = useParams();
@@ -149,8 +151,36 @@ function NewRastreio() {
         setDisabled(!allAnswered); 
     }, [selectedOptions, currentPage, paginatedQuestions]); 
 
+    const options = [
+        {
+            id: 1,
+            text: 'início',
+            route: '/aluno/home',
+            status: 'active'
+        },
+        {
+            id: 2,
+            text: 'Rastreio',
+            route: `/aluno/rastreio/${page}`,
+            status: 'active'
+        },
+        {
+            id: 3,
+            text: 'Módulos e aulas',
+            route: '/aluno/modulos',
+            status: 'active'
+        },
+    ]
+
     return (
         <div className='containerNewRastreio'>
+            <Header options={options}/>
+            <div className='divTitle'>
+                <dir className='divIcon' onClick={() => navigate('/aluno/rastreio')}>
+                    <IoChevronBack size={20}/>
+                </dir>
+                <h2>Novo rastreio</h2>
+            </div>
             <div className='divContent'>
                 <div className='divHeader'>
                     <h2 style={{ marginBottom: 32, fontSize: 20 }}>
@@ -190,7 +220,7 @@ function NewRastreio() {
                 <div className='divOptions'>
                     {paginatedQuestions.map((qr) => (
                         <div key={qr.id} className='divOption'>
-                            <p className='title'>{qr.id} {qr.quest}</p>
+                            <p className='title'>{qr.id}. {qr.quest}</p>
                             <div className='btns'>
                                 {qr.options.map((op) => (
                                     <div 
@@ -230,6 +260,11 @@ function NewRastreio() {
                             <GrFormNext />
                         </div>
                     </div>
+                </div>
+            </div>
+            <div className='divCancel'>
+                <div className='divBtn' onClick={() => navigate('/aluno/rastreio')}>
+                    <p>Cancelar rastreio</p>
                 </div>
             </div>
         </div>

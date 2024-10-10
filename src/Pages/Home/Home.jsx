@@ -40,12 +40,6 @@ function Home() {
             route: '/aluno/modulos',
             status: 'active'
         },
-        {
-            id: 4,
-            text: 'Ao vivo',
-            route: '/aluno/aovivo',
-            status: 'block'
-        },
     ]
 
     onAuthStateChanged(auth, async (user) => {

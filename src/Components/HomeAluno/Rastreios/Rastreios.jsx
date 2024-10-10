@@ -105,7 +105,7 @@ function Rastreios({ data }) {
     }
 
     const cards = [
-        { id: 1, icon: <FaCircleCheck color='#1BA284' size={32}/>, title: 'Concluídos', value: rastreioCounts.total },
+        { id: 1, icon: <FaCircleCheck size={32}/>, title: 'Concluídos', value: rastreioCounts.total },
         { id: 2, icon: '', title: '3 a 6 anos', value: rastreioCounts.typeQuest1 },
         { id: 3, icon: '', title: 'Até 8 anos', value: rastreioCounts.typeQuest2 },
         { id: 4, icon: '', title: 'Acima de 8 anos', value: rastreioCounts.typeQuest3 },
@@ -127,7 +127,7 @@ function Rastreios({ data }) {
                 {cards.map((c) => (
                     <div key={c.id} className='divCard'>
                         <p className='title'>{c.title}</p>
-                        <p className='value'>{c.icon} {c.value} {c.value > 1 ? 'rastreios' : 'rastreio'}</p>
+                        <p className='value'><p style={{color: c.value === 0 ? '#7991a4' : '#1BA284'}}>{c.icon}</p> {c.value} {c.value > 1 ? 'rastreios' : 'rastreio'}</p>
                     </div>
                 ))}
             </div>

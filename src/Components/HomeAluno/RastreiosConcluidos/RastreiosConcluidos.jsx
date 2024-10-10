@@ -9,6 +9,8 @@ import { deleteDoc, doc } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import { GrNext } from "react-icons/gr";
 import { MdArrowBackIosNew } from "react-icons/md";
+import DropDown from '../../DropDown/DropDown'
+import { FaXmark } from "react-icons/fa6";
 import { 
     evaluateTDAHPotential, 
     evaluateTEAPotential, 
@@ -17,6 +19,7 @@ import {
     evaluateTODPotential, 
     evaluateTDIPotential 
 } from '../../../functions/functions'
+import InputDate from '../../InputDate/InputDate';
 
 function RastreiosConcluidos({ data }) {
     const [patients, setPatients] = useState([])
@@ -27,6 +30,8 @@ function RastreiosConcluidos({ data }) {
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [showModalNumberPages, setShowModalNumberPages] = useState(false)
+    const [searchDrop, setSearchDrop] = useState('Selecione')
+    const [searchDate, setSearchDate] = useState('')
 
     useEffect(() => {
         if (data) {
@@ -53,9 +58,31 @@ function RastreiosConcluidos({ data }) {
         return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     };
 
+    function formatDateToDDMMYYYY(date) {
+        const createdAtDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
+        const day = String(createdAtDate.getDate()).padStart(2, '0'); 
+        const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
+        const year = createdAtDate.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    function formatSearchDate(searchDate) {
+        const [year, month, day] = searchDate.split('-');
+        return `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+    }
+
     const filteredPatients = patients.filter(patient => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
-        return removeAccents(patient.patient).toLowerCase().includes(lowerCaseSearchTerm);
+        const matchesSearchTerm = removeAccents(patient.patient).toLowerCase().includes(lowerCaseSearchTerm);
+        const matchesAgeRange = searchDrop === 'Selecione' || patient.typeQuest === parseInt(searchDrop);
+        if (!patient.createdAt) {
+            return false; 
+        }
+        const formattedPatientDate = formatDateToDDMMYYYY(patient.createdAt);
+        const formattedSearchDate = searchDate ? formatSearchDate(searchDate) : '';
+        const matchesDate = formattedSearchDate === '' || formattedPatientDate === formattedSearchDate;
+    
+        return matchesSearchTerm && matchesAgeRange && matchesDate;
     });
 
     const toggleSortOrder = () => {
@@ -179,6 +206,24 @@ function RastreiosConcluidos({ data }) {
         )
     }
 
+    const dropDownOptions = [
+        { id: 1, name: '3 a 6 anos' },
+        { id: 2, name: 'Até 8 anos' },
+        { id: 3, name: 'Acima de 8 anos' },
+    ];
+
+    const handleDropChange = (option) => {
+        if (option.id) {
+            setSearchDrop(option.id); 
+        } else {
+            setSearchDrop('Selecione');
+        }
+    };
+
+    useEffect(() => {
+        console.log(searchDate)
+    }, [searchDate])
+
     return (
         <>
             <h3 style={{fontSize: 20, marginTop: 64}}>Rastreios concluídos</h3>
@@ -186,7 +231,23 @@ function RastreiosConcluidos({ data }) {
             <div className='divConcluidosRastreio'>
                 <div className='divContent'>
                     <header>
-                        <InputText title='Pesquisar nome' placeH='' onSearchChange={handleSearchChange} />
+                        <div className='contentHeader'>
+                            <InputText title='Pesquisar nome' placeH='' onSearchChange={handleSearchChange} />
+                            <div className='divInput'>
+                                <DropDown title='Faixa Etária' type='Selecione' options={dropDownOptions} onTurmaChange={handleDropChange} />
+                                <div className='divClean' onClick={() => setSearchDrop('Selecione')}>
+                                    <FaXmark />
+                                </div>
+                                
+                            </div>
+                            <div className='divInput'>
+                                <InputDate title='Data' placeH='Selecione' onSearchChange={setSearchDate}/>
+                                <div className='divClean' onClick={() => setSearchDate(null)}>
+                                    <FaXmark />
+                                </div>
+                            </div>
+                        </div>
+                        
                     </header>
                     <div className='divHeaderValues'>
                         {header.map((h) => (

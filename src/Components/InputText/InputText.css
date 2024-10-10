@@ -2,6 +2,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    margin-top: 10px;
 }
 .containerInputText .divInput label{
     position: absolute;

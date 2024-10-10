@@ -3,6 +3,26 @@
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    padding-top: 100px;
+}
+.containerNewRastreio .divTitle{
+    display: flex;
+    align-items: center;
+    color: var(--secondary900);
+    gap: 16px;
+    width: 100%;
+    max-width: 1400px;
+    margin-bottom: 32px;
+}
+.containerNewRastreio .divTitle .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: var(--secondary900);
+    color: #FFF;
+    cursor: pointer;
 }
 .containerNewRastreio .divContent{
     display: flex;
@@ -161,4 +181,26 @@
     background-color: var(--bg-block);
     color: var(--color-block);
     scale: 1;
+}
+.containerNewRastreio .divCancel{
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    max-width: 1400px;
+    padding: 16px;
+    box-shadow: 0px 8px 10px .8px #ccc;
+    border-radius: 10px;
+    margin-top: 32px;
+}
+.containerNewRastreio .divCancel .divBtn{
+    border: solid 1px var(--primary);
+    padding: 8px 22px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: var(--primary);
+    cursor: pointer;
+    transition: .3s;
+}
+.containerNewRastreio .divCancel .divBtn:hover{
+    scale: 1.01;
 }

@@ -9,6 +9,27 @@
 .containerRastreios .divConcluidosRastreio header{
     padding: 16px;
     margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerRastreios .divConcluidosRastreio header .contentHeader{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+}
+.containerRastreios .divConcluidosRastreio header .contentHeader .divInput{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.containerRastreios .divConcluidosRastreio header .contentHeader .divInput .divClean{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    cursor: pointer;
 }
 .containerRastreios .divConcluidosRastreio .divHeaderValues{
     padding: 16px;

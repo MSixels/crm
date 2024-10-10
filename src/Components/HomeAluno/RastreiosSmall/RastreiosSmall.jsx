@@ -54,7 +54,7 @@ function RastreiosSmall({ data }) {
     }
 
     const cards = [
-        { id: 1, icon: <FaCircleCheck color='#1BA284' size={32}/>, title: 'Concluídos', value: rastreioCounts.total },
+        { id: 1, icon: <FaCircleCheck size={32}/>, title: 'Concluídos', value: rastreioCounts.total },
     ];
 
     return (
@@ -71,7 +71,7 @@ function RastreiosSmall({ data }) {
                 {cards.map((c) => (
                     <div key={c.id} className='divCard' onClick={() => navigate('/aluno/rastreio')}>
                         <p className='title'>{c.title}</p>
-                        <p className='value'>{c.icon} {c.value} rastreios</p>
+                        <p className='value'><p style={{color: c.value === 0 ? '#7991a4' : '#1BA284'}}>{c.icon}</p> {c.value} rastreios</p>
                     </div>
                 ))}
                 <ButtonBold title='Iniciar novo rastreio' icon={<FaCirclePlus size={20}/>} action={clickBtn} />
