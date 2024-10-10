@@ -8,6 +8,8 @@ import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { doc, setDoc } from 'firebase/firestore';
+import emailjs from 'emailjs-com';
+
 
 function ModalCreateAluno({ title, close }) {
     const [name, setName] = useState('');
@@ -16,9 +18,7 @@ function ModalCreateAluno({ title, close }) {
     const [nameError, setNameError] = useState(false);
     const [
         createUserWithEmailAndPassword,
-        user,
         loading,
-        error,
     ] = useCreateUserWithEmailAndPassword(auth);
 
     const getName = (newName) => {
@@ -56,47 +56,66 @@ function ModalCreateAluno({ title, close }) {
                 setEmailError(true);
                 return;
             }
-
+    
             setNameError(false);
             setEmailError(false);
             const randomPassword = generateRandomPassword();
-
-            createUserWithEmailAndPassword(email, randomPassword)
-            .then(async (userCredential) => {
-                const userId = userCredential.user.uid;
-
-                await setDoc(doc(firestore, 'users', userId), {
-                    name: name,
-                    email: email,
-                    type: 3,
-                    userId: userId,
-                    password: randomPassword,
-                    isActive: false
+    
+            try {
+                await sendEmail(name, email, randomPassword);
+                
+                createUserWithEmailAndPassword(email, randomPassword)
+                .then(async (userCredential) => {
+                    const userId = userCredential.user.uid;
+    
+                    await setDoc(doc(firestore, 'users', userId), {
+                        name: name,
+                        email: email,
+                        type: 3,
+                        userId: userId,
+                        isActive: false
+                    });
+    
+                    close(false); 
+                })
+                .catch((error) => {
+                    console.error("Erro ao criar usuário no Firebase Auth:", error);
                 });
-                sendEmail(name, email, randomPassword);
-                close(false);
-            })
-            .catch((error) => {
-                console.error("Erro ao criar usuário no Firebase Auth:", error);
-            });
+                
+    
+            } catch (error) {
+                console.error('Erro ao enviar e-mail:', error);
+            }
         }
-    };
-
-    const sendEmail = (name, email, password) => {
-        fetch('https://sendemails-production-9546.up.railway.app/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json', 
-            },
-            body: JSON.stringify({name, email, password})
-        })
-        .then(response => response.json())
-        .then(data => console.log('Email enviado com sucesso', data))
-        .catch((error) => console.error('Erro ao enviar email:', error));
-
     };
     
 
+    const sendEmail = (name, email, password) => {
+        return new Promise((resolve, reject) => {
+            const serviceID = 'service_yu2qcoh';
+            const templateID = 'template_k0dirrv'; 
+            const userID = 'XQKknTXcK4xvRN9B3'; 
+    
+            const templateParams = {
+                to_name: name,
+                to_email: email,
+                to_password: password,
+            };
+    
+            emailjs.send(serviceID, templateID, templateParams, userID)
+            .then((response) => {
+                console.log('E-mail enviado com sucesso!', response.status, response.text);
+                resolve(); 
+            })
+            .catch((error) => {
+                console.error('Erro ao enviar e-mail:', error);
+                reject(error); 
+            });
+        });
+    };
+
+    
+    
     return (
         <div className='containerModalCreateAluno'>
             <div className='modalCreate'>
