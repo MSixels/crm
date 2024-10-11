@@ -655,6 +655,10 @@ export const questsRestreioType3 = [
 export const modulos_opcao_2 = [
     {
         id: 1,
+        name: 'Semana 1',
+        professor: 'Fernando Felicio',
+        description: 'Essa é a descrição do módulo 1',
+        validade: '10/12/2024',
         conteudo: [
             {
                 id: 1,
