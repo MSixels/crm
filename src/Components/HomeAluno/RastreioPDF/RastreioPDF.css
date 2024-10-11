@@ -1,0 +1,244 @@
+.containerRastreioPDF{
+    width: 100%;
+    max-width: 1500px;
+    padding: 0px 24px;
+    color: var(--secondary1000);
+}
+.containerRastreioPDF .title{
+    font-size: 32px;
+    margin-bottom: 18px;
+}
+.containerRastreioPDF .subtitle{
+    font-size: 18px
+}
+.containerRastreioPDF .divContentCardsPDF{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-top: solid 1px var(--secondary100);
+    border-bottom: solid 1px var(--secondary100);
+    margin-top: 18px;
+    padding-block: 18px;
+}
+.containerRastreioPDF .divContentCardsPDF .divCradsPDF {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px; 
+    width: 100%;
+}
+.containerRastreioPDF .divContentCardsPDF .divCradsPDF .divCardPDF {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border: solid 1px var(--border-light);
+    border-radius: 4px;
+    margin: 0; 
+    color: var(--secondary1000);
+    cursor: pointer;
+}
+.containerRastreioPDF .divCradsPDF .divCardPDF .title {
+    font-size: 13px;
+}
+.containerRastreioPDF .divCradsPDF .divCardPDF .value {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-weight: 600;
+}
+.containerRastreioPDF .divContentValuesPDF{
+    display: flex;
+    flex-direction: column;
+    margin-top: 18px;
+    border: solid 1px #ccc;
+    border-radius: 4px;
+    margin-bottom: 18px;
+}
+.containerRastreioPDF .divContentValuesPDF header{
+    padding: 16px;
+    margin-top: 24px;
+}
+.containerRastreioPDF .divContentValuesPDF .divHeaderValues{
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);;
+    align-items: center;
+    border-bottom: solid 1px var(--border-light);
+}
+.containerRastreioPDF .divContentValuesPDF .divHeaderValues .divTitle{
+    font-size: 5px;
+}
+.containerRastreioPDF .divContentValuesPDF .divPatientsPDF .divPatientPDF{
+    padding:8px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);;
+    align-items: center;
+    border-bottom: solid 1px var(--border-light);
+}
+.containerRastreioPDF .containerGraficMiniPDF{
+    display: flex;
+    gap: 1px;
+    align-items: end;
+}
+.containerRastreioPDF .containerGraficMiniPDF .bar{
+    width: 2px;
+    background-color: var(--secondary500);
+    border-radius: 2px;
+}
+.containerRastreioPDF .containerGraficMiniPDF .bar-1{
+    height: 3px;
+}
+.containerRastreioPDF .containerGraficMiniPDF .bar-2{
+    height: 6px
+}
+.containerRastreioPDF .containerGraficMiniPDF .bar-3{
+    height: 9px;
+}
+.containerRastreioPDF .containerGraficMiniPDF .bar-4{
+    height: 12px;
+}
+.containerRastreioPDF .containerGraficMiniPDF .green{
+    background-color: var(--success);
+}
+.containerRastreioPDF .containerGraficMiniPDF .yellow{
+    background-color: var(--warning200);
+}
+.containerRastreioPDF .containerGraficMiniPDF .red{
+    background-color: var(--error);
+}
+.containerRastreioPDF .divValuesPDF{
+    margin-top: 18px;
+}
+.containerRastreioPDF .divValuesPDF .titleValues{
+    font-size: 8px;
+    font-weight: 500;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF{
+    display: flex;
+    flex-direction: column;
+    margin-top: 24px;
+    border: solid 1px var(--border-light);
+    border-radius: 4px;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF header{
+    padding: 16px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF header .contentHeader{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF header .contentHeader .divInput{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF header .contentHeader .divInput .divClean{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF .divHeaderValues{
+    padding: 8px;
+    display: grid;
+    grid-template-columns: repeat(9, 1fr);;
+    align-items: center;
+    border-bottom: solid 1px var(--border-light);
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF .divHeaderValues .divTitle{
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-right: 3px;
+    font-weight: 500;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF .divHeaderValues .divTitle .iconClick{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF .divHeaderValues .headerTitlePDF{
+    font-size: 8px;
+    font-weight: 500;
+}
+.containerRastreioPDF .divValuesPDF .divContentValuesPDF .divPatientsPDF .divPatientPDF .divlineValuePDF{
+    font-size: 8px;
+}
+.containerRastreioPDF .containerGraficMiniPDF{
+    display: flex;
+    gap: 2px;
+    align-items: end;
+}
+.containerRastreioPDF .containerGraficMiniPDF .yellow{
+    background-color: var(--warning200);
+}
+.containerRastreioPDF .containerGraficMiniPDF .red{
+    background-color: var(--error);
+}
+.containerRastreioPDF .high{
+    display: flex;
+    gap: 2px;
+    align-items: end;
+}
+.containerRastreioPDF .high .bar{
+    width: 4px;
+    background-color: var(--secondary500);
+    border-radius: 4px;
+}
+.containerRastreioPDF .high .bar-1{
+    height: 5px;
+}
+.containerRastreioPDF .high .bar-2{
+    height: 10px
+}
+.containerRastreioPDF .high .bar-3{
+    height: 15px;
+}
+.containerRastreioPDF .high .bar-4{
+    height: 20px;
+}
+.containerRastreioPDF .high .green{
+    background-color: var(--success);
+}
+.containerRastreioPDF .high .yellow{
+    background-color: var(--warning200);
+}
+.containerRastreioPDF .high .red{
+    background-color: var(--error);
+}
+.containerRastreioPDF .footer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 18px;
+    border-top: solid 1px var(--border-light);
+    margin-top: 18px;
+}
+.containerRastreioPDF .legendas{
+    display: flex;
+    align-items: center;
+    gap:32px;
+    font-size: 12px;
+}
+.containerRastreioPDF .legendas .bold{
+    font-weight: bold;
+}
+.containerRastreioPDF .legendas .divBtnBackNext{
+    cursor: pointer;
+}
+.containerRastreioPDF .legendas .l_graficos{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+

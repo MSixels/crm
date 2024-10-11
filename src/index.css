@@ -5,6 +5,7 @@
   --bg-White:#FFF;
   --yellow-1: #FDB415;
   --primary-200:#DAE1E7;
+  --border-light:#E0E0E0;
   --color-3:#B6C3CD;
   --bg-btnConfirm:#222D7E;
   --color-textLine:#007AFF;
@@ -37,7 +38,7 @@
   --success-light:#e4faf5;
   --warning200:#EDA145;
   --warning50:#fceede;
-  --blur:#00000048;
+  --blur:#00000065;
   --error: #D32F2F;
   --errorHover: #d32f2f3b;
   

@@ -1,5 +1,5 @@
 import './RastreiosConcluidos.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 import InputText from '../../InputText/InputText'
 import { FaAngleDown } from "react-icons/fa6";
@@ -10,7 +10,6 @@ import { firestore } from '../../../services/firebaseConfig'
 import { GrNext } from "react-icons/gr";
 import { MdArrowBackIosNew } from "react-icons/md";
 import DropDown from '../../DropDown/DropDown'
-import { FaXmark } from "react-icons/fa6";
 import { 
     evaluateTDAHPotential, 
     evaluateTEAPotential, 
@@ -20,8 +19,10 @@ import {
     evaluateTDIPotential 
 } from '../../../functions/functions'
 import InputDate from '../../InputDate/InputDate';
+import ButtonBold from '../../ButtonBold/ButtonBold';
+import { FaDownLong } from "react-icons/fa6";
 
-function RastreiosConcluidos({ data }) {
+function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     const [patients, setPatients] = useState([])
     const [searchTerm, setSearchTerm] = useState('');
     const [sortOrder, setSortOrder] = useState('desc');
@@ -47,8 +48,6 @@ function RastreiosConcluidos({ data }) {
             console.error('Expected data to be an array or an object, but got:', data);
         }
     }, [data]);
-
-    
 
     const handleSearchChange = (newSearchTerm) => {
         setSearchTerm(newSearchTerm); 
@@ -85,6 +84,8 @@ function RastreiosConcluidos({ data }) {
         return matchesSearchTerm && matchesAgeRange && matchesDate;
     });
 
+    
+
     const toggleSortOrder = () => {
         setSortOrder(prevSortOrder => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
     };
@@ -99,6 +100,12 @@ function RastreiosConcluidos({ data }) {
             return dateB - dateA; 
         }
     }).slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
+    useEffect(() => {
+        if (filteredPatients.length > 0) {
+            valuesPDF(filteredPatients);  
+        }
+    }, [filteredPatients, valuesPDF]);
 
     const handleNextPage = () => {
         if ((currentPage + 1) * itemsPerPage < filteredPatients.length) {
@@ -224,6 +231,10 @@ function RastreiosConcluidos({ data }) {
         console.log(searchDate)
     }, [searchDate])
 
+    const btnGerarPDF = () => {
+        confirmPDF(true)
+    }
+
     return (
         <>
             <h3 style={{fontSize: 20, marginTop: 64}}>Rastreios concluídos</h3>
@@ -235,19 +246,12 @@ function RastreiosConcluidos({ data }) {
                             <InputText title='Pesquisar nome' placeH='' onSearchChange={handleSearchChange} />
                             <div className='divInput'>
                                 <DropDown title='Faixa Etária' type='Selecione' options={dropDownOptions} onTurmaChange={handleDropChange} />
-                                <div className='divClean' onClick={() => setSearchDrop('Selecione')}>
-                                    <FaXmark />
-                                </div>
-                                
                             </div>
                             <div className='divInput'>
                                 <InputDate title='Data' placeH='Selecione' onSearchChange={setSearchDate}/>
-                                <div className='divClean' onClick={() => setSearchDate(null)}>
-                                    <FaXmark />
-                                </div>
                             </div>
                         </div>
-                        
+                        <ButtonBold title='Gerar PDF' icon={<FaDownLong />} action={btnGerarPDF}/>
                     </header>
                     <div className='divHeaderValues'>
                         {header.map((h) => (
@@ -363,6 +367,8 @@ function RastreiosConcluidos({ data }) {
 
 RastreiosConcluidos.propTypes = {
     data: PropTypes.array.isRequired,
+    confirmPDF: PropTypes.bool.isRequired,
+    valuesPDF: PropTypes.array.isRequired,
 };
 
 export default RastreiosConcluidos;

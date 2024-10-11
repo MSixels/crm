@@ -1,6 +1,6 @@
 .containerInputDate .divInput{
     display: flex;
-    flex-direction: column;
+    
     position: relative;
     margin-top: 10px;
 }

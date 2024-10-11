@@ -20,6 +20,7 @@ function Home() {
     const [userName, setUserName] = useState('usuário')
     const [userType, setUserType] = useState(null)
     const [rastreios, setRastreios] = useState([])
+    const [nome, setNome] = useState('')
     const validPages = ['home', 'rastreio', 'modulos']; 
     const options = [
         {
@@ -107,6 +108,7 @@ function Home() {
         
                 if (docSnap.exists()) {
                     setUserName(docSnap.data().name?.split(" ")[0]);
+                    setNome(docSnap.data().name)
                     setUserType(docSnap.data().type)
                 } else {
                     console.log("Nenhum usuário encontrado!");
@@ -141,7 +143,7 @@ function Home() {
             }
             {page === 'rastreio' && 
                 <div className='divContentHome'>
-                    <Rastreios data={[rastreios]}/>
+                    <Rastreios data={[rastreios]} userName={nome}/>
                 </div>
             }
             {page === 'modulos' && 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import './DropDown.css'
 import { IoIosArrowUp } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
+import { FaXmark } from 'react-icons/fa6';
 
 function DropDown({ title, type, options, onTurmaChange }) {
     const [selected, setSelected] = useState(type);
@@ -17,7 +18,12 @@ function DropDown({ title, type, options, onTurmaChange }) {
     };
 
     const handleSelectTurma = (option) => {
-        setSelected(option.name);
+        if(option.name){
+            setSelected(option.name);
+        } else{
+            setSelected(option);
+        }
+        
         onTurmaChange(option);
         setIsDropdownOpen(false);
     };
@@ -27,7 +33,7 @@ function DropDown({ title, type, options, onTurmaChange }) {
             <div className='dropdownInput' onClick={toggleDropdown}>
                 <span className='label'>{title}</span>
                 <span>{selected}</span>
-                <span>{isDropdownOpen ? <IoIosArrowUp size={20} /> : <IoIosArrowDown size={20} />}</span>
+                <span>{selected != 'Selecione' ? <span onClick={() => handleSelectTurma('Selecione')}><FaXmark /></span> : isDropdownOpen ? <IoIosArrowUp size={20} /> : <IoIosArrowDown size={20} />}</span>
             </div>
             {isDropdownOpen && (
                 <div className='dropdownList'>

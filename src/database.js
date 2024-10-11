@@ -11,7 +11,7 @@ export const modulos = [
         provasFeitas: 0,
         workCampoTotal: 2,
         workCampoFeitas: 0,
-        status: 'active',
+        status: 'start',
     },
     {
         id: 2,

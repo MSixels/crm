@@ -1,7 +1,7 @@
 import './Rastreios.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
-import { FaCirclePlus } from 'react-icons/fa6'
-import { useEffect, useState } from 'react'
+import { FaCirclePlus, FaDownLong } from 'react-icons/fa6'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import ModalCreateRastreio from '../../ModalCreateRastreio/ModalCreateRastreio'
 import PropTypes from 'prop-types'
 import { FaCircleCheck } from "react-icons/fa6";
@@ -9,14 +9,20 @@ import RastreiosConcluidos from '../RastreiosConcluidos/RastreiosConcluidos'
 import PopUpRastreioSuccess from '../PopUpRastreioSuccess/PopUpRastreioSuccess'
 import { useNavigate } from 'react-router-dom'
 import LastRastreio from '../LastRastreio/LastRastreio'
+import RastreioPDF from '../RastreioPDF/RastreioPDF'
+import html2pdf from 'html2pdf.js';
+import { FaXmark } from "react-icons/fa6";
 
-function Rastreios({ data }) {
+function Rastreios({ data, userName }) {
     const navigate = useNavigate()
     const [showModal, setShowModal] = useState(false)
     const [showNewRastreio, setShowNewRastreio] = useState(false)
     const [showPopUp, setShowPopUp] = useState(false)
     const [namePopUp, setNamePopUp] = useState('')
     const [idadePopUp, setIdadePopUp] = useState('')
+    const componentRef = useRef();
+    const [dataPDF, setDataPDF] = useState([])
+    const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
     const [rastreioCounts, setRastreioCounts] = useState({
         total: 0,
         typeQuest1: 0,
@@ -104,12 +110,69 @@ function Rastreios({ data }) {
         setShowModal(close);
     }
 
-    const cards = [
-        { id: 1, icon: <FaCircleCheck size={32}/>, title: 'Concluídos', value: rastreioCounts.total },
+    const cards = useMemo(() => [
+        { id: 1, icon: 'active', title: 'Concluídos', value: rastreioCounts.total },
         { id: 2, icon: '', title: '3 a 6 anos', value: rastreioCounts.typeQuest1 },
         { id: 3, icon: '', title: 'Até 8 anos', value: rastreioCounts.typeQuest2 },
         { id: 4, icon: '', title: 'Acima de 8 anos', value: rastreioCounts.typeQuest3 },
-    ];
+    ], [rastreioCounts]);
+
+    const [updatedCards, setUpdatedCards] = useState(cards);
+
+    useEffect(() => {
+        console.log('rastreioCounts:', rastreioCounts); // Verifique se 'rastreioCounts' está recebendo os valores corretamente
+    }, [rastreioCounts]);
+
+    useEffect(() => {
+        console.log('cards:', cards); 
+        setUpdatedCards(cards);
+    }, [cards]);
+
+    const gerarPdf = (confirm) => {
+        if(confirm){
+            setIsGeneratingPDF(true)
+            /*
+            console.log('Iniciando PDF')
+            
+            const element = componentRef.current;
+
+            const opt = {
+                margin: 0.15,
+                filename: 'relatorio_rastreios.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+    
+            html2pdf().from(element).set(opt).save();
+            */
+        }
+        
+    };
+
+    const baixarPDF = (confirm) => {
+        if(confirm){
+            const element = componentRef.current;
+
+            const opt = {
+                margin: 0.15,
+                filename: 'relatorio_rastreios.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+    
+            html2pdf().from(element).set(opt).save();
+
+        }
+        
+    }
+
+    const valoresPDF = (newValuesPDF) => {
+        if (newValuesPDF && JSON.stringify(newValuesPDF) !== JSON.stringify(dataPDF)) {
+            setDataPDF(newValuesPDF);
+        }
+    };
 
     return (
         <div className='containerRastreios'>
@@ -127,17 +190,33 @@ function Rastreios({ data }) {
                 {cards.map((c) => (
                     <div key={c.id} className='divCard'>
                         <p className='title'>{c.title}</p>
-                        <p className='value'><p style={{color: c.value === 0 ? '#7991a4' : '#1BA284'}}>{c.icon}</p> {c.value} {c.value > 1 ? 'rastreios' : 'rastreio'}</p>
+                        <p className='value'><p style={{color: c.value === 0 ? '#7991a4' : '#1BA284'}}>{c.icon === 'active' ? <FaCircleCheck size={32}/> : ''}</p> {c.value} {c.value > 1 ? 'rastreios' : 'rastreio'}</p>
                     </div>
                 ))}
             </div>
-            <RastreiosConcluidos data={data}/>
+            <RastreiosConcluidos data={data} confirmPDF={gerarPdf} valuesPDF={valoresPDF}/>
+            <div className={`divPDF ${isGeneratingPDF ? 'showPDF' : ''}`}>
+                <div className='divBtnsPDF'>
+                    <ButtonBold title='Baixar PDF' icon={<FaDownLong />} action={baixarPDF}/>
+                    <div className='divIcon' onClick={() => setIsGeneratingPDF(false)}>
+                        <FaXmark size={24}/>
+                    </div>
+                </div>
+                <div className='divPDFSheet' >
+                    <div ref={componentRef}>
+                        {updatedCards.length > 0 && (
+                            <RastreioPDF dataCards={updatedCards} dataValues={dataPDF} alunoName={userName}/>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
 
 Rastreios.propTypes = {
     data: PropTypes.array.isRequired,
+    userName: PropTypes.string.isRequired,
 };
 
 export default Rastreios;
