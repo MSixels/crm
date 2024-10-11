@@ -47,34 +47,19 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
 }
+
 html::-webkit-scrollbar {
-  width: 10px;
-}
-
-html::-webkit-scrollbar-button {
-  display: none;
-}
-
-html::-webkit-scrollbar-track {
-  background-color: #DAE1E7;
-  border-radius: 10px;
+  width: 6px; 
 }
 
 html::-webkit-scrollbar-thumb {
-  background-color: var(--primary);
+  background-color: #ccc; 
   border-radius: 10px;
-  border: 5px solid #DAE1E7;
 }
 
-html::-webkit-scrollbar-thumb:hover {
-  background-color: #222D7E;
+html::-webkit-scrollbar-track {
+  background-color: #f1f1f1; 
 }
-
-html {
-  scrollbar-width: thin;
-  scrollbar-color: var(--primary) #DAE1E7;
-}
-
 html {
   overflow-y: scroll;
 }

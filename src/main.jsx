@@ -99,13 +99,21 @@ const router = createBrowserRouter([
   {
     path: `/professor`,
     element: (
-      <Navigate to="/professor/alunos" replace />
+      <ProtectedRoute
+        element={<Navigate to="/professor/alunos" replace />}
+        typeUser={2} 
+        allowedTypes={[1, 2]} 
+      />
     ),
   },
   {
     path: `/aluno`,
     element: (
-      <Navigate to="/aluno/home" replace />
+      <ProtectedRoute
+        element={<Navigate to="/aluno/home" replace />}
+        typeUser={3} 
+        allowedTypes={[3]} 
+      />
     ),
   },
   {
