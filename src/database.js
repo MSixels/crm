@@ -650,3 +650,232 @@ export const questsRestreioType3 = [
         options: optionsRastreios    
     },
 ]
+
+
+export const modulos_opcao_2 = [
+    {
+        id: 1,
+        conteudo: [
+            {
+                id: 1,
+                name: 'Conteudo 1',
+                aula: [
+                    {
+                        id: 1,
+                        name: 'Aula 1',
+                        description: 'Sua Descrição da aula 1',
+                        videoUrl: 'https://youtu.be/32gXLvKklPQ?si=jVOmGE7nzuUxayLr',
+                        material: [
+                            {id: 1, arq: 'arquivo_1.pdf'},
+                            {id: 2, arq: 'arquivo_2.pdf'},
+                        ]
+                    }
+                ],
+                prova: [
+                    {
+                        id: 1,
+                        title: 'Prova 1',
+                        description: 'Sua Descrição da prova 1',
+                        config: [
+                            {id: 1, toggle: false, text: 'Ordenar as questões de forma aleatória'},
+                            {id: 2, toggle: false, text: 'Ordenar as opções de respostas de forma aleatória'},
+                            {id: 3, toggle: false, text: 'Valor das questões distribuídos igualitariamente'},
+                            {id: 4, toggle: false, text: 'Questões da prova aleatórias para cada tentativa'},
+                        ],
+                        questNumber: 10,
+                        quests: [
+                            {
+                                id: 1,
+                                quest: 'Título da pergunta 1',
+                                responde: [
+                                    {
+                                        id: 1,
+                                        text: 'Resposta 1 da pergunta 1',
+                                        value: true
+                                    },
+                                    {
+                                        id: 2,
+                                        text: 'Resposta 2 da pergunta 1',
+                                        value: true
+                                    },
+                                    {
+                                        id: 3,
+                                        text: 'Resposta 3 da pergunta 1',
+                                        value: true
+                                    },
+                                    {
+                                        id: 4,
+                                        text: 'Resposta 4 da pergunta 1',
+                                        value: true
+                                    },
+                                ]
+                            },
+                            {
+                                id: 2,
+                                quest: 'Título da pergunta 2',
+                                responde: [
+                                    {
+                                        id: 1,
+                                        text: 'Resposta 1 da pergunta 2',
+                                        value: true
+                                    },
+                                    {
+                                        id: 2,
+                                        text: 'Resposta 2 da pergunta 2',
+                                        value: true
+                                    },
+                                    {
+                                        id: 3,
+                                        text: 'Resposta 3 da pergunta 2',
+                                        value: true
+                                    },
+                                    {
+                                        id: 4,
+                                        text: 'Resposta 4 da pergunta 2',
+                                        value: true
+                                    },
+                                ]
+                            },
+                            {
+                                id: 3,
+                                quest: 'Título da pergunta 3',
+                                responde: [
+                                    {
+                                        id: 1,
+                                        text: 'Resposta 1 da pergunta 3',
+                                        value: true
+                                    },
+                                    {
+                                        id: 2,
+                                        text: 'Resposta 2 da pergunta 3',
+                                        value: true
+                                    },
+                                    {
+                                        id: 3,
+                                        text: 'Resposta 3 da pergunta 3',
+                                        value: true
+                                    },
+                                    {
+                                        id: 4,
+                                        text: 'Resposta 4 da pergunta 3',
+                                        value: true
+                                    },
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: 'Conteudo 2',
+                aula: [
+                    {
+                        id: 1,
+                        name: 'Aula 2',
+                        description: 'Sua Descrição da aula 2',
+                        videoUrl: 'https://youtu.be/32gXLvKklPQ?si=jVOmGE7nzuUxayLr',
+                        material: [
+                            {id: 1, arq: 'arquivo_1.pdf'},
+                            {id: 2, arq: 'arquivo_2.pdf'},
+                        ]
+                    }
+                ],
+                prova: [
+                    {
+                        id: 1,
+                        title: 'Prova 2',
+                        description: 'Sua Descrição da prova 2',
+                        config: [
+                            {id: 1, toggle: false, text: 'Ordenar as questões de forma aleatória'},
+                            {id: 2, toggle: false, text: 'Ordenar as opções de respostas de forma aleatória'},
+                            {id: 3, toggle: false, text: 'Valor das questões distribuídos igualitariamente'},
+                            {id: 4, toggle: false, text: 'Questões da prova aleatórias para cada tentativa'},
+                        ],
+                        questNumber: 10,
+                        quests: [
+                            {
+                                id: 1,
+                                quest: 'Título da pergunta 1',
+                                responde: [
+                                    {
+                                        id: 1,
+                                        text: 'Resposta 1 da pergunta 1',
+                                        value: true
+                                    },
+                                    {
+                                        id: 2,
+                                        text: 'Resposta 2 da pergunta 1',
+                                        value: true
+                                    },
+                                    {
+                                        id: 3,
+                                        text: 'Resposta 3 da pergunta 1',
+                                        value: true
+                                    },
+                                    {
+                                        id: 4,
+                                        text: 'Resposta 4 da pergunta 1',
+                                        value: true
+                                    },
+                                ]
+                            },
+                            {
+                                id: 2,
+                                quest: 'Título da pergunta 2',
+                                responde: [
+                                    {
+                                        id: 1,
+                                        text: 'Resposta 1 da pergunta 2',
+                                        value: true
+                                    },
+                                    {
+                                        id: 2,
+                                        text: 'Resposta 2 da pergunta 2',
+                                        value: true
+                                    },
+                                    {
+                                        id: 3,
+                                        text: 'Resposta 3 da pergunta 2',
+                                        value: true
+                                    },
+                                    {
+                                        id: 4,
+                                        text: 'Resposta 4 da pergunta 2',
+                                        value: true
+                                    },
+                                ]
+                            },
+                            {
+                                id: 3,
+                                quest: 'Título da pergunta 3',
+                                responde: [
+                                    {
+                                        id: 1,
+                                        text: 'Resposta 1 da pergunta 3',
+                                        value: true
+                                    },
+                                    {
+                                        id: 2,
+                                        text: 'Resposta 2 da pergunta 3',
+                                        value: true
+                                    },
+                                    {
+                                        id: 3,
+                                        text: 'Resposta 3 da pergunta 3',
+                                        value: true
+                                    },
+                                    {
+                                        id: 4,
+                                        text: 'Resposta 4 da pergunta 3',
+                                        value: true
+                                    },
+                                ]
+                            },
+                        ]
+                    }
+                ]
+            },
+        ]
+    }
+]
