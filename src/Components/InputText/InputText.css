@@ -1,10 +1,17 @@
+.containerInputText{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
 .containerInputText .divInput{
     display: flex;
     flex-direction: column;
     position: relative;
-    margin-top: 10px;
 }
-.containerInputText .divInput label{
+.mt-10{
+    margin-top: -10px;
+}
+.containerInputText .divInput span{
     position: absolute;
     top: 0px;
     left: 15px;
@@ -18,7 +25,7 @@
     font-size: 12px;
 }
 .containerInputText .divInput .input{
-    border: solid 1px var(--primary-200);
+    border: solid 1px var(--secondary200);
     padding-inline: 12px;
     padding-block: 16px;
     border-radius: 4px;
