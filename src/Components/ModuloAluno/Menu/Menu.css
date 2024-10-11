@@ -1,5 +1,6 @@
-.containerMenu{
+.containerMenu {
     display: flex;
+    position: fixed;
     flex-direction: column;
     padding: 32px 24px;
     width: 320px;
@@ -7,6 +8,25 @@
     color: var(--secondary800);
     flex-shrink: 0;
     padding-top: 100px;
+    background-color: #FFF;
+    overflow-y: auto; 
+    height: 100vh; 
+}
+.containerMenu::-webkit-scrollbar {
+    width: 6px; 
+}
+
+.containerMenu::-webkit-scrollbar-thumb {
+    background-color: #ccc; 
+    border-radius: 10px;
+}
+
+.containerMenu::-webkit-scrollbar-track {
+    background-color: #f1f1f1; 
+}
+
+.containerMenu .ft14{
+    font-size: 14px;
 }
 .containerMenu .divContentMenu{
     display: flex;
@@ -26,7 +46,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 18px;
+    font-size: 16px;
     margin-top: 10px;
 }
 .containerMenu .divOptions{
@@ -34,7 +54,7 @@
     flex-direction: column;
     gap: 30px;
     padding: 32px 0px;
-    font-size: 18px;
+    font-size: 16px;
     border-bottom: solid 1px #ccc;
 }
 .containerMenu .divOptions .option{

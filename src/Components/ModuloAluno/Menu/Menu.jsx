@@ -24,17 +24,17 @@ function Menu({modulo}) {
     const options = [
         {
             id: 1,
-            icon: <SiGoogleclassroom size={40}/>,
+            icon: <SiGoogleclassroom size={20}/>,
             text: 'Aulas',
         },
         {
             id: 2,
-            icon: <FaUser size={30}/>,
+            icon: <FaUser size={20}/>,
             text: 'Professor',
         },
         {
             id: 3,
-            icon: <MdOutlineErrorOutline size={30}/>,
+            icon: <MdOutlineErrorOutline size={20}/>,
             text: 'Reportar problema',
         },
     ]
@@ -50,10 +50,10 @@ function Menu({modulo}) {
             </div>
             {modulo && (
                 <div className='divContentMenu'>
-                    <span>Disponível até {modulo.timesEnd}</span>
+                    <span className='ft14'>Disponível até {modulo.timesEnd}</span>
                     <div className='divName'>
                         <h2>{modulo.name}</h2>
-                        <span className='progressPorcent'>{modulo.status !== 'block' ? `${calculateProgress(modulo) > 0 ? `${calculateProgress(modulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
+                        <span className='progressPorcent ft14'>{modulo.status !== 'block' ? `${calculateProgress(modulo) > 0 ? `${calculateProgress(modulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
                     </div>
                     <ProgressBar modulo={modulo}/>
                     <div className='infos'>
