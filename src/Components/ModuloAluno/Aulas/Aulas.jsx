@@ -1,13 +1,12 @@
 import './Aulas.css';
 import PropTypes from 'prop-types';
-import { FaPlay, FaCheckCircle, FaLock, FaChalkboardTeacher, FaClipboardList } from "react-icons/fa";
+import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { moduloContent } from '../../../database';
 
 function Aulas({ modulo }) {
     const navigate = useNavigate();
-    
     const [todosConcluidos, setTodosConcluidos] = useState(false);
 
     const handleStartContent = (moduloId, contentId) => {
@@ -22,7 +21,7 @@ function Aulas({ modulo }) {
                 return <button className='btn-access'>Ver Respostas</button>;
             }
         } else if (contentItem.status === "blocked") {
-            return <FaLock color='gray' />;
+            return null;
         } else {
             return <button onClick={() => handleStartContent(moduloId, contentId)}>Iniciar</button>;
         }
@@ -38,9 +37,9 @@ function Aulas({ modulo }) {
 
     const renderIcon = (type) => {
         if (type === "Aula" || type === "Ao Vivo") {
-            return <FaChalkboardTeacher />;
+            return <FaVideo color='#4A5E6D'/>;
         } else if (type === "Teste" || type === "Prova") {
-            return <FaClipboardList />;
+            return <FaBookOpen color='#4A5E6D'/>;
         }
     };
 
@@ -58,8 +57,8 @@ function Aulas({ modulo }) {
                 <div className='divContent'>
                     <div className='divHeadLine'>
                         <div className='textHeadLine'>
-                            <h2>{modulo.name}</h2>
-                            <span>{modulo.description}</span>
+                            <h2 className='moduleName'>{modulo.name}</h2>
+                            <span className='moduleDescription'>{modulo.description}</span>
                         </div>
                         <button className='btn-continue'>Continuar de onde parou <FaPlay /></button>
                     </div>
@@ -69,18 +68,25 @@ function Aulas({ modulo }) {
                             <h3 className='titleContent'>{weekItem.week}: {weekItem.title} ({weekItem.date})</h3>
 
                             {weekItem.content.map((contentItem, idx) => (
-                                <div key={idx} className={`contentRow ${contentItem.status}`}>
+                                <div
+                                    key={idx}
+                                    className={`contentRow ${contentItem.status === 'blocked' ? 'blocked' : ''}`}
+                                >
                                     <div className="contentInfo">
-                                        {contentItem.status === 'completed' ? (
-                                            <FaCheckCircle color='green' />
-                                        ) : (
+                                        {contentItem.status === 'blocked' ? (
                                             <FaLock color='gray' />
+                                        ) : (
+                                            contentItem.status === 'completed' ? (
+                                                <FaCheckCircle color='#1BA284' />
+                                            ) : (
+                                                <FaCircle color='#222D7E' />
+                                            )
                                         )}
                                         {renderIcon(contentItem.type)}
                                         <span>{contentItem.type} - {contentItem.title} ({contentItem.duration})</span>
                                         {renderScore(contentItem.score)}
                                     </div>
-                                    {renderButton(contentItem)}
+                                    {renderButton(contentItem, modulo.id, idx)}
                                 </div>
                             ))}
                         </div>
@@ -90,7 +96,7 @@ function Aulas({ modulo }) {
                         className={`nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}`}
                         disabled={!todosConcluidos}
                     >
-                        Próximo Módulo
+                        Próximo Módulo &gt;
                     </button>
                 </div>
             )}

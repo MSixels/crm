@@ -6,11 +6,35 @@
     padding-top: 100px;
     padding-left: 350px;
 }
-.containerAulas .divContent{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+
+.moduleName {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--secondary1000);
 }
+
+.moduleDescription {
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--secondary1000);
+}
+
+.containerAulas .divContent{
+    flex-direction: column;
+    position: relative; 
+}
+
+.contentInfo {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-size: 18px;
+    font-weight: 400;
+}
+.blocked {
+    opacity: 0.5; 
+}
+
 .btn-continue{
     border: none;
     background-color: transparent;
@@ -28,7 +52,7 @@
 }
 .containerAulas button:hover{
     background-color: var(--bg-principal);
-    color: #FFF;
+    color: var(--bg-White);
 }
 .containerAulas .divHeadLine{
     display: flex;
@@ -43,19 +67,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px;
+    padding: 8px 16px;
     border: 1px solid var(--secondary700 );
+    color: var(--secondary700);
     margin: 8px 0;
     border-radius: 4px;
     background-color: #FAFAFA;
 }
 
-.contentInfo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+.nextModuleButton.disabled {
+    background-color: #d3d3d3;
+    cursor: not-allowed;
 }
 
+.contentInfo svg {
+    font-size: 24px;
+}
 
 .titleContent {
     padding: 24px 0 12px 0;
@@ -65,8 +92,9 @@
 .score {
     padding: 4px 8px;
     border-radius: 4px;
-    font-weight: bold;
-    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--bg-White);
     border-radius: 40%;
 }
 
@@ -78,21 +106,27 @@
     background-color: #dc3545;
 }
 
-
 .nextModuleButton {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: var(--bg-principal);
-    color: white;
+    color: var(--bg-White);
     border: none;
+    font-size: 16px;
+    font-weight: 600px;
     border-radius: 4px;
     cursor: pointer;
+    width: 260px;
 }
 
 .btn-access {
     border-radius: 4px;
     border: 1px solid var(--bg-principal);
     padding: 0.5rem;
+    background-color: var(--bg-White);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bg-principal);
 }
 
 .nextModuleButton:hover {
