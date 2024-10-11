@@ -48,7 +48,6 @@ function Menu({modulo}) {
             <div className='divBtnBack'>
                 <IoIosArrowDropleftCircle size={30} onClick={backHome}/>
             </div>
-           
             {modulo && (
                 <div className='divContentMenu'>
                     <span>Disponível até {modulo.timesEnd}</span>

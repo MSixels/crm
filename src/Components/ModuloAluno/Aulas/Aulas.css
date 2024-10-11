@@ -10,7 +10,7 @@
     display: flex;
     flex-direction: column;
 }
-.containerAulas button{
+.btn-continue{
     border: none;
     background-color: transparent;
     border: solid 1px var(--bg-principal);
@@ -36,4 +36,64 @@
 }
 .containerAulas .textHeadLine{
     width: 50%;
+}
+
+.contentRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border: 1px solid var(--secondary700 );
+    margin: 8px 0;
+    border-radius: 4px;
+    background-color: #FAFAFA;
+}
+
+.contentInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.titleContent {
+    padding: 24px 0 12px 0;
+    font-weight: 500;
+}
+
+.score {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: white;
+    border-radius: 40%;
+}
+
+.score.green {
+    background-color: #28a745;
+}
+
+.score.red {
+    background-color: #dc3545;
+}
+
+
+.nextModuleButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: var(--bg-principal);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-access {
+    border-radius: 4px;
+    border: 1px solid var(--bg-principal);
+    padding: 0.5rem;
+}
+
+.nextModuleButton:hover {
+    background-color: var(--bg-principal-dark);
 }

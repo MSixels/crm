@@ -25,7 +25,7 @@ export const modulos = [
         provasFeitas: 0,
         workCampoTotal: 2,
         workCampoFeitas: 0,
-        status: 'block',
+        status: 'start',
     },
     {
         id: 3,
@@ -39,9 +39,32 @@ export const modulos = [
         provasFeitas: 0,
         workCampoTotal: 2,
         workCampoFeitas: 0,
-        status: 'block',
+        status: 'start',
     },
 ]
+
+export const moduloContent = [
+    {
+        week: "Semana 1",
+        title: "Transtorno do Espectro do Autismo",
+        date: "21/10/2024",
+        content: [
+            { type: "Aula", title: "Aula 1", duration: "60min", status: "completed", score: null, youtubeId: "VIDEO_ID_1", description: "Descrição da aula 1" },
+            { type: "Teste", title: "Teste 1", duration: "30min", status: "completed", score: 90 },
+            { type: "Ao Vivo", title: "Ao Vivo 1", duration: "60min", status: "blocked", youtubeId: "LIVE_VIDEO_ID", description: "Descrição da aula ao vivo" },
+        ]
+    },
+    {
+        week: "Semana 2",
+        title: "Transtorno de Linguagem",
+        date: "23/10/2024",
+        content: [
+        { type: "Aula", duration: "60min", status: "blocked", score: null, videoUrl: "https://www.youtube.com/watch?v=EXAMPLE2" },
+        { type: "Prova", duration: "120min", status: "blocked", score: null },
+        ],
+    }
+];
+
 
 export const turmas = [
     {
