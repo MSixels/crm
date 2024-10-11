@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     margin-top: 24px;
-    border: solid 1px var(--primary-200);
+    border: solid 1px var(--secondary200);
     border-radius: 4px;
     margin-bottom: 64px;
 }
@@ -36,7 +36,7 @@
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
     align-items: center;
-    border-bottom: solid 1px var(--primary-200);
+    border-bottom: solid 1px var(--secondary200);
 }
 .containerRastreios .divConcluidosRastreio .divHeaderValues .divTitle{
     font-size: 14px;
@@ -57,7 +57,7 @@
     display: grid;
     grid-template-columns: repeat(9, 1fr);;
     align-items: center;
-    border-bottom: solid 1px var(--primary-200);
+    border-bottom: solid 1px var(--secondary200);
     position: relative;
 }
 .containerRastreios .divConcluidosRastreio .divValues .divPatient .divlineValue{

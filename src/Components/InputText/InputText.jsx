@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './InputText.css'
 import PropTypes from 'prop-types'
 
-function InputText({title, placeH, onSearchChange }) {
+function InputText({title, placeH, onSearchChange, mt }) {
     const [search, setSearch] = useState('');
 
     const handleSearchChange = (e) => {
@@ -12,9 +12,9 @@ function InputText({title, placeH, onSearchChange }) {
     };
 
     return(
-        <div className='containerInputText'>
+        <div className={`containerInputText ${mt === 'active' && 'mt-10'}`}>
             <div className='divInput'>
-                <label htmlFor="busca">{title}</label>
+                <span htmlFor="busca">{title}</span>
                 <input 
                     type="text" 
                     name='busca' 
@@ -32,6 +32,7 @@ InputText.propTypes = {
     title: PropTypes.string.isRequired,
     placeH: PropTypes.string.isRequired,
     onSearchChange: PropTypes.func.isRequired,
+    mt: PropTypes.string.isRequired,
 };
 
 export default InputText

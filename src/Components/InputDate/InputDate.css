@@ -1,8 +1,6 @@
 .containerInputDate .divInput{
     display: flex;
-    
     position: relative;
-    margin-top: 10px;
 }
 .containerInputDate .divInput label{
     position: absolute;
@@ -18,7 +16,7 @@
     font-size: 12px;
 }
 .containerInputDate .divInput .input{
-    border: solid 1px var(--primary-200);
+    border: solid 1px var(--secondary200);
     padding-inline: 12px;
     padding-block: 16px;
     border-radius: 4px;

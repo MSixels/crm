@@ -141,7 +141,7 @@ function Usuarios({ userType }) {
             <div className='divContent'>
                 <div className='header'>
                     <div className='divInputs'>
-                        <InputText title='Pesquisa na lista' placeH='Nome do usuário' onSearchChange={handleSearchChange}/>
+                        <InputText title='Pesquisa na lista' placeH='Nome do usuário' onSearchChange={handleSearchChange} mt='active'/>
                         <DropDown title='Cargo' type='Selecione' options={dropDownOptions} onTurmaChange={handleDropChange} />
                     </div>
                     {userType === 1 && <ButtonBold title='Novo usuário' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
