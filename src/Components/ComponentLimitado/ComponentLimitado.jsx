@@ -110,6 +110,7 @@ function ComponentLimitado() {
     const [optionsModulos, setOptionsModulos] = useState([])
     const [nameConteudo, setNameConteudo] = useState('');
     const [modulo, setModulo] = useState('')
+    const [liberacao, setliberacao] = useState('');
 
     const fetchModulosFromFirestore = async () => {
         try {
@@ -151,6 +152,7 @@ function ComponentLimitado() {
                 await addDoc(collection(firestore, 'conteudo'), {
                     name: nameConteudo,
                     moduloId: modulo,
+                    openDate: liberacao
                 });
                 alert("Conetudo salvo com sucesso!");
                 setNameConteudo('')
@@ -177,6 +179,7 @@ function ComponentLimitado() {
                     />
                 )}
                 <InputSend title='Nome' placeH='' onSearchChange={getNameConteudo} type='text' />
+                <InputDate title='Data Liberação' placeH='Selecione' onSearchChange={setliberacao} />
                 </div>
                 <ButtonBold title='Salvar Conteudo' icon action={() => salvarConteudo(true)} />
             </div>

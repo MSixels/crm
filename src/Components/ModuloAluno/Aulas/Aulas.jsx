@@ -51,6 +51,14 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
         return null;
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate() + 1).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lembre-se que os meses começam do 0
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
     return (
         <div className='containerAulas'>
             {modulo && (
@@ -111,19 +119,23 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
                         <button className='btn-continue'>Continuar de onde parou <FaPlay /></button>
                     </div>
 
-                    {conteudo.map((c) => (
-                        <div key={c.id} className='weekSection'>
-                            <h3 className='titleContent'>{c.name}</h3>
-                            {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
-                                <div key={aula.id}>
-                                    <p>{aula.name}</p>
-                                </div>
-                            ))}
-                            {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
-                                <div key={prova.id}>
-                                    <p>{prova.name}</p>
-                                </div>
-                            ))}
+                    {conteudo
+                    .sort((a, b) => new Date(a.openDate) - new Date(b.openDate)) // Ordena da data mais antiga para a mais recente
+                    .map((c) => (
+                        <div key={c.id} className="weekSection">
+                        <h3 className="titleContent">
+                            {c.name} {formatDate(c.openDate)}
+                        </h3>
+                        {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
+                            <div key={aula.id}>
+                            <p>{aula.name}</p>
+                            </div>
+                        ))}
+                        {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
+                            <div key={prova.id}>
+                            <p>{prova.name}</p>
+                            </div>
+                        ))}
                         </div>
                     ))}
 
