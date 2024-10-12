@@ -30,9 +30,13 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
 
     const renderIcon = (type) => {
         if (type === "Aula" || type === "Ao Vivo") {
-            return <FaVideo color='#4A5E6D' />;
+            return <div className='divIcon'>
+            <FaVideo />
+        </div>;
         } else if (type === "Teste" || type === "Prova") {
-            return <FaBookOpen color='#4A5E6D' />;
+            return <div className='divIcon'>
+            <FaBookOpen />
+        </div>;
         }
     };
 
@@ -62,7 +66,7 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
     
     
 
-    return (
+    return (   
         <div className='containerAulas'>
             {modulo && conteudo && aulas && provas && (
                 <div className='divContent'>
@@ -89,7 +93,9 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
                                                 c.status === 'completed' ? (
                                                     <FaCheckCircle color='#1BA284' />
                                                 ) : (
-                                                    <FaCircle color='#222D7E' />
+                                                    <div className='Circle'>
+                                                        <FaCircle />
+                                                    </div>
                                                 )
                                             )}
                                             {renderIcon('Aula')}
@@ -217,7 +223,9 @@ return (
                                                 c.status === 'completed' ? (
                                                     <FaCheckCircle color='#1BA284' />
                                                 ) : (
-                                                    <FaCircle color='#222D7E' />
+                                                    <div className='Circle'>
+                                                        <FaCircle />
+                                                    </div>
                                                 )
                                             )}
                                             {renderIcon('Prova')}
