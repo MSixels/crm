@@ -30,11 +30,11 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
 
     const renderIcon = (type) => {
         if (type === "Aula" || type === "Ao Vivo") {
-            return <div className='divIcon'>
+            return <div className='divIconAula'>
             <FaVideo />
         </div>;
         } else if (type === "Teste" || type === "Prova") {
-            return <div className='divIcon'>
+            return <div className='divIconAula'>
             <FaBookOpen />
         </div>;
         }
@@ -114,7 +114,9 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
                                                 c.status === 'completed' ? (
                                                     <FaCheckCircle color='#1BA284' />
                                                 ) : (
-                                                    <FaCircle color='#222D7E' />
+                                                    <div className='Circle'>
+                                                        <FaCircle />
+                                                    </div>
                                                 )
                                             )}
                                             {renderIcon('Prova')}
