@@ -2,7 +2,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './Login.css'
 import LogoText from '../../imgs/logoText.png'
 import { MdSchool } from "react-icons/md";
-import { FaBookOpen } from "react-icons/fa6";
+import { FaBookOpen, FaEye, FaEyeSlash } from "react-icons/fa6";
 import { ImCheckboxUnchecked } from "react-icons/im";
 import { ImCheckboxChecked } from "react-icons/im";
 import { TfiReload } from "react-icons/tfi";
@@ -28,6 +28,7 @@ function Login() {
     const [typeUser, setTypeUser] = useState(null)
     const [disable, setDisable] = useState(null)
     const [alertCredentialInvalid, setAlertCredentialInvalid] = useState(false)
+    const [inputPassType, setInputPassType] = useState(false)
     const [
         signInWithEmailAndPassword,
         user,
@@ -203,7 +204,7 @@ function Login() {
                     <div className='divInput'>
                         <label htmlFor="password" style={{color: inputSenha && 'red'}}>Senha</label>
                         <input 
-                            type="password" 
+                            type={inputPassType ? 'text' : 'password'} 
                             name='password' 
                             id='password' 
                             className='input' 
@@ -211,6 +212,10 @@ function Login() {
                             onChange={(e) => {setSenha(e.target.value), e.target.value != setInputSenha(false)}}
                             style={{borderColor: inputSenha && 'red'}}
                         />
+                        <button className='btnEye' onClick={() => setInputPassType(!inputPassType)}>
+                            {inputPassType ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                        
                     </div>
                     {alertAccountDisabled &&
                         <div style={{marginBottom: 20}}>

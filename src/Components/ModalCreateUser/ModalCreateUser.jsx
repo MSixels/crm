@@ -7,7 +7,7 @@ import { MdEmail } from "react-icons/md";
 import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { IoCheckbox } from "react-icons/io5";
 import emailjs from 'emailjs-com';
@@ -70,6 +70,16 @@ function ModalCreateUser({ title, close }) {
             const randomPassword = generateRandomPassword();
 
             try {
+                const usersRef = collection(firestore, 'users');
+                const emailQuery = query(usersRef, where('email', '==', email));
+                const querySnapshot = await getDocs(emailQuery);
+    
+                if (!querySnapshot.empty) {
+                    
+                    alert("E-mail já cadastrado.");
+                    return;
+                }
+                
                 await sendEmail(name, email, randomPassword);
                 
                 createUserWithEmailAndPassword(email, randomPassword)

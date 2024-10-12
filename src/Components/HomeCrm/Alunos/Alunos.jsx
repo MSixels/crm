@@ -157,7 +157,7 @@ function Alunos({ userType }) {
                         const turma = turmas.find(t => t.id === a.turma)
                         return(
                             <div key={a.id} className='divAlunos'>
-                                <span className='spanBox'>{a.name}</span>
+                                <span className='spanBox'>{a.name ? a.name : 'Sem nome'}</span>
                                 <span className='spanBox'>{a.email}</span>
                                 <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
                                 <span className='spanBox'><span className={`${a.media < 50 ? 'ruim' : a.media >= 50 ? 'boa' : ''}`}>{a.media ? a.media : 'N'}</span> / {a.media ? '100' : 'A'}</span>

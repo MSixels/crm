@@ -11,7 +11,7 @@ import PerfilAluno from './Pages/PerfilAluno/PerfilAluno.jsx';
 import NewRastreio from './Components/HomeAluno/NewRastreio/NewRastreio.jsx';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
-import VideoAula from './Components/ModuloAluno/VideoAula/VideoAula.jsx';
+import ModuloConteudo from './Pages/ModuloConteudo/ModuloConteudo.jsx';
 
 const router = createBrowserRouter([
   {
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
     path: `/aluno/modulo/:moduloId/:contentId`,
     element: (
       <ProtectedRoute
-        element={<VideoAula />}
+        element={<ModuloConteudo />}
         typeUser={3}
         allowedTypes={[3]}
       />

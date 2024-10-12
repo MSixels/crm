@@ -59,6 +59,14 @@
     color: var(--color-3);
     font-size: 12px;
 }
+.containerLogin .divForm .divInput .btnEye{
+    position: absolute;
+    right: 15px;
+    top: 30px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
 .containerLogin .divForm .input{
     border: solid 1px var(--primary-200);
     padding-inline: 12px;

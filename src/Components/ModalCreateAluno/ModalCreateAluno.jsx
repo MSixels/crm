@@ -7,7 +7,7 @@ import { MdEmail } from "react-icons/md";
 import ButtonSend from '../ButtonSend/ButtonSend';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
-import { doc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import emailjs from 'emailjs-com';
 
 
@@ -59,35 +59,46 @@ function ModalCreateAluno({ title, close }) {
     
             setNameError(false);
             setEmailError(false);
-            const randomPassword = generateRandomPassword();
     
             try {
-                await sendEmail(name, email, randomPassword);
-                
-                createUserWithEmailAndPassword(email, randomPassword)
-                .then(async (userCredential) => {
-                    const userId = userCredential.user.uid;
+                const usersRef = collection(firestore, 'users');
+                const emailQuery = query(usersRef, where('email', '==', email));
+                const querySnapshot = await getDocs(emailQuery);
     
-                    await setDoc(doc(firestore, 'users', userId), {
-                        name: name,
-                        email: email,
-                        type: 3,
-                        userId: userId,
-                        isActive: false
+                if (!querySnapshot.empty) {
+                    
+                    alert("E-mail já cadastrado.");
+                    return;
+                }
+    
+                const randomPassword = generateRandomPassword();
+    
+                await sendEmail(name, email, randomPassword);
+    
+                createUserWithEmailAndPassword(email, randomPassword)
+                    .then(async (userCredential) => {
+                        const userId = userCredential.user.uid;
+    
+                        await setDoc(doc(firestore, 'users', userId), {
+                            name: name,
+                            email: email,
+                            type: 3,
+                            userId: userId,
+                            isActive: false
+                        });
+    
+                        close(false);
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao criar usuário no Firebase Auth:", error);
                     });
     
-                    close(false); 
-                })
-                .catch((error) => {
-                    console.error("Erro ao criar usuário no Firebase Auth:", error);
-                });
-                
-    
             } catch (error) {
-                console.error('Erro ao enviar e-mail:', error);
+                console.error('Erro ao verificar ou enviar e-mail:', error);
             }
         }
     };
+    
     
 
     const sendEmail = (name, email, password) => {
