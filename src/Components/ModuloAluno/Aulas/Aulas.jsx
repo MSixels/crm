@@ -9,21 +9,21 @@ function Aulas({ modulo }) {
     const navigate = useNavigate();
     const [todosConcluidos, setTodosConcluidos] = useState(false);
 
-    const handleStartContent = (moduloId, contentId) => {
-        navigate(`/aluno/modulo/${moduloId}/aula/${contentId}`);
+    const handleStartContent = (moduloId) => {
+        navigate(`/aluno/modulo/${moduloId}`);
     };
 
-    const renderButton = (contentItem, moduloId, contentId) => {
+    const renderButton = (contentItem, moduloId) => {
         if (contentItem.status === "completed") {
             if (contentItem.type === "Aula" || contentItem.type === "Ao Vivo") {
-                return <button className='btn-access' onClick={() => handleStartContent(moduloId, contentId)}>Reassistir</button>;
+                return <button className='btn-access' onClick={() => handleStartContent(moduloId)}>Reassistir</button>;
             } else if (contentItem.type === "Teste" || contentItem.type === "Prova") {
-                return <button className='btn-access'>Ver Respostas</button>;
+                return <button className='btn-access' onClick={() => handleStartContent(moduloId)}>Ver Respostas</button>;
             }
         } else if (contentItem.status === "blocked") {
-            return null;
+            return <FaLock color='gray' />;
         } else {
-            return <button onClick={() => handleStartContent(moduloId, contentId)}>Iniciar</button>;
+            return <button onClick={() => handleStartContent(moduloId)}>Iniciar</button>;
         }
     };
 
