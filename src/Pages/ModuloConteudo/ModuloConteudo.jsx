@@ -1,12 +1,14 @@
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import './ModuloConteudo.css'
 import Header from '../../Components/Header/Header'
 import MenuConteudo from '../../Components/ModuloAluno/MenuConteudo/MenuConteudo'
 import { useEffect, useState } from 'react'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import { firestore } from '../../services/firebaseConfig'
 import VideoAula from '../../Components/ModuloAluno/VideoAula/VideoAula'
 import Prova from '../../Components/ModuloAluno/Prova/Prova'
+import Cookies from 'js-cookie'
+import { jwtDecode } from 'jwt-decode'
 
 
 function ModuloConteudo() {
@@ -17,7 +19,10 @@ function ModuloConteudo() {
     const [conteudo, setConteudo] = useState([]);
     const [aulas, setAulas] = useState([]);
     const [provas, setProvas] = useState([]);
-    const [itemType, setItemType] = useState(null); // Estado para armazenar o tipo do item (aula ou prova)
+    const [itemType, setItemType] = useState(null); 
+    const navigate = useNavigate()
+    const [userId, setUserId] = useState('')
+    const [progressAulas, setProgressAulas] = useState([])
 
      
 
@@ -194,14 +199,104 @@ function ModuloConteudo() {
         console.log('materialId: ', materialId)
     }, [materialId])
 
+    useEffect(() => {
+        const accessToken = Cookies.get('accessToken');
+
+        if (accessToken) {
+            const decodedToken = jwtDecode(accessToken);
+            setUserId(decodedToken.user_id)
+        } else {
+            console.log("Nenhum token encontrado nos cookies.");
+            navigate('/login/aluno');
+        }
+    }, [navigate]);
+
+    const aulaConfirm = async (userId, aulaId) => {
+        try {
+            const progressRef = doc(firestore, 'progressAulas', `${userId}_${aulaId}`);
+    
+            const progressData = {
+                userId: userId,
+                aulaId: aulaId,
+                status: 'end', 
+            };
+    
+            await setDoc(progressRef, progressData);
+    
+            console.log('Progresso criado e atualizado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao criar ou atualizar o progresso:', error);
+        }
+    };
+
+    useEffect(() => {
+        const fetchMaterialStatus = async (userId, aulas) => {
+            if (!userId || !aulas || aulas.length === 0) return;
+    
+            try {
+                const aulaIds = aulas.map(aula => aula.id); // Extrai os IDs das aulas
+    
+                // Verifica se a quantidade de aulas é de 10 ou menos
+                if (aulaIds.length <= 10) {
+                    // Cria uma query onde aulaId está em aulaIds
+                    const progressRef = collection(firestore, 'progressAulas');
+                    const q = query(progressRef, 
+                        where('userId', '==', userId),
+                        where('aulaId', 'in', aulaIds)
+                    );
+    
+                    const querySnapshot = await getDocs(q);
+    
+                    if (!querySnapshot.empty) {
+                        const progressData = querySnapshot.docs.map(doc => ({
+                            id: doc.id, 
+                            ...doc.data()
+                        }));
+    
+                        console.log('Dados de progresso encontrados:', progressData);
+                        setProgressAulas(progressData)
+                    } else {
+                        console.log('Nenhum dado de progresso encontrado para o usuário e aula.');
+                    }
+                } else {
+                    console.log('O número de aulas excede o limite de 10 para a consulta "in".');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar status do material:', error);
+            }
+        };
+    
+        if (userId && aulas && aulas.length > 0) {
+            fetchMaterialStatus(userId, aulas); // Chama a função passando o userId e as aulas
+        }
+    }, [userId, aulas]);
+    
+
+    const confirmMaterial = (confirm) => {
+        
+        if(confirm){
+            const materialConfim = materialId
+            console.log('materialId_confirmado: ', materialConfim)
+
+            aulaConfirm(userId, materialConfim)
+            if(provas.length > 0){
+                console.log('Array provas: ', provas[0].id)
+                navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${provas[0].id}`)
+            }else {
+                console.log('Não existem outros materias')
+                navigate(`/aluno/modulo/${moduloId}`)
+            }
+        }
+    }
+
     return (
         <div className='containerModuloConteudo'>
             <Header options={options}/>
             <div className='divContent'>
-                {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas}/>}
+                {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} userId={userId}/>}
                 <div className='divMaterial'>
-                    {itemType === 'aula' && <VideoAula materialId={materialId}/>}
-                    {itemType === 'prova' && <Prova materialId={materialId}/>}
+                    {itemType === 'aula' && <VideoAula materialId={materialId} confirmAula={confirmMaterial} />}
+                    {itemType === 'prova' && <Prova materialId={materialId} />}
                 </div>
                 
             </div>

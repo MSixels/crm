@@ -1,12 +1,12 @@
 import './MenuConteudo.css'
 import { IoIosArrowDropleftCircle } from "react-icons/io";
 import PropTypes from 'prop-types'
-import { FaBookOpen, FaLock, FaVideo } from "react-icons/fa";
+import { FaBookOpen, FaCheckCircle, FaLock, FaVideo } from "react-icons/fa";
 import ProgressBar from '../../ProgressBar/ProgressBar';
 import { useNavigate, useParams } from 'react-router-dom';
 
 
-function MenuConteudo({ modulo, conteudo, aulas, provas }) {
+function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
     const { moduloId } = useParams()
     const { materialId } = useParams()
     const { conteudoId } = useParams()
@@ -57,20 +57,37 @@ function MenuConteudo({ modulo, conteudo, aulas, provas }) {
                 <div key={c.id} className='divConteudos'>
                     <p className='titleConteudo'>{conteudo[0].name}</p>
                     {aulas && aulas
-                    .filter((a) => a.conteudoId === c.id) 
-                    .map((a) => (
-                        <div key={a.id} className={`divAulas ${materialId === a.id ? 'active' : ''}`} onClick={() => navigateMaterial(a.id)}>
-                            <div className='divCheck'>
-                                <div className='divCircle'>
-                                    <div className='divBall'></div>
+                    .filter((a) => a.conteudoId === c.id)
+                    .map((a) => {
+                        // Verifique se progressAulas está definido e é um array
+                        const progressoAula = progressAulas?.find(
+                            (progress) => progress.userId === userId && progress.aulaId === a.id
+                        );
+
+                        const aulaCompletada = progressoAula && progressoAula.status === 'end';
+
+                        return (
+                            <div 
+                                key={a.id} 
+                                className={`divAulas ${materialId === a.id ? 'active' : ''}`} 
+                                onClick={() => navigateMaterial(a.id)}
+                            >
+                                <div className='divCheck'>
+                                    {aulaCompletada ? (
+                                        <FaCheckCircle color='#1BA284' size={24} />
+                                    ) : (
+                                        <div className='divCircle'>
+                                            <div className='divBall'></div>
+                                        </div>
+                                    )}
                                 </div>
+                                <div className='divIcon'>
+                                    <FaVideo />
+                                </div>
+                                <p className='aulaTitle'>{a.name}</p>
                             </div>
-                            <div className='divIcon'>
-                                <FaVideo />
-                            </div>
-                            <p className='aulaTitle'>{a.name}</p>
-                        </div>
-                    ))}
+                        );
+                    })}
                     {provas && provas
                     .filter((p) => p.conteudoId === c.id) 
                     .map((p) => (

@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import './VideoAula.css'
 import PropTypes from 'prop-types'
 import { firestore } from '../../../services/firebaseConfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
+import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm'
+import { MdOutlineNavigateNext } from "react-icons/md";
 
 
 
-function VideoAula({ materialId }) {
+function VideoAula({ materialId, confirmAula }) {
 
     const [aulas, setAulas] = useState([]);
 
@@ -36,15 +38,22 @@ function VideoAula({ materialId }) {
             fetchAulasData();
         }
     }, [materialId]);
+
+    const proximaEtapa = (confirm) => {
+        if(confirm){
+            confirmAula(confirm)
+        }
+    }
     
     return (
         <div className='containerVideoAula'>
             {aulas.length > 0  &&
-            <div>
-            <p>{aulas[0].name}</p>
-            <p>{aulas[0].description}</p>
-            <p>{aulas[0].videoUrl}</p>
-            </div>
+                <div>
+                    <p>{aulas[0].name}</p>
+                    <p>{aulas[0].description}</p>
+                    <p>{aulas[0].videoUrl}</p>
+                    <ButtonConfirm title='Proxima etapa' icon={<MdOutlineNavigateNext size={25}/>} action={proximaEtapa} disabled={false}/>
+                </div>
             }
             
         </div>
@@ -53,6 +62,7 @@ function VideoAula({ materialId }) {
 
 VideoAula.propTypes = {
     materialId: PropTypes.string.isRequired,
+    confirmAula: PropTypes.bool.isRequired,
 };
 
 export default VideoAula

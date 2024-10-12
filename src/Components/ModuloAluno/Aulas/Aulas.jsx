@@ -4,7 +4,7 @@ import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle } from "re
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-function Aulas({ modulo, conteudo, aulas, provas }) {
+function Aulas({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
     const navigate = useNavigate();
     const { moduloId } = useParams()
     const [todosConcluidos, setTodosConcluidos] = useState(false);
@@ -79,55 +79,73 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
                     </div>
 
                     {conteudo
-                        .sort((a, b) => new Date(a.openDate) - new Date(b.openDate))
-                        .map((c,) => (
-                            <div key={c.id} className={`weekSection ${c.status === 'blocked' ? 'blocked' : ''}`}>
-                                <h3 className="titleContent">{c.name} {formatDate(c.openDate)}</h3>
-                                
-                                {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
-                                    <div key={aula.id} className="contentRow">
-                                        <div className="contentInfo">
-                                            {c.status === 'blocked' ? (
-                                                <FaLock color='gray' />
-                                            ) : (
-                                                c.status === 'completed' ? (
-                                                    <FaCheckCircle color='#1BA284' />
-                                                ) : (
-                                                    <div className='Circle'>
-                                                        <FaCircle />
-                                                    </div>
-                                                )
-                                            )}
-                                            {renderIcon('Aula')}
-                                            <span>{aula.name}</span>
-                                        </div>
-                                        {renderButton(c, moduloId, c.id, aula.id)}
-                                    </div>
-                                ))}
+                    .sort((a, b) => new Date(a.openDate) - new Date(b.openDate))
+                    .map((c) => (
+                        <div key={c.id} className={`weekSection ${c.status === 'blocked' ? 'blocked' : ''}`}>
+                        <h3 className="titleContent">{c.name} {formatDate(c.openDate)}</h3>
+                        
+                        {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => {
+                            // Verifique o progresso da aula
+                            const progressoAula = progressAulas.find(
+                                (progress) => progress.userId === userId && progress.aulaId === aula.id
+                            );
 
-                                {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
-                                    <div key={prova.id} className="contentRow">
-                                        <div className="contentInfo">
-                                            {c.status === 'blocked' ? (
-                                                <FaLock color='gray' />
-                                            ) : (
-                                                c.status === 'completed' ? (
-                                                    <FaCheckCircle color='#1BA284' />
-                                                ) : (
-                                                    <div className='Circle'>
-                                                        <FaCircle />
-                                                    </div>
-                                                )
-                                            )}
-                                            {renderIcon('Prova')}
-                                            <span>{prova.name}</span>
-                                            {renderScore(c)}
-                                        </div>
-                                        {renderButton(c, moduloId, c.id, prova.id)}
+                            // Determine se a aula foi completada
+                            const aulaCompletada = progressoAula && progressoAula.status === 'end';
+
+                            return (
+                            <div key={aula.id} className="contentRow">
+                                <div className="contentInfo">
+                                {c.status === 'blocked' ? (
+                                    <FaLock color='gray' />
+                                ) : (
+                                    aulaCompletada ? (  // Verificação se a aula foi completada
+                                    <FaCheckCircle color='#1BA284' size={24}/>
+                                    ) : (
+                                    <div className='Circle'>
+                                        <FaCircle />
                                     </div>
-                                ))}
+                                    )
+                                )}
+                                {renderIcon('Aula')}
+                                <span>{aula.name}</span>
+                                </div>
+                                {renderButton(c, moduloId, c.id, aula.id)}
                             </div>
-                        ))}
+                            );
+                        })}
+
+                        {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => {
+                            const progressoProva = progressAulas.find(
+                            (progress) => progress.userId === userId && progress.aulaId === prova.id
+                            );
+
+                            const provaCompletada = progressoProva && progressoProva.status === 'end';
+
+                            return (
+                            <div key={prova.id} className="contentRow">
+                                <div className="contentInfo">
+                                {c.status === 'blocked' ? (
+                                    <FaLock color='gray' />
+                                ) : (
+                                    provaCompletada ? (  
+                                    <FaCheckCircle color='#1BA284' size={24}/>
+                                    ) : (
+                                    <div className='Circle'>
+                                        <FaCircle />
+                                    </div>
+                                    )
+                                )}
+                                {renderIcon('Prova')}
+                                <span>{prova.name}</span>
+                                {renderScore(c)}
+                                </div>
+                                {renderButton(c, moduloId, c.id, prova.id)}
+                            </div>
+                            );
+                        })}
+                        </div>
+                    ))}
                     <button
                         className={`nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}`}
                         disabled={!todosConcluidos}
@@ -145,112 +163,8 @@ Aulas.propTypes = {
     conteudo: PropTypes.array.isRequired,
     aulas: PropTypes.array.isRequired,
     provas: PropTypes.array.isRequired,
+    progressAulas: PropTypes.array.isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default Aulas;
-
-
-/*
-
-{conteudo
-                    .sort((a, b) => new Date(a.openDate) - new Date(b.openDate)) // Ordena da data mais antiga para a mais recente
-                    .map((c) => (
-                        <div key={c.id} className="weekSection">
-                        <h3 className="titleContent">
-                            {c.name} {formatDate(c.openDate)}
-                        </h3>
-                        {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
-                            <div key={aula.id}>
-                            <p>{aula.name}</p>
-                            </div>
-                        ))}
-                        {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
-                            <div key={prova.id}>
-                            <p>{prova.name}</p>
-                            </div>
-                        ))}
-                        </div>
-                        
-                    ))}
-
-
-
-
-
-
-
-return (
-        <div className='containerAulas'>
-            {modulo && conteudo && aulas && provas && (
-                <div className='divContent'>
-                    <div className='divHeadLine'>
-                        <div className='textHeadLine'>
-                            <h2 className='moduleName'>{modulo.name}</h2>
-                            <span className='moduleDescription'>{modulo.description}</span>
-                        </div>
-                        <button className='btn-continue'>Continuar de onde parou <FaPlay /></button>
-                    </div>
-
-                    {conteudo
-                        .sort((a, b) => new Date(a.openDate) - new Date(b.openDate))
-                        .map((c,) => (
-                            <div key={c.id} className={weekSection ${c.status === 'blocked' ? 'blocked' : ''}}>
-                                <h3 className="titleContent">{c.name} {formatDate(c.openDate)}</h3>
-                                
-                                {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
-                                    <div key={aula.id} className="contentRow">
-                                        <div className="contentInfo">
-                                            {c.status === 'blocked' ? (
-                                                <FaLock color='gray' />
-                                            ) : (
-                                                c.status === 'completed' ? (
-                                                    <FaCheckCircle color='#1BA284' />
-                                                ) : (
-                                                    <FaCircle color='#222D7E' />
-                                                )
-                                            )}
-                                            {renderIcon('Aula')}
-                                            <span>{aula.name}</span>
-                                        </div>
-                                        {renderButton(c, modulo.id)}
-                                    </div>
-                                ))}
-
-                                {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
-                                    <div key={prova.id} className="contentRow">
-                                        <div className="contentInfo">
-                                            {c.status === 'blocked' ? (
-                                                <FaLock color='gray' />
-                                            ) : (
-                                                c.status === 'completed' ? (
-                                                    <FaCheckCircle color='#1BA284' />
-                                                ) : (
-                                                    <div className='Circle'>
-                                                        <FaCircle />
-                                                    </div>
-                                                )
-                                            )}
-                                            {renderIcon('Prova')}
-                                            <span>{prova.name}</span>
-                                            {renderScore(c)}
-                                        </div>
-                                        {renderButton(c, modulo.id)}
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
-
-                    <button
-                        className={nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}}
-                        disabled={!todosConcluidos}
-                    >
-                        Próximo Módulo &gt;
-                    </button>
-                </div>
-            )}
-        </div>
-    );
-}
-
-
-*/
