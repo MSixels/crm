@@ -1,0 +1,29 @@
+.containerComponentLimitado{
+    padding: 16px;
+}
+.containerComponentLimitado .divCircle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    border: solid 1px black;
+    padding: 3px;
+    cursor: pointer;
+}
+.containerComponentLimitado .divCircle .divBall{
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    background-color: black;
+
+}
+.containerComponentLimitado .divPergunta{
+    display: flex;
+    flex-direction: column;
+    border: solid 1px #ccc;
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}

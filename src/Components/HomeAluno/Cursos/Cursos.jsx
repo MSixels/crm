@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { GoDotFill } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
 import ProgressBar from '../../ProgressBar/ProgressBar';
-import { modulos } from '../../../database';
+import { modulos_opcao_2, conteudo, aulas, provas } from '../../../database';
 
 function Cursos() {
     const [searchTerm, setSearchTerm] = useState('');
@@ -19,19 +19,10 @@ function Cursos() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredModulos = modulos.filter(m => {
+    const filteredModulos = modulos_opcao_2.filter(m => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
         return removeAccents(m.name).toLowerCase().includes(lowerCaseSearchTerm);
     });
-
-    const calculateProgress = (module) => {
-        const percentAulas = (module.aulasFeitas / module.aulasTotal) * 100;
-        const percentProvas = (module.provasFeitas / module.provasTotal) * 100;
-        const percentWorkCampo = (module.workCampoFeitas / module.workCampoTotal) * 100;
-    
-        const totalProgress = (percentAulas + percentProvas + percentWorkCampo) / 3;
-        return totalProgress.toFixed(0);
-    };
 
     const openModulo = (id) => {
         navigate(`/aluno/modulo/${id}`)
@@ -57,22 +48,55 @@ function Cursos() {
                 </div>
             </header>
             <div className='divModulos'>
-                {filteredModulos.map((m) => (
-                    <div key={m.id} className='divModulo'>
-                        <span className='prof'>Prof: {m.prof} <GoDotFill size={12}/> Disponível até {m.timesEnd}</span>
-                        <h3 style={{fontSize: 20}}>{m.name}</h3>
-                        <span style={{fontSize: 16}}>{m.description}</span>
-                        <div className='divProgressInfos'>
-                            <div className={`divInfo ${m.status === 'start' ? 'aulaStart' : m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : ''}`}>
-                                <span>{m.aulasFeitas}/{m.aulasTotal} aulas</span>
-                            </div>
-                            <div className={`divInfo ${m.status === 'start' ? 'provaStart' : m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : ''}`}>
-                                <span>{m.provasFeitas}/{m.provasTotal} provas</span>
-                            </div>
-                            <div className={`divInfo ${m.status === 'start' ? 'campoStart' : m.status === 'block' ? 'campoBlock' : m.status === 'end' ? 'campoEnd' : ''}`}>
-                                <span>{m.workCampoFeitas}/{m.workCampoTotal} trabalhos de campo</span>
-                            </div>
+                {filteredModulos.map((m) => {
+                    // Filtra os conteúdos que pertencem a este módulo
+                    const conteudosDoModulo = conteudo.filter(c => c.moduloId === m.id);
+                    
+                    // Calcula o total de aulas para todos os conteúdos deste módulo
+                    const totalAulasModulo = aulas.filter(a => 
+                        conteudosDoModulo.some(c => c.id === a.conteudoId)
+                    ).length;
+
+                    const totalProvasModulo = provas.filter(p => 
+                        conteudosDoModulo.some(c => c.id === p.conteudoId)
+                    ).length
+                    
+                    return (
+                        <div key={m.id} className='divModulo'>
+                            <span className='prof'>Prof: {m.professor} <GoDotFill size={12}/> Disponível até {m.validade}</span>
+                            <h3 style={{fontSize: 20}}>{m.name}</h3>
+                            <span style={{fontSize: 16}}>{m.description}</span>
+                            <div className='divProgressInfos'>
+                                    <div className={`divInfo ${m.status === 'start' ? 'aulaStart' : m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : ''}`}>
+                                        <span>0/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
+                                    </div>
+                                    <div className={`divInfo ${m.status === 'start' ? 'provaStart' : m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : ''}`}>
+                                        <span>0/{totalProvasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
+                                    </div>
+                                    
+                                </div>
                         </div>
+                    );
+                })}
+            </div>
+        </div>
+    )
+}
+
+export default Cursos
+
+/*
+<div className='divProgressInfos'>
+                                <div className={`divInfo ${m.status === 'start' ? 'aulaStart' : m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : ''}`}>
+                                    <span>{m.aulasFeitas}/{m.aulasTotal} aulas</span>
+                                </div>
+                                <div className={`divInfo ${m.status === 'start' ? 'provaStart' : m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : ''}`}>
+                                    <span>{m.provasFeitas}/{m.provasTotal} provas</span>
+                                </div>
+                                <div className={`divInfo ${m.status === 'start' ? 'campoStart' : m.status === 'block' ? 'campoBlock' : m.status === 'end' ? 'campoEnd' : ''}`}>
+                                    <span>{m.workCampoFeitas}/{m.workCampoTotal} rastreios</span>
+                                </div>
+                            </div>
                         <div className='divProgressBar'>
                             <ProgressBar modulo={m}/>
                             <span className='progressPorcent'>{m.status !== 'block' ? `${calculateProgress(m) > 0 ? `${calculateProgress(m)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
@@ -80,11 +104,5 @@ function Cursos() {
                         <button className={`btn ${m.status === 'start' ? 'btnStart' : m.status === 'block' ? 'btnBlock' : m.status === 'end' ? 'btnEnd' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
                             {m.status === 'end' ? 'Ver progresso' : m.status === 'block' ? 'Em breve' : 'Acessar módulo'}
                         </button>
-                    </div>
-                ))}
-            </div>
-        </div>
-    )
-}
 
-export default Cursos
+*/

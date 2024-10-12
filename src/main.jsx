@@ -12,6 +12,7 @@ import NewRastreio from './Components/HomeAluno/NewRastreio/NewRastreio.jsx';
 import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
 import ModuloConteudo from './Pages/ModuloConteudo/ModuloConteudo.jsx';
+import ComponentLimitado from './Components/ComponentLimitado/ComponentLimitado.jsx';
 
 const router = createBrowserRouter([
   {
@@ -81,6 +82,16 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute
         element={<HomeCrm />}
+        typeUser={2} 
+        allowedTypes={[1, 2]} 
+      />
+    ),
+  },
+  {
+    path: `/professor/route-secret`,
+    element: (
+      <ProtectedRoute
+        element={<ComponentLimitado />}
         typeUser={2} 
         allowedTypes={[1, 2]} 
       />
