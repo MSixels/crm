@@ -1,15 +1,14 @@
-import './Cursos.css'
+import './Cursos.css';
 import { IoMdSearch } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
 import { useState } from 'react';
 import { GoDotFill } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
-import ProgressBar from '../../ProgressBar/ProgressBar';
-import { modulos_opcao_2, conteudo, aulas, provas } from '../../../database';
+import PropTypes from 'prop-types';
 
-function Cursos() {
+function Cursos({ modulos, conteudo, aulas, provas, professores }) {
     const [searchTerm, setSearchTerm] = useState('');
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const removeAccents = (text) => {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -19,14 +18,32 @@ function Cursos() {
         setSearchTerm(e.target.value);
     };
 
-    const filteredModulos = modulos_opcao_2.filter(m => {
+    const filteredModulos = modulos.filter(m => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
         return removeAccents(m.name).toLowerCase().includes(lowerCaseSearchTerm);
     });
 
+    // Ordena os módulos por nome em ordem alfabética
+    const sortedModulos = filteredModulos.sort((a, b) => {
+        return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+    });
+
+    const getProfessorName = (professorId) => {
+        const professor = professores.find(p => p.id === professorId);
+        return professor ? professor.name : 'Professor não encontrado';
+    };
+
     const openModulo = (id) => {
-        navigate(`/aluno/modulo/${id}`)
-    }
+        navigate(`/aluno/modulo/${id}`);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const day = String(date.getDate() + 1).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lembre-se que os meses começam do 0
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
     return (
         <div className='containerCursos'>
@@ -36,11 +53,11 @@ function Cursos() {
                     <span className='subtitle'>Últimos módulos acessados, ou mais importantes para você.</span>
                 </div>
                 <div className='divSearch'>
-                    <label htmlFor="search"><IoMdSearch size={22}/></label>
-                    <input 
+                    <label htmlFor="search"><IoMdSearch size={22} /></label>
+                    <input
                         className='inputPesquisa'
-                        type="text" 
-                        id='search' 
+                        type="text"
+                        id='search'
                         placeholder='Buscar por módulo'
                         value={searchTerm}
                         onChange={handleSearchChange}
@@ -48,42 +65,54 @@ function Cursos() {
                 </div>
             </header>
             <div className='divModulos'>
-                {filteredModulos.map((m) => {
-                    // Filtra os conteúdos que pertencem a este módulo
+                {sortedModulos.map((m) => {
                     const conteudosDoModulo = conteudo.filter(c => c.moduloId === m.id);
-                    
-                    // Calcula o total de aulas para todos os conteúdos deste módulo
-                    const totalAulasModulo = aulas.filter(a => 
+
+                    const totalAulasModulo = aulas.filter(a =>
                         conteudosDoModulo.some(c => c.id === a.conteudoId)
                     ).length;
 
-                    const totalProvasModulo = provas.filter(p => 
+                    const totalProvasModulo = provas.filter(p =>
                         conteudosDoModulo.some(c => c.id === p.conteudoId)
-                    ).length
-                    
+                    ).length;
+
                     return (
                         <div key={m.id} className='divModulo'>
-                            <span className='prof'>Prof: {m.professor} <GoDotFill size={12}/> Disponível até {m.validade}</span>
-                            <h3 style={{fontSize: 20}}>{m.name}</h3>
-                            <span style={{fontSize: 16}}>{m.description}</span>
+                            <span className='prof'>
+                                Prof: {getProfessorName(m.professorId)} <GoDotFill size={12} /> Disponível até {formatDate(m.validade)}
+                            </span>
+                            <h3 style={{ fontSize: 20 }}>{m.name}</h3>
+                            <span style={{ fontSize: 16 }}>{m.description}</span>
                             <div className='divProgressInfos'>
-                                    <div className={`divInfo ${m.status === 'start' ? 'aulaStart' : m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : ''}`}>
-                                        <span>0/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
-                                    </div>
-                                    <div className={`divInfo ${m.status === 'start' ? 'provaStart' : m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : ''}`}>
-                                        <span>0/{totalProvasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
-                                    </div>
-                                    
+                                <div className={`divInfo ${m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : 'aulaStart'}`}>
+                                    <span>0/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
                                 </div>
+                                <div className={`divInfo ${m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : 'provaStart'}`}>
+                                    <span>0/{totalAulasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
+                                </div>
+                            </div>
+                            <button className={`btn ${m.status === 'start' ? 'btnStart' : m.status === 'block' ? 'btnBlock' : m.status === 'end' ? 'btnEnd' : 'btnStart'}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
+                                {m.status === 'end' ? 'Ver progresso' : m.status === 'block' ? 'Em breve' : 'Acessar módulo'}
+                            </button>
                         </div>
                     );
                 })}
             </div>
         </div>
-    )
+    );
 }
 
-export default Cursos
+Cursos.propTypes = {
+    modulos: PropTypes.array.isRequired,
+    conteudo: PropTypes.array.isRequired,
+    aulas: PropTypes.array.isRequired, 
+    provas: PropTypes.array.isRequired, 
+    professores: PropTypes.array.isRequired,
+};
+
+export default Cursos;
+
+
 
 /*
 <div className='divProgressInfos'>

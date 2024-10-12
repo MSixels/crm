@@ -43,6 +43,12 @@ function Home() {
         },
     ]
 
+    const [modulos, setModulos] = useState([]);
+    const [conteudo, setConteudo] = useState([]);
+    const [aulas, setAulas] = useState([]);
+    const [provas, setProvas] = useState([]);
+    const [professores, setProfessores] = useState([]);
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const userRef = doc(firestore, 'users', userId);
@@ -123,6 +129,98 @@ function Home() {
         }
     }, [userId]);
 
+    useEffect(() => {
+        const fetchProfessorData = async () => {
+            try {
+                const q = query(collection(firestore, "users"), where("type", "==", 2));
+                const querySnapshot = await getDocs(q);
+
+                const professorArray = [];
+                querySnapshot.forEach((doc) => {
+                    professorArray.push({ id: doc.id, ...doc.data() });
+                });
+
+                setProfessores(professorArray); 
+                console.log('professorArray: ', professorArray)
+            } catch (error) {
+                console.error("Erro ao buscar dados:", error);
+            }
+        };
+
+        fetchProfessorData();
+    }, []);
+
+    useEffect(() => {
+        const fetchModulosData = async () => {
+            try {
+                const modulosSnapshot = await getDocs(collection(firestore, 'modulos'));
+                const modulosData = modulosSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setModulos(modulosData);
+                console.log('modulosData: ', modulosData)
+            } catch (error) {
+                console.error('Erro ao carregar modulos:', error);
+            }
+        };
+    
+        fetchModulosData();
+    }, []);
+    useEffect(() => {
+        const fetchConteudoData = async () => {
+            try {
+                const conteudoSnapshot = await getDocs(collection(firestore, 'conteudo'));
+                const conteudoData = conteudoSnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setConteudo(conteudoData);
+                console.log('conteudoData: ', conteudoData);
+            } catch (error) {
+                console.error('Erro ao carregar conteudo:', error);
+            }
+        };
+    
+        fetchConteudoData();
+    }, []);
+    useEffect(() => {
+        const fetchAulasData = async () => {
+            try {
+                const aulasSnapshot = await getDocs(collection(firestore, 'aulas'));
+                const aulasData = aulasSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().name,
+                    conteudoId: doc.data().conteudoId,
+                }));
+                setAulas(aulasData);  // Define o estado com os dados das aulas
+                console.log('aulasData: ', aulasData);  // Verifica o array no console
+            } catch (error) {
+                console.error('Erro ao carregar aulas:', error);
+            }
+        };
+
+        fetchAulasData();
+    }, []);
+    useEffect(() => {
+        const fetchProvasData = async () => {
+            try {
+                const provasSnapshot = await getDocs(collection(firestore, 'provas'));
+                const provasData = provasSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().name,
+                    conteudoId: doc.data().conteudoId,
+                }));
+                setProvas(provasData);  
+                console.log('provasData: ', provasData);  
+            } catch (error) {
+                console.error('Erro ao carregar provas:', error);
+            }
+        };
+
+        fetchProvasData();
+    }, []);
+
     if (!validPages.includes(page)) {
         return null;
     }
@@ -136,7 +234,7 @@ function Home() {
                         <HeadLine userName={userName}/>
                     </div>
                     <div className='borderB'>
-                        <Cursos />
+                        <Cursos modulos={modulos} conteudo={conteudo} aulas={aulas} provas={provas} professores={professores}/>
                     </div>
                     <RastreiosSmall data={[rastreios]}/>
                 </div>

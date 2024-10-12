@@ -302,13 +302,11 @@ function ComponentLimitado() {
     };
 
     const adicionarPergunta = () => {
-        // Verifica se a pergunta atual foi preenchida
         if (questoes.some(questao => questao.pergunta.trim() === '')) {
             alert('Preencha a pergunta antes de adicionar uma nova.');
             return;
         }
     
-        // Adiciona uma nova pergunta com uma resposta vazia
         setQuestoes([
             ...questoes,
             { pergunta: '', respostas: [{ texto: '', correta: false }] }
@@ -331,13 +329,11 @@ function ComponentLimitado() {
         const updatedQuestoes = [...questoes];
         const questaoAtual = updatedQuestoes[questaoIndex];
     
-        // Verifica se todas as respostas estão preenchidas
         if (questaoAtual.respostas.some(resposta => resposta.texto.trim() === '')) {
             alert('Preencha todos os campos de resposta antes de adicionar uma nova.');
             return;
         }
     
-        // Adiciona uma nova resposta vazia
         questaoAtual.respostas.push({ texto: '', correta: false });
         setQuestoes(updatedQuestoes);
     };
@@ -360,19 +356,16 @@ function ComponentLimitado() {
     const salvarProva = async (send) => {
         if (send) {
             try {
-                // Verifica se os campos obrigatórios foram preenchidos
                 if (nameProva === '' || conteudo === '' || descriptionProva === '') {
                     alert('Preencha os campos da prova e adicione ao menos uma resposta');
                     return;
                 }
     
-                // Verifica se as perguntas e respostas estão preenchidas corretamente
                 const questsArray = questoes
-                    .filter((questao) => questao.pergunta.trim() !== '')  // Filtra perguntas em branco
+                    .filter((questao) => questao.pergunta.trim() !== '')  
                     .map((questao) => {
-                        const respostasValidas = questao.respostas.filter(resposta => resposta.texto.trim() !== '');  // Filtra respostas em branco
+                        const respostasValidas = questao.respostas.filter(resposta => resposta.texto.trim() !== ''); 
                         
-                        // Se não houver respostas válidas, não inclui a pergunta
                         if (respostasValidas.length === 0) {
                             return null;
                         }
@@ -385,30 +378,27 @@ function ComponentLimitado() {
                             })),
                         };
                     })
-                    .filter(questao => questao !== null);  // Filtra perguntas que foram descartadas
+                    .filter(questao => questao !== null);  
     
-                // Verifica se há ao menos uma pergunta válida
                 if (questsArray.length === 0) {
                     alert('Por favor, adicione ao menos uma pergunta e uma resposta válida antes de salvar.');
                     return;
                 }
     
-                // Salva a prova no Firestore com as informações e o array de quests
                 await addDoc(collection(firestore, 'provas'), {
                     name: nameProva,
                     conteudoId: conteudo,
                     description: descriptionProva,
-                    quests: questsArray  // Salva as perguntas e respostas
+                    quests: questsArray 
                 });
     
                 alert("Prova salva com sucesso!");
     
-                // Reseta os campos após salvar
                 setNameProva('');
                 setDescriptionProva('');
                 setQuestoes([{
                     pergunta: '',
-                    respostas: [{ texto: '', correta: false }]  // Reinicia com uma questão e uma resposta vazia
+                    respostas: [{ texto: '', correta: false }]  
                 }]);
     
             } catch (error) {

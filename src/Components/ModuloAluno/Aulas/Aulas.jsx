@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { moduloContent } from '../../../database';
 
-function Aulas({ modulo }) {
+function Aulas({ modulo, conteudo, aulas, provas }) {
     const navigate = useNavigate();
     const [todosConcluidos, setTodosConcluidos] = useState(false);
 
@@ -100,17 +100,50 @@ function Aulas({ modulo }) {
                     </button>
                 </div>
             )}
+            {/*======= Vamos utilizar esse de baixo Pois está lincado com o banco de dados ===== */}
+            {modulo && conteudo && aulas && provas && (
+                <div className='divContent'>
+                    <div className='divHeadLine'>
+                        <div className='textHeadLine'>
+                            <h2 className='moduleName'>{modulo.name}</h2>
+                            <span className='moduleDescription'>{modulo.description}</span>
+                        </div>
+                        <button className='btn-continue'>Continuar de onde parou <FaPlay /></button>
+                    </div>
+
+                    {conteudo.map((c) => (
+                        <div key={c.id} className='weekSection'>
+                            <h3 className='titleContent'>{c.name}</h3>
+                            {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
+                                <div key={aula.id}>
+                                    <p>{aula.name}</p>
+                                </div>
+                            ))}
+                            {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
+                                <div key={prova.id}>
+                                    <p>{prova.name}</p>
+                                </div>
+                            ))}
+                        </div>
+                    ))}
+
+                    <button
+                        className={`nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}`}
+                        disabled={!todosConcluidos}
+                    >
+                        Próximo Módulo &gt;
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
 
 Aulas.propTypes = {
-    modulo: PropTypes.shape({
-        id: PropTypes.number.isRequired,
-        name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
-        status: PropTypes.string.isRequired,
-    })
+    modulo: PropTypes.array.isRequired,
+    conteudo: PropTypes.array.isRequired,
+    aulas: PropTypes.array.isRequired,
+    provas: PropTypes.array.isRequired,
 };
 
 export default Aulas;
