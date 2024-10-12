@@ -1,6 +1,6 @@
 import './Aulas.css';
 import PropTypes from 'prop-types';
-import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle } from "react-icons/fa6";
+import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
