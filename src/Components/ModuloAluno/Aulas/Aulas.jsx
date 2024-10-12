@@ -128,12 +128,14 @@ function Aulas({ modulo, conteudo, aulas, provas }) {
                         </h3>
                         {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => (
                             <div key={aula.id}>
-                            <p>{aula.name}</p>
+                               <p>{aula.name} </p>
+                               <button onClick={() => navigate(`/aluno/modulo/${modulo.id}/${c.id}/${aula.id}`)}>Abrir Aula</button>
                             </div>
                         ))}
                         {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => (
                             <div key={prova.id}>
                             <p>{prova.name}</p>
+                            <button onClick={() => navigate(`/aluno/modulo/${modulo.id}/${c.id}/${prova.id}`)}>Abrir Prova</button>
                             </div>
                         ))}
                         </div>

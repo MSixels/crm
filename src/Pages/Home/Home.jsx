@@ -246,7 +246,7 @@ function Home() {
             }
             {page === 'modulos' && 
                 <div className='divContentHome'>
-                    <Cursos />
+                    <Cursos modulos={modulos} conteudo={conteudo} aulas={aulas} provas={provas} professores={professores}/>
                 </div>
             }
             {page === 'aovivo' && 
