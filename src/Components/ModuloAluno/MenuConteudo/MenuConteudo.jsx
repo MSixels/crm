@@ -3,7 +3,6 @@ import { IoIosArrowDropleftCircle } from "react-icons/io";
 import PropTypes from 'prop-types'
 import { FaBookOpen, FaLock, FaVideo } from "react-icons/fa";
 import ProgressBar from '../../ProgressBar/ProgressBar';
-import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 
@@ -13,7 +12,6 @@ function MenuConteudo({ modulo, conteudo, aulas, provas }) {
     const { conteudoId } = useParams()
     
     const navigate = useNavigate()
-    const [selectOption, setSelectOption] = useState(1)
     const calculateProgress = (module) => {
         const percentAulas = (module.aulasFeitas / module.aulasTotal) * 100;
         const percentProvas = (module.provasFeitas / module.provasTotal) * 100;

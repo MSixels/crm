@@ -5,6 +5,8 @@ import MenuConteudo from '../../Components/ModuloAluno/MenuConteudo/MenuConteudo
 import { useEffect, useState } from 'react'
 import { collection, getDocs } from 'firebase/firestore'
 import { firestore } from '../../services/firebaseConfig'
+import VideoAula from '../../Components/ModuloAluno/VideoAula/VideoAula'
+import Prova from '../../Components/ModuloAluno/Prova/Prova'
 
 
 function ModuloConteudo() {
@@ -15,6 +17,9 @@ function ModuloConteudo() {
     const [conteudo, setConteudo] = useState([]);
     const [aulas, setAulas] = useState([]);
     const [provas, setProvas] = useState([]);
+    const [itemType, setItemType] = useState(null); // Estado para armazenar o tipo do item (aula ou prova)
+
+     
 
     const options = [
         {
@@ -143,11 +148,62 @@ function ModuloConteudo() {
         }
     }, [conteudo]);
 
+    useEffect(() => {
+        const fetchMaterialData = async () => {
+            try {
+                const aulasSnapshot = await getDocs(collection(firestore, 'aulas'));
+                const aulasData = aulasSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().name,
+                    conteudoId: doc.data().conteudoId,
+                }));
+
+                const aulaEncontrada = aulasData.find(aula => aula.id === materialId);
+                
+                if (aulaEncontrada) {
+                    setItemType('aula');
+                    return;
+                }
+
+                const provasSnapshot = await getDocs(collection(firestore, 'provas'));
+                const provasData = provasSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    name: doc.data().name,
+                    conteudoId: doc.data().conteudoId,
+                }));
+
+                const provaEncontrada = provasData.find(prova => prova.id === materialId);
+                
+                if (provaEncontrada) {
+                    setItemType('prova');
+                    return;
+                }
+
+                setItemType('não encontrado');
+            } catch (error) {
+                console.error('Erro ao buscar o material:', error);
+            }
+        };
+
+        if (materialId) {
+            fetchMaterialData();
+        }
+    }, [materialId]);
+
+    useEffect(() => {
+        console.log('materialId: ', materialId)
+    }, [materialId])
+
     return (
         <div className='containerModuloConteudo'>
             <Header options={options}/>
             <div className='divContent'>
                 {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas}/>}
+                <div className='divMaterial'>
+                    {itemType === 'aula' && <VideoAula materialId={materialId}/>}
+                    {itemType === 'prova' && <Prova materialId={materialId}/>}
+                </div>
+                
             </div>
         </div>
     )

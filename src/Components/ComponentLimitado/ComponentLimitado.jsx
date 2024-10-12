@@ -247,7 +247,8 @@ function ComponentLimitado() {
                     name: nameAula,
                     conteudoId: conteudo,
                     description: descriptionAula,
-                    videoUrl: videoUrl
+                    videoUrl: videoUrl,
+                    type: 'aula'
                 });
                 alert("Aula salvo com sucesso!");
             } catch (error) {
@@ -392,7 +393,8 @@ function ComponentLimitado() {
                     name: nameProva,
                     conteudoId: conteudo,
                     description: descriptionProva,
-                    quests: questsArray 
+                    quests: questsArray,
+                    type: 'prova'
                 });
     
                 alert("Prova salva com sucesso!");
