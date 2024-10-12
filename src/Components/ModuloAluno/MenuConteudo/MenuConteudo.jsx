@@ -115,6 +115,8 @@ MenuConteudo.propTypes = {
     conteudo: PropTypes.array.isRequired,
     aulas: PropTypes.array.isRequired,
     provas: PropTypes.array.isRequired,
+    progressAulas: PropTypes.array.isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default MenuConteudo
