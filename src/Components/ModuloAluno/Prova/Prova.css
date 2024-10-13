@@ -1,0 +1,25 @@
+.testTitle {
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--secondary1000);
+}
+
+.testQuestion {
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+  padding-bottom: 12px;
+}
+
+.testOptions {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--secondary900);
+  padding: 12px 8px;
+  background-color: var(--bg-1);
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  list-style: none;
+  margin-right: 2rem;
+  margin-bottom: 0.5rem;
+}

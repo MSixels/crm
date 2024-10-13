@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './Prova.css'
+import { FaBookOpen } from  'react-icons/fa';
 import PropTypes from 'prop-types'
 import { firestore } from '../../../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -40,14 +41,17 @@ function Prova({ materialId }) {
         <div className='containerProva'>
             {provas.length > 0 && 
             <div>
-                <p>{provas[0].name}</p>
-                <p>{provas[0].description}</p>
+                <div className='divIconAula'>
+            <FaBookOpen />
+        </div>
+                <h2 className='testTitle'>{provas[0].name}</h2>
+                <p>{provas[0].description} <strong>Não sei se vai ter</strong></p>
                 {provas[0].quests.map((q, index) => (
-                    <div key={index} style={{marginTop: 20}}>
-                        <p style={{marginBottom: 5}}>{q.quest}</p>
+                    <div  key={index} style={{marginTop: 20}}>
+                        <p className='testQuestion' style={{marginBottom: 5}}>{q.quest}</p>
                         {q.responses.map((r, index) => (
-                            <ul key={index} style={{marginLeft: 20}}>
-                                <li>{r.text}</li>
+                            <ul className='testOptions' key={index} style={{marginLeft: 20}}>
+                                <li >{r.text}</li>
                             </ul>
                         ))}
                     </div>

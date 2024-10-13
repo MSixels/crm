@@ -85,12 +85,10 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
                         <h3 className="titleContent">{c.name} {formatDate(c.openDate)}</h3>
                         
                         {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => {
-                            // Verifique o progresso da aula
                             const progressoAula = progressAulas.find(
                                 (progress) => progress.userId === userId && progress.aulaId === aula.id
                             );
 
-                            // Determine se a aula foi completada
                             const aulaCompletada = progressoAula && progressoAula.status === 'end';
 
                             return (
@@ -99,7 +97,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
                                 {c.status === 'blocked' ? (
                                     <FaLock color='gray' />
                                 ) : (
-                                    aulaCompletada ? (  // Verificação se a aula foi completada
+                                    aulaCompletada ? (
                                     <FaCheckCircle color='#1BA284' size={24}/>
                                     ) : (
                                     <div className='Circle'>
