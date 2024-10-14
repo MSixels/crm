@@ -69,6 +69,7 @@ function Home() {
         if (accessToken) {
             const decodedToken = jwtDecode(accessToken);
             setUserId(decodedToken.user_id)
+            console.log('decodedToken.user_id: ', decodedToken.user_id)
         } else {
             console.log("Nenhum token encontrado nos cookies.");
             navigate('/login/aluno');
@@ -234,7 +235,7 @@ function Home() {
                         <HeadLine userName={userName}/>
                     </div>
                     <div className='borderB'>
-                        <Cursos modulos={modulos} conteudo={conteudo} aulas={aulas} provas={provas} professores={professores}/>
+                        <Cursos modulos={modulos} conteudo={conteudo} aulas={aulas} provas={provas} professores={professores} userId={userId}/>
                     </div>
                     <RastreiosSmall data={[rastreios]}/>
                 </div>
@@ -246,7 +247,7 @@ function Home() {
             }
             {page === 'modulos' && 
                 <div className='divContentHome'>
-                    <Cursos modulos={modulos} conteudo={conteudo} aulas={aulas} provas={provas} professores={professores}/>
+                    <Cursos modulos={modulos} conteudo={conteudo} aulas={aulas} provas={provas} professores={professores} userId={userId}/>
                 </div>
             }
             {page === 'aovivo' && 

@@ -1,14 +1,28 @@
 import './Cursos.css';
 import { IoMdSearch } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { GoDotFill } from "react-icons/go";
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { firestore } from '../../../services/firebaseConfig';
+import ProgressBar from '../../ProgressBar/ProgressBar';
 
-function Cursos({ modulos, conteudo, aulas, provas, professores }) {
+function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
+    const [progressAulas, setProgressAulas] = useState([])
+    const [progressProvas, setProgressProvas] = useState([])
+    
+
+    const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
+        console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
+        const percentAulas = (aulasCompletadas / aulasTotal) * 100;
+        const percentProvas = (provasCompletadas / provasTotal) * 100;
+        const totalProgress = (percentAulas + percentProvas) / 2;
+        return totalProgress.toFixed(0);
+    };
 
     const removeAccents = (text) => {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -23,7 +37,6 @@ function Cursos({ modulos, conteudo, aulas, provas, professores }) {
         return removeAccents(m.name).toLowerCase().includes(lowerCaseSearchTerm);
     });
 
-    // Ordena os módulos por nome em ordem alfabética
     const sortedModulos = filteredModulos.sort((a, b) => {
         return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
     });
@@ -44,6 +57,85 @@ function Cursos({ modulos, conteudo, aulas, provas, professores }) {
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
+
+    useEffect(() => {
+        const fetchAulaProgress = async (userId, aulas) => {
+            if (!userId || !aulas || aulas.length === 0) return;
+    
+            try {
+                const aulaIds = aulas.map(aula => aula.id);
+    
+                if (aulaIds.length <= 10) {
+                    const progressRef = collection(firestore, 'progressAulas');
+                    const q = query(progressRef,
+                        where('userId', '==', userId),
+                        where('aulaId', 'in', aulaIds)
+                    );
+    
+                    const querySnapshot = await getDocs(q);
+    
+                    if (!querySnapshot.empty) {
+                        const progressData = querySnapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+    
+                        console.log('Dados de progresso das aulas encontrados:', progressData);
+                        setProgressAulas(progressData);
+                    } else {
+                        console.log('Nenhum dado de progresso das aulas encontrado.');
+                    }
+                } else {
+                    console.log('O número de aulas excede o limite de 10 para a consulta "in".');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar status do progresso das aulas:', error);
+            }
+        };
+    
+        if (userId && aulas && aulas.length > 0) {
+            fetchAulaProgress(userId, aulas);
+        }
+    }, [userId, aulas]);
+
+    useEffect(() => {
+        const fetchProvaProgress = async (userId, provas) => {
+            if (!userId || !provas || provas.length === 0) return;
+    
+            try {
+                const provaIds = provas.map(prova => prova.id);
+    
+                if (provaIds.length <= 10) {
+                    const progressProvasRef = collection(firestore, 'progressProvas');
+                    const qProvas = query(progressProvasRef,
+                        where('userId', '==', userId),
+                        where('provaId', 'in', provaIds)
+                    );
+    
+                    const querySnapshotProvas = await getDocs(qProvas);
+    
+                    if (!querySnapshotProvas.empty) {
+                        const progressProvasData = querySnapshotProvas.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+    
+                        console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                        setProgressProvas(progressProvasData);
+                        console.log('Nenhum dado de progresso das provas encontrado.');
+                    }
+                } else {
+                    console.log('O número de provas excede o limite de 10 para a consulta "in".');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar status do progresso das provas:', error);
+            }
+        };
+    
+        if (userId && provas && provas.length > 0) {
+            fetchProvaProgress(userId, provas);
+        }
+    }, [userId, provas]);
 
     return (
         <div className='containerCursos'>
@@ -68,8 +160,18 @@ function Cursos({ modulos, conteudo, aulas, provas, professores }) {
                 {sortedModulos.map((m) => {
                     const conteudosDoModulo = conteudo.filter(c => c.moduloId === m.id);
 
+                    const aulasCompletadas = aulas.filter(aula => 
+                        conteudosDoModulo.some(c => c.id === aula.conteudoId) &&
+                        progressAulas?.some(progress => progress.userId === userId && progress.aulaId === aula.id && progress.status === 'end')
+                    ).length;
+
                     const totalAulasModulo = aulas.filter(a =>
                         conteudosDoModulo.some(c => c.id === a.conteudoId)
+                    ).length;
+
+                    const provasCompletadas = provas.filter(prova => 
+                        conteudosDoModulo.some(c => c.id === prova.conteudoId) &&
+                        progressProvas?.some(progress => progress.userId === userId && progress.provaId === prova.id && progress.status === 'end')
                     ).length;
 
                     const totalProvasModulo = provas.filter(p =>
@@ -84,15 +186,20 @@ function Cursos({ modulos, conteudo, aulas, provas, professores }) {
                             <h3 style={{ fontSize: 20 }}>{m.name}</h3>
                             <span style={{ fontSize: 16 }}>{m.description}</span>
                             <div className='divProgressInfos'>
-                                <div className={`divInfo ${m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : 'aulaStart'}`}>
-                                    <span>0/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
+                                <div className={`divInfo ${aulasCompletadas < totalAulasModulo ? 'aulaStart' : aulasCompletadas === totalAulasModulo ? 'aulaEnd' : m.status === 'block' ? 'aulaBlock' : ''}`}>
+                                    <span>{aulasCompletadas}/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
                                 </div>
-                                <div className={`divInfo ${m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : 'provaStart'}`}>
-                                    <span>0/{totalAulasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
+                                <div className={`divInfo ${provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo ? 'provaEnd' : m.status === 'block' ? 'provaBlock' : ''}`}>
+                                    <span>{provasCompletadas}/{totalProvasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
                                 </div>
                             </div>
-                            <button className={`btn ${m.status === 'start' ? 'btnStart' : m.status === 'block' ? 'btnBlock' : m.status === 'end' ? 'btnEnd' : 'btnStart'}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
-                                {m.status === 'end' ? 'Ver progresso' : m.status === 'block' ? 'Em breve' : 'Acessar módulo'}
+                            <div className='divProgressBar'>
+                                <ProgressBar aulasCompletadas={aulasCompletadas} aulasTotal={totalAulasModulo} provasCompletadas={provasCompletadas} provasTotal={totalProvasModulo} />
+                                <span className='progressPorcent'>{m.status !== 'block' ? `${calculateProgress(aulasCompletadas, totalAulasModulo, provasCompletadas, totalProvasModulo) > 0 ? `${calculateProgress(aulasCompletadas, totalAulasModulo, provasCompletadas, totalProvasModulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
+                            </div>
+                            
+                            <button className={`btn ${aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'btnStart' : aulasCompletadas === totalAulasModulo && provasCompletadas === totalProvasModulo ? 'btnEnd' : m.status === 'block' ? 'provaBlock' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
+                                {aulasCompletadas === totalAulasModulo && provasCompletadas === totalProvasModulo ? 'Ver progresso' : aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'Acessar módulo' : m.status === 'block' ? 'Em breve' : ''}
                             </button>
                         </div>
                     );
@@ -108,30 +215,7 @@ Cursos.propTypes = {
     aulas: PropTypes.array.isRequired, 
     provas: PropTypes.array.isRequired, 
     professores: PropTypes.array.isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default Cursos;
-
-
-
-/*
-<div className='divProgressInfos'>
-                                <div className={`divInfo ${m.status === 'start' ? 'aulaStart' : m.status === 'block' ? 'aulaBlock' : m.status === 'end' ? 'aulaEnd' : ''}`}>
-                                    <span>{m.aulasFeitas}/{m.aulasTotal} aulas</span>
-                                </div>
-                                <div className={`divInfo ${m.status === 'start' ? 'provaStart' : m.status === 'block' ? 'provaBlock' : m.status === 'end' ? 'provaEnd' : ''}`}>
-                                    <span>{m.provasFeitas}/{m.provasTotal} provas</span>
-                                </div>
-                                <div className={`divInfo ${m.status === 'start' ? 'campoStart' : m.status === 'block' ? 'campoBlock' : m.status === 'end' ? 'campoEnd' : ''}`}>
-                                    <span>{m.workCampoFeitas}/{m.workCampoTotal} rastreios</span>
-                                </div>
-                            </div>
-                        <div className='divProgressBar'>
-                            <ProgressBar modulo={m}/>
-                            <span className='progressPorcent'>{m.status !== 'block' ? `${calculateProgress(m) > 0 ? `${calculateProgress(m)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
-                        </div>
-                        <button className={`btn ${m.status === 'start' ? 'btnStart' : m.status === 'block' ? 'btnBlock' : m.status === 'end' ? 'btnEnd' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
-                            {m.status === 'end' ? 'Ver progresso' : m.status === 'block' ? 'Em breve' : 'Acessar módulo'}
-                        </button>
-
-*/
