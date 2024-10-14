@@ -3,7 +3,7 @@ import { IoIosArrowDropleftCircle } from "react-icons/io";
 import PropTypes from 'prop-types'
 import { FaLock } from "react-icons/fa";
 import ProgressBar from '../../ProgressBar/ProgressBar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SiGoogleclassroom } from "react-icons/si";
 import { FaUser } from "react-icons/fa";
 import { MdOutlineErrorOutline } from "react-icons/md";
@@ -14,12 +14,13 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
     const navigate = useNavigate()
     const [selectOption, setSelectOption] = useState(1)
 
-    const calculateProgress = (module) => {
-        const percentAulas = (module.aulasFeitas / module.aulasTotal) * 100;
-        const percentProvas = (module.provasFeitas / module.provasTotal) * 100;
-        const percentWorkCampo = (module.workCampoFeitas / module.workCampoTotal) * 100;
+    const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
+        console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
+        const percentAulas = (aulasCompletadas / aulasTotal) * 100;
+        const percentProvas = (provasCompletadas / provasTotal) * 100;
 
-        const totalProgress = (percentAulas + percentProvas + percentWorkCampo) / 3;
+    
+        const totalProgress = (percentAulas + percentProvas) / 2;
         return totalProgress.toFixed(0);
     };
 
@@ -73,9 +74,9 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
                     <span className='ft14'>Disponível até {formatDate(modulo.validade)}</span>
                     <div className='divName'>
                         <h2>{modulo.name}</h2>
-                        <span className='progressPorcent ft14'>{modulo.status !== 'block' ? `${calculateProgress(modulo) > 0 ? `${calculateProgress(modulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
+                        <span className='progressPorcent ft14'>{modulo.status !== 'block' ? `${calculateProgress(aulasCompletadas, aulas.length, provasCompletadas, provas.length) > 0 ? `${calculateProgress(aulasCompletadas, aulas.length, provasCompletadas, provas.length)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
                     </div>
-                    <ProgressBar modulo={modulo} />
+                    <ProgressBar aulasCompletadas={aulasCompletadas} aulasTotal={aulas.length} provasCompletadas={provasCompletadas} provasTotal={provas.length} />
                     <div className='infos'>
                         <span>Aulas</span>
                         <span>{aulasCompletadas}/{aulas.length}</span> 

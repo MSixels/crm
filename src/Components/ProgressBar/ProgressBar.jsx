@@ -1,24 +1,28 @@
 import './ProgressBar.css'
 import PropTypes from 'prop-types'
 
-function ProgressBar({modulo}) {
-    const calculateProgress = (module) => {
-        const percentAulas = (module.aulasFeitas / module.aulasTotal) * 100;
-        const percentProvas = (module.provasFeitas / module.provasTotal) * 100;
-        const percentWorkCampo = (module.workCampoFeitas / module.workCampoTotal) * 100;
-    
-        const totalProgress = (percentAulas + percentProvas + percentWorkCampo) / 3;
-        return totalProgress.toFixed(0);
+function ProgressBar({aulasCompletadas, aulasTotal, provasCompletadas, provasTotal}) {
+    const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
+        const percentAulas = (aulasCompletadas / aulasTotal) * 100;
+        const percentProvas = (provasCompletadas / provasTotal) * 100;
+
+        const totalProgress = (percentAulas + percentProvas) / 2; 
+        return totalProgress.toFixed(0); 
     };
+
+    const progressPercentage = calculateProgress(aulasCompletadas, aulasTotal, provasCompletadas, provasTotal);
     
     return (
-        <div className={`boxBar ${modulo.status === 'start' ? 'boxBarStart' : modulo.status === 'block' ? 'boxBarBlock' : modulo.status === 'end' ? 'boxBarEnd' : ''}`}>
-            <div className='bar' style={{width: `${calculateProgress(modulo)}%`}}></div>
+        <div className={`boxBar ${aulasCompletadas < aulasTotal || provasCompletadas < provasTotal ? 'boxBarStart'  : aulasCompletadas === aulasTotal && provasCompletadas === provasTotal ? 'boxBarEnd' : 'boxBarStart'}`}>
+            <div className="bar" style={{ width: `${progressPercentage}%` }}></div>
         </div>
     )
 }
 ProgressBar.propTypes = {
-    modulo: PropTypes.array.isRequired
+    aulasCompletadas: PropTypes.number.isRequired,
+    aulasTotal: PropTypes.number.isRequired,
+    provasCompletadas: PropTypes.number.isRequired,
+    provasTotal: PropTypes.number.isRequired,
 };
 
 export default ProgressBar
