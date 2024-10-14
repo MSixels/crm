@@ -3,7 +3,7 @@ import './ModuloConteudo.css'
 import Header from '../../Components/Header/Header'
 import MenuConteudo from '../../Components/ModuloAluno/MenuConteudo/MenuConteudo'
 import { useEffect, useState } from 'react'
-import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import { firestore } from '../../services/firebaseConfig'
 import VideoAula from '../../Components/ModuloAluno/VideoAula/VideoAula'
 import Prova from '../../Components/ModuloAluno/Prova/Prova'
@@ -23,6 +23,7 @@ function ModuloConteudo() {
     const navigate = useNavigate()
     const [userId, setUserId] = useState('')
     const [progressAulas, setProgressAulas] = useState([])
+    const [progressProvas, setProgressProvas] = useState([])
 
      
 
@@ -214,33 +215,58 @@ function ModuloConteudo() {
     const aulaConfirm = async (userId, aulaId) => {
         try {
             const progressRef = doc(firestore, 'progressAulas', `${userId}_${aulaId}`);
-    
-            const progressData = {
-                userId: userId,
-                aulaId: aulaId,
-                status: 'end', 
-            };
-    
-            await setDoc(progressRef, progressData);
-    
-            console.log('Progresso criado e atualizado com sucesso!');
+            const progressDoc = await getDoc(progressRef);
+            if (progressDoc.exists()) {
+                await setDoc(progressRef, { status: 'end' }, { merge: true });
+                console.log('Progresso atualizado com sucesso!');
+            } else {
+                const progressData = {
+                    userId: userId,
+                    aulaId: aulaId,
+                    status: 'end',
+                };
+                await setDoc(progressRef, progressData);
+                console.log('Progresso criado e atualizado com sucesso!');
+            }
         } catch (error) {
             console.error('Erro ao criar ou atualizar o progresso:', error);
         }
     };
 
+
+    const provaConfirm = async (userId, provaId) => {
+        try {
+            const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
+            const progressDoc = await getDoc(progressRef);
+    
+            if (progressDoc.exists()) {
+                await setDoc(progressRef, { status: 'end' }, { merge: true });
+                console.log('Progresso da prova atualizado com sucesso!');
+            } else {
+                const progressData = {
+                    userId: userId,
+                    provaId: provaId,
+                    status: 'end',
+                };
+                await setDoc(progressRef, progressData);
+                console.log('Progresso da prova criado e atualizado com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao criar ou atualizar o progresso da prova:', error);
+        }
+    };
+
+
     useEffect(() => {
-        const fetchMaterialStatus = async (userId, aulas) => {
+        const fetchAulaProgress = async (userId, aulas) => {
             if (!userId || !aulas || aulas.length === 0) return;
     
             try {
-                const aulaIds = aulas.map(aula => aula.id); // Extrai os IDs das aulas
+                const aulaIds = aulas.map(aula => aula.id);
     
-                // Verifica se a quantidade de aulas é de 10 ou menos
                 if (aulaIds.length <= 10) {
-                    // Cria uma query onde aulaId está em aulaIds
                     const progressRef = collection(firestore, 'progressAulas');
-                    const q = query(progressRef, 
+                    const q = query(progressRef,
                         where('userId', '==', userId),
                         where('aulaId', 'in', aulaIds)
                     );
@@ -249,54 +275,108 @@ function ModuloConteudo() {
     
                     if (!querySnapshot.empty) {
                         const progressData = querySnapshot.docs.map(doc => ({
-                            id: doc.id, 
+                            id: doc.id,
                             ...doc.data()
                         }));
     
-                        console.log('Dados de progresso encontrados:', progressData);
-                        setProgressAulas(progressData)
+                        console.log('Dados de progresso das aulas encontrados:', progressData);
+                        setProgressAulas(progressData);
                     } else {
-                        console.log('Nenhum dado de progresso encontrado para o usuário e aula.');
+                        console.log('Nenhum dado de progresso das aulas encontrado.');
                     }
                 } else {
                     console.log('O número de aulas excede o limite de 10 para a consulta "in".');
                 }
             } catch (error) {
-                console.error('Erro ao buscar status do material:', error);
+                console.error('Erro ao buscar status do progresso das aulas:', error);
             }
         };
     
         if (userId && aulas && aulas.length > 0) {
-            fetchMaterialStatus(userId, aulas); // Chama a função passando o userId e as aulas
+            fetchAulaProgress(userId, aulas);
         }
     }, [userId, aulas]);
+
+    useEffect(() => {
+        const fetchProvaProgress = async (userId, provas) => {
+            if (!userId || !provas || provas.length === 0) return;
+    
+            try {
+                const provaIds = provas.map(prova => prova.id);
+    
+                if (provaIds.length <= 10) {
+                    const progressProvasRef = collection(firestore, 'progressProvas');
+                    const qProvas = query(progressProvasRef,
+                        where('userId', '==', userId),
+                        where('provaId', 'in', provaIds)
+                    );
+    
+                    const querySnapshotProvas = await getDocs(qProvas);
+    
+                    if (!querySnapshotProvas.empty) {
+                        const progressProvasData = querySnapshotProvas.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+    
+                        console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                        setProgressProvas(progressProvasData);
+                        console.log('Nenhum dado de progresso das provas encontrado.');
+                    }
+                } else {
+                    console.log('O número de provas excede o limite de 10 para a consulta "in".');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar status do progresso das provas:', error);
+            }
+        };
+    
+        if (userId && provas && provas.length > 0) {
+            fetchProvaProgress(userId, provas);
+        }
+    }, [userId, provas]);
+    
+    
     
 
-    const confirmMaterial = (confirm) => {
-        
-        if(confirm){
-            const materialConfim = materialId
-            console.log('materialId_confirmado: ', materialConfim)
-
-            aulaConfirm(userId, materialConfim)
-            if(provas.length > 0){
-                console.log('Array provas: ', provas[0].id)
-                navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${provas[0].id}`)
-            }else {
-                console.log('Não existem outros materias')
-                navigate(`/aluno/modulo/${moduloId}`)
+    const confirmMaterial = (confirm, itemType) => {
+        if (confirm) {
+            const materialConfim = materialId;
+            console.log('materialId_confirmado: ', materialConfim);
+    
+            if (itemType === 'aula') {
+                aulaConfirm(userId, materialConfim) 
+                    .then(() => {
+                        if (provas.length > 0) {
+                            console.log('Array provas: ', provas[0].id);
+                            navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${provas[0].id}`);
+                        } else {
+                            console.log('Não há provas disponíveis.');
+                            navigate(`/aluno/modulo/${moduloId}`);
+                        }
+                    })
+                    .catch(error => console.error('Erro ao confirmar aula:', error));
+            }
+    
+            else if (itemType === 'prova') {
+                provaConfirm(userId, materialConfim) 
+                    .then(() => {
+                        console.log('Prova confirmada, navegando para o módulo.');
+                        navigate(`/aluno/modulo/${moduloId}`);
+                    })
+                    .catch(error => console.error('Erro ao confirmar prova:', error));
             }
         }
-    }
+    };
 
     return (
         <div className='containerModuloConteudo'>
             <Header options={options}/>
             <div className='divContent'>
-                {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} userId={userId}/>}
+                {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>}
                 <div className='divMaterial'>
-                    {itemType === 'aula' && <VideoAula materialId={materialId} confirmAula={confirmMaterial} />}
-                    {itemType === 'prova' && <Prova materialId={materialId} />}
+                    {itemType === 'aula' && <VideoAula materialId={materialId} confirmAula={() => confirmMaterial(true, 'aula')} />}
+                    {itemType === 'prova' && <Prova materialId={materialId} confirmProva={() => confirmMaterial(true, 'prova')}/>}
                 </div>
                 
             </div>

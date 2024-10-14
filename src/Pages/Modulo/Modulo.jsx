@@ -18,6 +18,7 @@ function Modulo() {
     const [userId, setUserId] = useState('')
     const navigate = useNavigate()
     const [progressAulas, setProgressAulas] = useState([])
+    const [progressProvas, setProgressProvas] = useState([])
 
     const options = [
         {
@@ -53,17 +54,15 @@ function Modulo() {
     }, [navigate]);
 
     useEffect(() => {
-        const fetchMaterialStatus = async (userId, aulas) => {
+        const fetchAulaProgress = async (userId, aulas) => {
             if (!userId || !aulas || aulas.length === 0) return;
     
             try {
-                const aulaIds = aulas.map(aula => aula.id); // Extrai os IDs das aulas
+                const aulaIds = aulas.map(aula => aula.id);
     
-                // Verifica se a quantidade de aulas é de 10 ou menos
                 if (aulaIds.length <= 10) {
-                    // Cria uma query onde aulaId está em aulaIds
                     const progressRef = collection(firestore, 'progressAulas');
-                    const q = query(progressRef, 
+                    const q = query(progressRef,
                         where('userId', '==', userId),
                         where('aulaId', 'in', aulaIds)
                     );
@@ -72,27 +71,66 @@ function Modulo() {
     
                     if (!querySnapshot.empty) {
                         const progressData = querySnapshot.docs.map(doc => ({
-                            id: doc.id, 
+                            id: doc.id,
                             ...doc.data()
                         }));
     
-                        console.log('Dados de progresso encontrados:', progressData);
-                        setProgressAulas(progressData)
+                        console.log('Dados de progresso das aulas encontrados:', progressData);
+                        setProgressAulas(progressData);
                     } else {
-                        console.log('Nenhum dado de progresso encontrado para o usuário e aula.');
+                        console.log('Nenhum dado de progresso das aulas encontrado.');
                     }
                 } else {
                     console.log('O número de aulas excede o limite de 10 para a consulta "in".');
                 }
             } catch (error) {
-                console.error('Erro ao buscar status do material:', error);
+                console.error('Erro ao buscar status do progresso das aulas:', error);
             }
         };
     
         if (userId && aulas && aulas.length > 0) {
-            fetchMaterialStatus(userId, aulas); 
+            fetchAulaProgress(userId, aulas);
         }
     }, [userId, aulas]);
+
+    useEffect(() => {
+        const fetchProvaProgress = async (userId, provas) => {
+            if (!userId || !provas || provas.length === 0) return;
+    
+            try {
+                const provaIds = provas.map(prova => prova.id);
+    
+                if (provaIds.length <= 10) {
+                    const progressProvasRef = collection(firestore, 'progressProvas');
+                    const qProvas = query(progressProvasRef,
+                        where('userId', '==', userId),
+                        where('provaId', 'in', provaIds)
+                    );
+    
+                    const querySnapshotProvas = await getDocs(qProvas);
+    
+                    if (!querySnapshotProvas.empty) {
+                        const progressProvasData = querySnapshotProvas.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+    
+                        console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                        setProgressProvas(progressProvasData);
+                        console.log('Nenhum dado de progresso das provas encontrado.');
+                    }
+                } else {
+                    console.log('O número de provas excede o limite de 10 para a consulta "in".');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar status do progresso das provas:', error);
+            }
+        };
+    
+        if (userId && provas && provas.length > 0) {
+            fetchProvaProgress(userId, provas);
+        }
+    }, [userId, provas]);
 
     useEffect(() => {
         const fetchModulosData = async () => {
@@ -103,12 +141,11 @@ function Modulo() {
                     ...doc.data()
                 }));
 
-                // Filtrando o módulo baseado no moduloId
                 const selectedModulo = modulosData.find((modulo) => modulo.id === moduloId);
 
                 if (selectedModulo) {
                     setModulo(selectedModulo);
-                    console.log("selectedModulo: ", selectedModulo); // Atualizando o estado com o módulo encontrado
+                    console.log("selectedModulo: ", selectedModulo);
                 } else {
                     console.log("Módulo não encontrado.");
                 }
@@ -200,8 +237,8 @@ function Modulo() {
         <div className='containerModulo'>
             <Header options={options}/>
             <div className='divContent'>
-                <Menu modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas}/>
-                <Aulas modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} userId={userId}/>
+                <Menu modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>
+                <Aulas modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>
             </div>
         </div>
     )

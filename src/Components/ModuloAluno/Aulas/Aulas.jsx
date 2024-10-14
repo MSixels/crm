@@ -4,7 +4,7 @@ import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle } from "re
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-function Aulas({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
+function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
     const navigate = useNavigate();
     const { moduloId } = useParams()
     const [todosConcluidos, setTodosConcluidos] = useState(false);
@@ -114,8 +114,8 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
                         })}
 
                         {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => {
-                            const progressoProva = progressAulas.find(
-                            (progress) => progress.userId === userId && progress.aulaId === prova.id
+                            const progressoProva = progressProvas.find(
+                            (progress) => progress.userId === userId && progress.provaId === prova.id
                             );
 
                             const provaCompletada = progressoProva && progressoProva.status === 'end';
@@ -162,6 +162,7 @@ Aulas.propTypes = {
     aulas: PropTypes.array.isRequired,
     provas: PropTypes.array.isRequired,
     progressAulas: PropTypes.array.isRequired,
+    progressProvas: PropTypes.array.isRequired,
     userId: PropTypes.string.isRequired,
 };
 

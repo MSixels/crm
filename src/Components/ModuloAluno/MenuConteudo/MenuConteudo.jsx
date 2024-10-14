@@ -6,7 +6,7 @@ import ProgressBar from '../../ProgressBar/ProgressBar';
 import { useNavigate, useParams } from 'react-router-dom';
 
 
-function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, userId }) {
+function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
     const { moduloId } = useParams()
     const { materialId } = useParams()
     const { conteudoId } = useParams()
@@ -59,12 +59,13 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, userId }
                     {aulas && aulas
                     .filter((a) => a.conteudoId === c.id)
                     .map((a) => {
-                        // Verifique se progressAulas está definido e é um array
                         const progressoAula = progressAulas?.find(
                             (progress) => progress.userId === userId && progress.aulaId === a.id
                         );
 
                         const aulaCompletada = progressoAula && progressoAula.status === 'end';
+
+                        
 
                         return (
                             <div 
@@ -90,19 +91,30 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, userId }
                     })}
                     {provas && provas
                     .filter((p) => p.conteudoId === c.id) 
-                    .map((p) => (
-                        <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id)}>
-                            <div className='divCheck'>
-                                <div className='divCircle'>
-                                    <div className='divBall'></div>
+                    .map((p) => {
+                        const progressoProva = progressProvas?.find(
+                            (progress) => progress.userId === userId && progress.provaId === p.id
+                        );
+
+                        const provaCompletada = progressoProva && progressoProva.status === 'end';
+                        return(
+                            <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id)}>
+                                <div className='divCheck'>
+                                    {provaCompletada ? (
+                                        <FaCheckCircle color='#1BA284' size={24} />
+                                    ) : (
+                                        <div className='divCircle'>
+                                            <div className='divBall'></div>
+                                        </div>
+                                    )}
                                 </div>
+                                <div className='divIcon'>
+                                    <FaBookOpen />
+                                </div>
+                                <p className='aulaTitle'>{p.name}</p>
                             </div>
-                            <div className='divIcon'>
-                                <FaBookOpen />
-                            </div>
-                            <p className='aulaTitle'>{p.name}</p>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             ))}
             
@@ -116,6 +128,7 @@ MenuConteudo.propTypes = {
     aulas: PropTypes.array.isRequired,
     provas: PropTypes.array.isRequired,
     progressAulas: PropTypes.array.isRequired,
+    progressProvas: PropTypes.array.isRequired,
     userId: PropTypes.string.isRequired,
 };
 

@@ -10,21 +10,18 @@ import { MdOutlineErrorOutline } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
 
 
-function Menu({ modulo, aulas, provas }) {
-    
+function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
     const navigate = useNavigate()
     const [selectOption, setSelectOption] = useState(1)
+
     const calculateProgress = (module) => {
         const percentAulas = (module.aulasFeitas / module.aulasTotal) * 100;
         const percentProvas = (module.provasFeitas / module.provasTotal) * 100;
         const percentWorkCampo = (module.workCampoFeitas / module.workCampoTotal) * 100;
-    
+
         const totalProgress = (percentAulas + percentProvas + percentWorkCampo) / 3;
         return totalProgress.toFixed(0);
     };
-
-    
-
 
     const options = [
         {
@@ -56,26 +53,36 @@ function Menu({ modulo, aulas, provas }) {
         return `${day}/${month}/${year}`;
     };
 
+    const aulasCompletadas = aulas.filter(aula => {
+        const progressoAula = progressAulas?.find(progress => progress.userId === userId && progress.aulaId === aula.id);
+        return progressoAula && progressoAula.status === 'end';
+    }).length;
+
+    const provasCompletadas = provas.filter(prova => {
+        const progressoProva = progressProvas?.find(progress => progress.userId === userId && progress.provaId === prova.id);
+        return progressoProva && progressoProva.status === 'end';
+    }).length;
+
     return (
         <div className='containerMenu'>
             <div className='divBtnBack'>
                 <IoIosArrowDropleftCircle size={30} onClick={backHome}/>
             </div>
-            {modulo && (
+            {modulo && conteudo && aulas && (
                 <div className='divContentMenu'>
                     <span className='ft14'>Disponível até {formatDate(modulo.validade)}</span>
                     <div className='divName'>
                         <h2>{modulo.name}</h2>
                         <span className='progressPorcent ft14'>{modulo.status !== 'block' ? `${calculateProgress(modulo) > 0 ? `${calculateProgress(modulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
                     </div>
-                    <ProgressBar modulo={modulo}/>
+                    <ProgressBar modulo={modulo} />
                     <div className='infos'>
                         <span>Aulas</span>
-                        <span>0/{aulas.length}</span>
+                        <span>{aulasCompletadas}/{aulas.length}</span> 
                     </div>
                     <div className='infos'>
                         <span>Provas</span>
-                        <span>0/{provas.length}</span>
+                        <span>{provasCompletadas}/{provas.length}</span>
                     </div>
                     <div className='infos'>
                         <span>Prontos</span>
@@ -98,7 +105,7 @@ function Menu({ modulo, aulas, provas }) {
                 ))}
             </div>
         </div>
-    )
+    );
 }
 
 Menu.propTypes = {
@@ -106,6 +113,9 @@ Menu.propTypes = {
     conteudo: PropTypes.array.isRequired,
     aulas: PropTypes.array.isRequired,
     provas: PropTypes.array.isRequired,
+    progressAulas: PropTypes.array.isRequired,
+    progressProvas: PropTypes.array.isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default Menu

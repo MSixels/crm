@@ -6,7 +6,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 
-function Prova({ materialId }) {
+function Prova({ materialId, confirmProva }) {
 const [provas, setProvas] = useState([]);
 const [selectedResponses, setSelectedResponses] = useState({});
 const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -46,6 +46,12 @@ const handleNextQuestion = () => {
 
 const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+};
+
+const proximaEtapa = (confirm) => {
+    if(confirm){
+        confirmProva(confirm);
+    }
 };
 
 return (
@@ -101,7 +107,7 @@ return (
                 </button>
                 </div>
                 {currentQuestionIndex === provas[0].quests.length - 1 && (
-                <div className="btn-next-content"><ButtonConfirm title='Salvar e avançar' icon={<FaCircleChevronRight size={18}/>} /></div>
+                <div className="btn-next-content"><ButtonConfirm title='Salvar e avançar' icon={<FaCircleChevronRight size={18}/>} action={proximaEtapa}/></div>
                 )}
             </div>
             </div>
@@ -113,7 +119,8 @@ return (
 }
 
 Prova.propTypes = {
-materialId: PropTypes.string.isRequired,
+    materialId: PropTypes.string.isRequired,
+    confirmProva: PropTypes.bool.isRequired,
 };
 
 export default Prova;
