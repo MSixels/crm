@@ -8,146 +8,159 @@ import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
 
 function Prova({ materialId, userId }) {
-const [provas, setProvas] = useState([]);
-const [selectedResponses, setSelectedResponses] = useState({});
-const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-const { moduloId } = useParams()
-const navigate = useNavigate()
+  const [provas, setProvas] = useState([]);
+  const [selectedResponses, setSelectedResponses] = useState({});
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const { moduloId } = useParams();
+  const navigate = useNavigate();
 
-useEffect(() => {
+  useEffect(() => {
     const fetchProvasData = async () => {
-    try {
+      try {
         const querySnapshot = await getDocs(collection(firestore, 'provas'));
         const provasArray = [];
         querySnapshot.forEach((doc) => {
-        provasArray.push({ id: doc.id, ...doc.data() });
+          provasArray.push({ id: doc.id, ...doc.data() });
         });
 
         const provaFiltrada = provasArray.filter((prova) => prova.id === materialId);
 
         setProvas(provaFiltrada);
-    } catch (error) {
+      } catch (error) {
         console.error('Erro ao buscar dados:', error);
-    }
+      }
     };
 
     if (materialId) {
-    fetchProvasData();
+      fetchProvasData();
     }
-}, [materialId]);
+  }, [materialId]);
 
-const handleSelectResponse = (questionIndex, responseIndex) => {
+  const handleSelectResponse = (questionIndex, responseIndex) => {
     setSelectedResponses((prevSelectedResponses) => ({
-    ...prevSelectedResponses,
-    [questionIndex]: responseIndex,
+      ...prevSelectedResponses,
+      [questionIndex]: responseIndex,
     }));
-};
+  };
 
-const handleNextQuestion = () => {
+  const handleNextQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-};
+  };
 
-const handlePreviousQuestion = () => {
+  const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-};
+  };
 
-const provaConfirm = async (userId, provaId) => {
+  const provaConfirm = async (userId, provaId) => {
     try {
-        const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
-        const progressDoc = await getDoc(progressRef);
+      const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
+      const progressDoc = await getDoc(progressRef);
 
-        if (progressDoc.exists()) {
-            await setDoc(progressRef, { status: 'end' }, { merge: true });
-            console.log('Progresso da prova atualizado com sucesso!');
-        } else {
-            const progressData = {
-                userId: userId,
-                provaId: provaId,
-                status: 'end',
-            };
-            await setDoc(progressRef, progressData);
-            console.log('Progresso da prova criado e atualizado com sucesso!');
-        }
+      if (progressDoc.exists()) {
+        await setDoc(progressRef, { status: 'end' }, { merge: true });
+        console.log('Progresso da prova atualizado com sucesso!');
+      } else {
+        const progressData = {
+          userId: userId,
+          provaId: provaId,
+          status: 'end',
+        };
+        await setDoc(progressRef, progressData);
+        console.log('Progresso da prova criado e atualizado com sucesso!');
+      }
     } catch (error) {
-        console.error('Erro ao criar ou atualizar o progresso da prova:', error);
+      console.error('Erro ao criar ou atualizar o progresso da prova:', error);
     }
-};
+  };
 
-const confirmMaterial = (confirm) => {
+  const confirmMaterial = (confirm) => {
     if (confirm) {
-        if(provas[0].id === materialId){
-            provaConfirm(userId, materialId).then(() => navigate(`/aluno/modulo/${moduloId}`))
-        }
+      if (provas[0].id === materialId) {
+        provaConfirm(userId, materialId).then(() => navigate(`/aluno/modulo/${moduloId}`));
+      }
     }
-};
+  };
 
-return (
+  const allQuestionsAnswered = provas[0]?.quests.length === Object.keys(selectedResponses).length;
+
+  const handleButtonClick = () => {
+    if (allQuestionsAnswered) {
+      confirmMaterial(true);
+    }
+  };
+
+  return (
     <div className='containerProva'>
-    {provas.length > 0 && (
+      {provas.length > 0 && (
         <div>
-        <div className='titleIcon'>
+          <div className='titleIcon'>
             <div className='divIconAula'>
-            <FaBookOpen />
+              <FaBookOpen />
             </div>
             <h2 className='testTitle'>{provas[0].name}</h2>
-        </div>
-        <p>{provas[0].description}</p>
-        {provas[0].quests.length > 0 && (
+          </div>
+          <p>{provas[0].description}</p>
+          {provas[0].quests.length > 0 && (
             <div style={{ marginTop: 20 }}>
-            <p className='testQuestion' style={{ marginBottom: 5 }}>
+              <p className='testQuestion' style={{ marginBottom: 5 }}>
                 {provas[0].quests[currentQuestionIndex].quest}
-            </p>
-            {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
+              </p>
+              {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
                 <ul className='testOptions' key={responseIndex}>
-                <li className='testOptionItem'>
-                <label>
-                    <input
-                    type='checkbox'
-                    checked={selectedResponses[currentQuestionIndex] === responseIndex}
-                    onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
-                    />
-                </label>
-                {r.text}
-                </li>
-            </ul>
-
-            ))}
-            <div className='navigationButtons'>
+                  <li className='testOptionItem'>
+                    <label>
+                      <input
+                        type='checkbox'
+                        checked={selectedResponses[currentQuestionIndex] === responseIndex}
+                        onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
+                      />
+                    </label>
+                    {r.text}
+                  </li>
+                </ul>
+              ))}
+              <div className='navigationButtons'>
                 <div className="justify-btns">
-                <button
-                className='btn-nav'
-                onClick={handlePreviousQuestion}
-                disabled={currentQuestionIndex === 0}
-                color='#CED7DE'
-                >
-                <FaCircleChevronLeft size={24} />
-                </button>
-                <span className='questionCounter'>
-                {currentQuestionIndex + 1} / {provas[0].quests.length}
-                </span>
-                <button
-                className='btn-nav'
-                onClick={handleNextQuestion}
-                disabled={currentQuestionIndex === provas[0].quests.length - 1}
-                >
-                <FaCircleChevronRight size={24} />
-                </button>
+                  <button
+                    className='btn-nav'
+                    onClick={handlePreviousQuestion}
+                    disabled={currentQuestionIndex === 0}
+                  >
+                    <FaCircleChevronLeft size={24} />
+                  </button>
+                  <span className='questionCounter'>
+                    {currentQuestionIndex + 1} / {provas[0].quests.length}
+                  </span>
+                  <button
+                    className='btn-nav'
+                    onClick={handleNextQuestion}
+                    disabled={currentQuestionIndex === provas[0].quests.length - 1}
+                  >
+                    <FaCircleChevronRight size={24} />
+                  </button>
                 </div>
                 {currentQuestionIndex === provas[0].quests.length - 1 && (
-                <div className="btn-next-content"><ButtonConfirm title='Salvar e avançar' icon={<FaCircleChevronRight size={18}/>} action={confirmMaterial}/></div>
+                  <div className="btn-next-content">
+                    <ButtonConfirm
+                      title='Salvar e avançar'
+                      icon={<FaCircleChevronRight size={18} />}
+                      action={handleButtonClick}
+                      disabled={!allQuestionsAnswered} // Desabilita o botão se não estiver tudo respondido
+                    />
+                  </div>
                 )}
+              </div>
             </div>
-            </div>
-        )}
+          )}
         </div>
-    )}
+      )}
     </div>
-);
+  );
 }
 
 Prova.propTypes = {
-    materialId: PropTypes.string.isRequired,
-    userId: PropTypes.string.isRequired,
+  materialId: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 };
 
 export default Prova;
