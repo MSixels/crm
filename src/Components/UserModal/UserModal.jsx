@@ -54,7 +54,7 @@ export default function UserModal({ isOpen, userId }) {
   }, [userId]);
 
   if (loading) {
-    return <div className="modal">Carregando...</div>; // Mostra "Carregando..." enquanto busca os dados
+    return <div className="modal">Carregando...</div>;
   }
 
   return (
@@ -63,7 +63,11 @@ export default function UserModal({ isOpen, userId }) {
         {userData ? (
           <>
             <h4>{userData.name}</h4> 
-            <p>{userData.email}</p> 
+            <p>
+            {userData.email.length > 24
+              ? `${userData.email.slice(0, 24)}...`
+              : userData.email}
+</p>
           </>
         ) : (
           <p>Usuário não encontrado</p>

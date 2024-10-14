@@ -4,6 +4,13 @@
   color: var(--secondary1000);
 }
 
+.titleIcon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
 .testQuestion {
   font-size: 20px;
   font-weight: 600;
@@ -12,14 +19,88 @@
 }
 
 .testOptions {
-  font-size: 18px;
-  font-weight: 400;
-  color: var(--secondary900);
-  padding: 12px 8px;
-  background-color: var(--bg-1);
-  border: 1px solid var(--primary);
-  border-radius: 4px;
   list-style: none;
+  padding: 10px;
   margin-right: 2rem;
   margin-bottom: 0.5rem;
+  border: 2px solid var(--bg-block);
+  border-radius: 8px; 
+  transition: all 0.3s ease;
+}
+
+.navigationButtons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-right: 2rem;
+}
+
+.btn-nav {
+  padding: 10px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--secondary900);
+}
+
+.btn-nav:disabled {
+  cursor: not-allowed;
+  opacity: 0.2;
+}
+
+.testOptionItem {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.testOptionItem input {
+  margin-right: 10px; 
+}
+.questionCounter {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--secondary900);
+  margin-bottom: 6px;
+}
+
+.justify-btns {
+  display: flex;
+  align-items: center;
+}
+
+button.btn-confirm {
+  margin-left: 20px;
+}
+
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--bg-block); 
+  border-radius: 50%; 
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+  background-color: white; 
+  border: 2px solid var(--bg-btnConfirm); 
+}
+
+input[type="checkbox"]:checked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background-color: var(--bg-btnConfirm);
+  border-radius: 50%;
 }
