@@ -63,7 +63,7 @@ function Prova({ materialId, userId }) {
         const progressData = {
           userId: userId,
           provaId: provaId,
-          status: 'end',
+          status: 'end', 
         };
         await setDoc(progressRef, progressData);
         console.log('Progresso da prova criado e atualizado com sucesso!');

@@ -67,17 +67,14 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     }, [conteudo]);
 
     useEffect(() => {
-        // Supondo que você tenha uma lógica para verificar se uma prova deve ser bloqueada
         const novasProvasBloqueadas = {};
         conteudo.forEach((conteudoItem) => {
-            // Verifique se todas as aulas do conteúdo foram concluídas
             const aulasDoConteudo = aulas.filter(aula => aula.conteudoId === conteudoItem.id);
             const todasAulasConcluidas = aulasDoConteudo.every(aula => {
                 const progressoAula = progressAulas.find(progress => progress.userId === userId && progress.aulaId === aula.id);
                 return progressoAula && progressoAula.status === 'end';
             });
     
-            // Defina o bloqueio da prova com base nas aulas do conteúdo
             novasProvasBloqueadas[conteudoItem.id] = !todasAulasConcluidas;
         });
         setProvasBloqueadas(novasProvasBloqueadas);
@@ -182,7 +179,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                             {renderIcon('Prova')}
                                             <span>{prova.name}</span>
                                         </div>
-                                        {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'storyTelling')}
+                                        {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'prova')}
                                         </div>
                                     );
                                     })
