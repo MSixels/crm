@@ -14,14 +14,15 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${materialId}`);
     };
 
-    const renderButton = (contentItem, moduloId, conteudoId, materialId) => {
-        if (contentItem.status === "completed") {
-            if (contentItem.type === "Aula" || contentItem.type === "Ao Vivo") {
+    const renderButton = (status, moduloId, conteudoId, materialId, type) => {
+        console.log(`${type}: ${status}`)
+        if (status === "end") {
+            if (type === "aula" || type === "aovivo") {
                 return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, materialId)}>Reassistir</button>;
-            } else if (contentItem.type === "Teste" || contentItem.type === "Prova") {
+            } else if (type === "teste" || type === "prova") {
                 return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, materialId)}>Ver Respostas</button>;
             }
-        } else if (contentItem.status === "blocked") {
+        } else if (status === "blocked") {
             return <FaLock color='gray' />;
         } else {
             return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, materialId)}>Iniciar</button>;
@@ -108,7 +109,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                 {renderIcon('Aula')}
                                 <span>{aula.name}</span>
                                 </div>
-                                {renderButton(c, moduloId, c.id, aula.id)}
+                                {renderButton(progressoAula?.status, moduloId, c.id, aula.id, 'aula')}
                             </div>
                             );
                         })}
@@ -136,9 +137,9 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                 )}
                                 {renderIcon('Prova')}
                                 <span>{prova.name}</span>
-                                {renderScore(c)}
+                                {/*renderScore(provaCompletada)*/}
                                 </div>
-                                {renderButton(c, moduloId, c.id, prova.id)}
+                                {renderButton(progressoProva?.status, moduloId, c.id, prova.id, 'prova')}
                             </div>
                             );
                         })}

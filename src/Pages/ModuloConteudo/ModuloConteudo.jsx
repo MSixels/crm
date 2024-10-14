@@ -25,8 +25,6 @@ function ModuloConteudo() {
     const [progressAulas, setProgressAulas] = useState([])
     const [progressProvas, setProgressProvas] = useState([])
 
-     
-
     const options = [
         {
             id: 1,
@@ -212,51 +210,6 @@ function ModuloConteudo() {
         }
     }, [navigate]);
 
-    const aulaConfirm = async (userId, aulaId) => {
-        try {
-            const progressRef = doc(firestore, 'progressAulas', `${userId}_${aulaId}`);
-            const progressDoc = await getDoc(progressRef);
-            if (progressDoc.exists()) {
-                await setDoc(progressRef, { status: 'end' }, { merge: true });
-                console.log('Progresso atualizado com sucesso!');
-            } else {
-                const progressData = {
-                    userId: userId,
-                    aulaId: aulaId,
-                    status: 'end',
-                };
-                await setDoc(progressRef, progressData);
-                console.log('Progresso criado e atualizado com sucesso!');
-            }
-        } catch (error) {
-            console.error('Erro ao criar ou atualizar o progresso:', error);
-        }
-    };
-
-
-    const provaConfirm = async (userId, provaId) => {
-        try {
-            const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
-            const progressDoc = await getDoc(progressRef);
-    
-            if (progressDoc.exists()) {
-                await setDoc(progressRef, { status: 'end' }, { merge: true });
-                console.log('Progresso da prova atualizado com sucesso!');
-            } else {
-                const progressData = {
-                    userId: userId,
-                    provaId: provaId,
-                    status: 'end',
-                };
-                await setDoc(progressRef, progressData);
-                console.log('Progresso da prova criado e atualizado com sucesso!');
-            }
-        } catch (error) {
-            console.error('Erro ao criar ou atualizar o progresso da prova:', error);
-        }
-    };
-
-
     useEffect(() => {
         const fetchAulaProgress = async (userId, aulas) => {
             if (!userId || !aulas || aulas.length === 0) return;
@@ -336,47 +289,14 @@ function ModuloConteudo() {
         }
     }, [userId, provas]);
     
-    
-    
-
-    const confirmMaterial = (confirm, itemType) => {
-        if (confirm) {
-            const materialConfim = materialId;
-            console.log('materialId_confirmado: ', materialConfim);
-    
-            if (itemType === 'aula') {
-                aulaConfirm(userId, materialConfim) 
-                    .then(() => {
-                        if (provas.length > 0) {
-                            console.log('Array provas: ', provas[0].id);
-                            navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${provas[0].id}`);
-                        } else {
-                            console.log('Não há provas disponíveis.');
-                            navigate(`/aluno/modulo/${moduloId}`);
-                        }
-                    })
-                    .catch(error => console.error('Erro ao confirmar aula:', error));
-            }
-    
-            else if (itemType === 'prova') {
-                provaConfirm(userId, materialConfim) 
-                    .then(() => {
-                        console.log('Prova confirmada, navegando para o módulo.');
-                        navigate(`/aluno/modulo/${moduloId}`);
-                    })
-                    .catch(error => console.error('Erro ao confirmar prova:', error));
-            }
-        }
-    };
-
     return (
         <div className='containerModuloConteudo'>
             <Header options={options}/>
             <div className='divContent'>
                 {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>}
                 <div className='divMaterial'>
-                    {itemType === 'aula' && <VideoAula materialId={materialId} confirmAula={() => confirmMaterial(true, 'aula')} />}
-                    {itemType === 'prova' && <Prova materialId={materialId} confirmProva={() => confirmMaterial(true, 'prova')}/>}
+                    {itemType === 'aula' && <VideoAula materialId={materialId} userId={userId} />}
+                    {itemType === 'prova' && <Prova materialId={materialId} userId={userId}/>}
                 </div>
                 
             </div>

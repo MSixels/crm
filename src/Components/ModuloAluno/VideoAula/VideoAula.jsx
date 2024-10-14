@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 import './VideoAula.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { FaCircleChevronRight } from 'react-icons/fa6';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function VideoAula({ materialId, confirmAula }) {
+function VideoAula({ materialId, userId }) {
+    const { moduloId } = useParams()
     const [aulas, setAulas] = useState([]);
+    const navigate = useNavigate()
 
     useEffect(() => {
         console.log('materialId: ', materialId);
@@ -24,6 +27,7 @@ function VideoAula({ materialId, confirmAula }) {
                 const aulaFiltrada = aulasArray.filter(aula => aula.id === materialId);
     
                 setAulas(aulaFiltrada);  
+                console.log('aulaFiltrada: ', aulaFiltrada)
                 console.log('Aula encontrada com materialId: ', aulaFiltrada);
             } catch (error) {
                 console.error("Erro ao buscar dados:", error);
@@ -35,9 +39,32 @@ function VideoAula({ materialId, confirmAula }) {
         }
     }, [materialId]);
 
-    const proximaEtapa = (confirm) => {
-        if(confirm){
-            confirmAula(confirm);
+    const aulaConfirm = async (userId, aulaId) => {
+        try {
+            const progressRef = doc(firestore, 'progressAulas', `${userId}_${aulaId}`);
+            const progressDoc = await getDoc(progressRef);
+            if (progressDoc.exists()) {
+                await setDoc(progressRef, { status: 'end' }, { merge: true });
+                console.log('Progresso atualizado com sucesso!');
+            } else {
+                const progressData = {
+                    userId: userId,
+                    aulaId: aulaId,
+                    status: 'end',
+                };
+                await setDoc(progressRef, progressData);
+                console.log('Progresso criado e atualizado com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao criar ou atualizar o progresso:', error);
+        }
+    };
+
+    const confirmMaterial = (confirm) => {
+        if (confirm) {
+            if(aulas[0].id === materialId){
+                aulaConfirm(userId, materialId).then(() => navigate(`/aluno/modulo/${moduloId}`))
+            }
         }
     };
 
@@ -61,7 +88,7 @@ function VideoAula({ materialId, confirmAula }) {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     />
-                    <ButtonConfirm title='Próxima etapa' icon={<FaCircleChevronRight size={25}/>} action={proximaEtapa} disabled={false} />
+                    <ButtonConfirm title='Próxima etapa' icon={<FaCircleChevronRight size={25}/>} action={confirmMaterial} disabled={false} />
                     <div className="descriptionAula">
                     <p className='descriptionAula-text'>{aulas[0].description}</p>
                     </div>
@@ -73,7 +100,7 @@ function VideoAula({ materialId, confirmAula }) {
 
 VideoAula.propTypes = {
     materialId: PropTypes.string.isRequired,
-    confirmAula: PropTypes.func.isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default VideoAula;

@@ -2,14 +2,17 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function Prova({ materialId, confirmProva }) {
+function Prova({ materialId, userId }) {
 const [provas, setProvas] = useState([]);
 const [selectedResponses, setSelectedResponses] = useState({});
 const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+const { moduloId } = useParams()
+const navigate = useNavigate()
 
 useEffect(() => {
     const fetchProvasData = async () => {
@@ -48,9 +51,33 @@ const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
 };
 
-const proximaEtapa = (confirm) => {
-    if(confirm){
-        confirmProva(confirm);
+const provaConfirm = async (userId, provaId) => {
+    try {
+        const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
+        const progressDoc = await getDoc(progressRef);
+
+        if (progressDoc.exists()) {
+            await setDoc(progressRef, { status: 'end' }, { merge: true });
+            console.log('Progresso da prova atualizado com sucesso!');
+        } else {
+            const progressData = {
+                userId: userId,
+                provaId: provaId,
+                status: 'end',
+            };
+            await setDoc(progressRef, progressData);
+            console.log('Progresso da prova criado e atualizado com sucesso!');
+        }
+    } catch (error) {
+        console.error('Erro ao criar ou atualizar o progresso da prova:', error);
+    }
+};
+
+const confirmMaterial = (confirm) => {
+    if (confirm) {
+        if(provas[0].id === materialId){
+            provaConfirm(userId, materialId).then(() => navigate(`/aluno/modulo/${moduloId}`))
+        }
     }
 };
 
@@ -107,7 +134,7 @@ return (
                 </button>
                 </div>
                 {currentQuestionIndex === provas[0].quests.length - 1 && (
-                <div className="btn-next-content"><ButtonConfirm title='Salvar e avançar' icon={<FaCircleChevronRight size={18}/>} action={proximaEtapa}/></div>
+                <div className="btn-next-content"><ButtonConfirm title='Salvar e avançar' icon={<FaCircleChevronRight size={18}/>} action={confirmMaterial}/></div>
                 )}
             </div>
             </div>
@@ -120,7 +147,7 @@ return (
 
 Prova.propTypes = {
     materialId: PropTypes.string.isRequired,
-    confirmProva: PropTypes.bool.isRequired,
+    userId: PropTypes.string.isRequired,
 };
 
 export default Prova;
