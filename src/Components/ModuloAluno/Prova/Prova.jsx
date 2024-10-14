@@ -89,73 +89,79 @@ function Prova({ materialId, userId }) {
     }
   };
 
-  return (
-    <div className='containerProva'>
-      {provas.length > 0 && (
-        <div>
-          <div className='titleIcon'>
-            <div className='divIconAula'>
-              <FaBookOpen />
-            </div>
-            <h2 className='testTitle'>{provas[0].name}</h2>
-          </div>
-          <p>{provas[0].description}</p>
-          {provas[0].quests.length > 0 && (
-            <div style={{ marginTop: 20 }}>
-              <p className='testQuestion' style={{ marginBottom: 5 }}>
-                {provas[0].quests[currentQuestionIndex].quest}
-              </p>
-              {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
-                <ul className='testOptions' key={responseIndex}>
-                  <li className='testOptionItem'>
-                    <label>
-                      <input
-                        type='checkbox'
-                        checked={selectedResponses[currentQuestionIndex] === responseIndex}
-                        onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
-                      />
-                    </label>
-                    {r.text}
-                  </li>
-                </ul>
-              ))}
-              <div className='navigationButtons'>
-                <div className="justify-btns">
-                  <button
-                    className='btn-nav'
-                    onClick={handlePreviousQuestion}
-                    disabled={currentQuestionIndex === 0}
-                  >
-                    <FaCircleChevronLeft size={24} />
-                  </button>
-                  <span className='questionCounter'>
-                    {currentQuestionIndex + 1} / {provas[0].quests.length}
-                  </span>
-                  <button
-                    className='btn-nav'
-                    onClick={handleNextQuestion}
-                    disabled={currentQuestionIndex === provas[0].quests.length - 1}
-                  >
-                    <FaCircleChevronRight size={24} />
-                  </button>
-                </div>
-                {currentQuestionIndex === provas[0].quests.length - 1 && (
-                  <div className="btn-next-content">
-                    <ButtonConfirm
-                      title='Salvar e avançar'
-                      icon={<FaCircleChevronRight size={18} />}
-                      action={handleButtonClick}
-                      disabled={!allQuestionsAnswered} // Desabilita o botão se não estiver tudo respondido
-                    />
-                  </div>
-                )}
+  try{
+    return (
+      <div className='containerProva'>
+        {provas.length > 0 && (
+          <div>
+            <div className='titleIcon'>
+              <div className='divIconAula'>
+                <FaBookOpen />
               </div>
+              <h2 className='testTitle'>{provas[0].name}</h2>
             </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
+            <p>{provas[0].description}</p>
+            {provas[0].quests.length > 0 && (
+              <div style={{ marginTop: 20 }}>
+                <p className='testQuestion' style={{ marginBottom: 5 }}>
+                  {provas[0].quests[currentQuestionIndex].quest}
+                </p>
+                {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
+                  <ul className='testOptions' key={responseIndex}>
+                    <li className='testOptionItem'>
+                      <label>
+                        <input
+                          type='checkbox'
+                          checked={selectedResponses[currentQuestionIndex] === responseIndex}
+                          onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
+                        />
+                      </label>
+                      {r.text}
+                    </li>
+                  </ul>
+                ))}
+                <div className='navigationButtons'>
+                  <div className="justify-btns">
+                    <button
+                      className='btn-nav'
+                      onClick={handlePreviousQuestion}
+                      disabled={currentQuestionIndex === 0}
+                    >
+                      <FaCircleChevronLeft size={24} />
+                    </button>
+                    <span className='questionCounter'>
+                      {currentQuestionIndex + 1} / {provas[0].quests.length}
+                    </span>
+                    <button
+                      className='btn-nav'
+                      onClick={handleNextQuestion}
+                      disabled={currentQuestionIndex === provas[0].quests.length - 1}
+                    >
+                      <FaCircleChevronRight size={24} />
+                    </button>
+                  </div>
+                  {currentQuestionIndex === provas[0].quests.length - 1 && (
+                    <div className="btn-next-content">
+                      <ButtonConfirm
+                        title='Salvar e avançar'
+                        icon={<FaCircleChevronRight size={18} />}
+                        action={handleButtonClick}
+                        disabled={!allQuestionsAnswered} // Desabilita o botão se não estiver tudo respondido
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  } catch (error){
+    return <p>Deu Erro</p>
+  }
+
+  
 }
 
 Prova.propTypes = {

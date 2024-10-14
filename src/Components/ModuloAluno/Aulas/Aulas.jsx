@@ -9,23 +9,24 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     const { moduloId } = useParams()
     const [todosConcluidos, setTodosConcluidos] = useState(false);
     const [conteudoDesbloqueado, setConteudoDesbloqueado] = useState([]);
+    const [provasBloqueadas, setProvasBloqueadas] = useState({});
 
-    const handleStartContent = (moduloId, conteudoId, materialId) => {
-        navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${materialId}`);
+    const handleStartContent = (moduloId, conteudoId, type, materialId) => {
+        navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${type}/${materialId}`);
     };
 
     const renderButton = (status, moduloId, conteudoId, materialId, type) => {
         console.log(`${type}: ${status}`)
         if (status === "end") {
             if (type === "aula" || type === "aovivo") {
-                return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, materialId)}>Reassistir</button>;
+                return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Reassistir</button>;
             } else if (type === "teste" || type === "prova") {
-                return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, materialId)}>Ver Respostas</button>;
+                return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Ver Respostas</button>;
             }
         } else if (status === "blocked") {
-            return <FaLock color='gray' />;
+            return <button className='btn-access-disable' disabled>Blqueado</button>;
         } else {
-            return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, materialId)}>Iniciar</button>;
+            return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Iniciar</button>;
         }
     };
 
@@ -64,6 +65,24 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
             setTodosConcluidos(todosConcluidos);
         }
     }, [conteudo]);
+
+    useEffect(() => {
+        // Supondo que você tenha uma lógica para verificar se uma prova deve ser bloqueada
+        const novasProvasBloqueadas = {};
+        conteudo.forEach((conteudoItem) => {
+            // Verifique se todas as aulas do conteúdo foram concluídas
+            const aulasDoConteudo = aulas.filter(aula => aula.conteudoId === conteudoItem.id);
+            const todasAulasConcluidas = aulasDoConteudo.every(aula => {
+                const progressoAula = progressAulas.find(progress => progress.userId === userId && progress.aulaId === aula.id);
+                return progressoAula && progressoAula.status === 'end';
+            });
+    
+            // Defina o bloqueio da prova com base nas aulas do conteúdo
+            novasProvasBloqueadas[conteudoItem.id] = !todasAulasConcluidas;
+        });
+        setProvasBloqueadas(novasProvasBloqueadas);
+    }, [aulas, conteudo, progressAulas, userId]);
+    
     
     
 
@@ -81,70 +100,178 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
 
                     {conteudo
                     .sort((a, b) => new Date(a.openDate) - new Date(b.openDate))
-                    .map((c) => (
-                        <div key={c.id} className={`weekSection ${c.status === 'blocked' ? 'blocked' : ''}`}>
-                        <h3 className="titleContent">{c.name} {formatDate(c.openDate)}</h3>
+                    .map((c) => {
+                        const isBlocked = c.status === 'blocked' || new Date() < new Date(c.openDate);
+                        return(
+                            <div key={c.id} className={`weekSection ${isBlocked ? 'blocked' : ''}`}>
+                                <h3 className="titleContent">{c.name} {formatDate(c.openDate)}</h3>
+                                
+                                {aulas
+                                    .filter((aula) => aula.conteudoId === c.id && aula.type === 'aula')
+                                    .sort((aula1, aula2) => {
+                                        const dateAula1 = aula1.createdAt.seconds * 1000 + aula1.createdAt.nanoseconds / 1000000;  
+                                        const dateAula2 = aula2.createdAt.seconds * 1000 + aula2.createdAt.nanoseconds / 1000000;  
+                                        return dateAula1 - dateAula2;  // Ordena as aulas pelo createdAt
+                                    })
+                                    .map((aula) => {
+                                        const progressoAula = progressAulas.find(
+                                            (progress) => progress.userId === userId && progress.aulaId === aula.id
+                                        );
+
+                                        const aulaCompletada = progressoAula && progressoAula.status === 'end';
+
+                                        return (
+                                            <div key={aula.id} className="contentRow">
+                                                <div className="contentInfo">
+                                                    {isBlocked ? (
+                                                        <FaLock color='gray' />
+                                                    ) : (
+                                                        aulaCompletada ? (
+                                                            <FaCheckCircle color='#1BA284' size={24}/>
+                                                        ) : (
+                                                            <div className='Circle'>
+                                                                <FaCircle />
+                                                            </div>
+                                                        )
+                                                    )}
+                                                    {renderIcon('Aula')}
+                                                    <span>{aula.name}</span>
+                                                </div>
+                                                {renderButton(progressoAula?.status, moduloId, c.id, aula.id, 'aula')}
+                                            </div>
+                                        );
+                                    })
+                                }
+
+                                {provas
+                                    .filter((provas) => provas.conteudoId === c.id && provas.type === 'prova')
+                                    .sort((a, b) => {
+                                    const dateProvaA = a.createdAt ? (a.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
+                                    const dateProvaB = b.createdAt ? (b.createdAt.seconds * 1000 + b.createdAt.nanoseconds / 1000000) : 0;
+                                    return dateProvaA - dateProvaB;
+                                    })
+                                    .map((prova) => {
+                                    const progressoProva = progressProvas.find(
+                                        (progress) => progress.userId === userId && progress.provaId === prova.id
+                                    );
+
+                                    const provaCompletada = progressoProva && progressoProva.status === 'end';
+
+                                    const stausProva = (isBlocked, provasBloqueadas, progressoProva) => {
+                                        if(isBlocked || provasBloqueadas){
+                                            return 'blocked'
+                                        }else {
+                                            return progressoProva
+                                        }
+                                    }
+
+                                    return (
+                                        <div key={prova.id} className="contentRow">
+                                        <div className="contentInfo">
+                                            {isBlocked || provasBloqueadas[c.id] ? (
+                                            <FaLock color='gray' />
+                                            ) : (
+                                            provaCompletada ? (
+                                                <FaCheckCircle color='#1BA284' size={24} />
+                                            ) : (
+                                                <div className='Circle'>
+                                                <FaCircle />
+                                                </div>
+                                            )
+                                            )}
+                                            {renderIcon('Prova')}
+                                            <span>{prova.name}</span>
+                                        </div>
+                                        {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'storyTelling')}
+                                        </div>
+                                    );
+                                    })
+                                }
+                                {provas
+                                    .filter((provas) => provas.conteudoId === c.id && provas.type === 'storyTelling')
+                                    .sort((a, b) => {
+                                    const dateProvaA = a.createdAt ? (a.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
+                                    const dateProvaB = b.createdAt ? (b.createdAt.seconds * 1000 + b.createdAt.nanoseconds / 1000000) : 0;
+                                    return dateProvaA - dateProvaB;
+                                    })
+                                    .map((prova) => {
+                                    const progressoProva = progressProvas.find(
+                                        (progress) => progress.userId === userId && progress.provaId === prova.id
+                                    );
+
+                                    const provaCompletada = progressoProva && progressoProva.status === 'end';
+
+                                    const stausProva = (isBlocked, provasBloqueadas, progressoProva) => {
+                                        if(isBlocked || provasBloqueadas){
+                                            return 'blocked'
+                                        }else {
+                                            return progressoProva
+                                        }
+                                    }
+
+                                    return (
+                                        <div key={prova.id} className="contentRow">
+                                        <div className="contentInfo">
+                                            {isBlocked || provasBloqueadas[c.id] ? (
+                                            <FaLock color='gray' />
+                                            ) : (
+                                            provaCompletada ? (
+                                                <FaCheckCircle color='#1BA284' size={24} />
+                                            ) : (
+                                                <div className='Circle'>
+                                                <FaCircle />
+                                                </div>
+                                            )
+                                            )}
+                                            {renderIcon('Prova')}
+                                            <span>{prova.name}</span>
+                                        </div>
+                                        {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'storyTelling')}
+                                        </div>
+                                    );
+                                    })
+                                }
+                                {aulas
+                                    .filter((aula) => aula.conteudoId === c.id && aula.type === 'game')
+                                    .sort((aula1, aula2) => {
+                                        const dateAula1 = aula1.createdAt.seconds * 1000 + aula1.createdAt.nanoseconds / 1000000;  
+                                        const dateAula2 = aula2.createdAt.seconds * 1000 + aula2.createdAt.nanoseconds / 1000000;  
+                                        return dateAula1 - dateAula2;  // Ordena as aulas pelo createdAt
+                                    })
+                                    .map((aula) => {
+                                        const progressoAula = progressAulas.find(
+                                            (progress) => progress.userId === userId && progress.aulaId === aula.id
+                                        );
+
+                                        const aulaCompletada = progressoAula && progressoAula.status === 'end';
+
+                                        return (
+                                            <div key={aula.id} className="contentRow">
+                                                <div className="contentInfo">
+                                                    {isBlocked ? (
+                                                        <FaLock color='gray' />
+                                                    ) : (
+                                                        aulaCompletada ? (
+                                                            <FaCheckCircle color='#1BA284' size={24}/>
+                                                        ) : (
+                                                            <div className='Circle'>
+                                                                <FaCircle />
+                                                            </div>
+                                                        )
+                                                    )}
+                                                    {renderIcon('Aula')}
+                                                    <span>{aula.name}</span>
+                                                </div>
+                                                {renderButton(progressoAula?.status, moduloId, c.id, aula.id, 'game')}
+                                            </div>
+                                        );
+                                    })
+                                }
+
+                            </div>
+                        )
                         
-                        {aulas.filter((aula) => aula.conteudoId === c.id).map((aula) => {
-                            const progressoAula = progressAulas.find(
-                                (progress) => progress.userId === userId && progress.aulaId === aula.id
-                            );
-
-                            const aulaCompletada = progressoAula && progressoAula.status === 'end';
-
-                            return (
-                            <div key={aula.id} className="contentRow">
-                                <div className="contentInfo">
-                                {c.status === 'blocked' ? (
-                                    <FaLock color='gray' />
-                                ) : (
-                                    aulaCompletada ? (
-                                    <FaCheckCircle color='#1BA284' size={24}/>
-                                    ) : (
-                                    <div className='Circle'>
-                                        <FaCircle />
-                                    </div>
-                                    )
-                                )}
-                                {renderIcon('Aula')}
-                                <span>{aula.name}</span>
-                                </div>
-                                {renderButton(progressoAula?.status, moduloId, c.id, aula.id, 'aula')}
-                            </div>
-                            );
-                        })}
-
-                        {provas.filter((prova) => prova.conteudoId === c.id).map((prova) => {
-                            const progressoProva = progressProvas.find(
-                            (progress) => progress.userId === userId && progress.provaId === prova.id
-                            );
-
-                            const provaCompletada = progressoProva && progressoProva.status === 'end';
-
-                            return (
-                            <div key={prova.id} className="contentRow">
-                                <div className="contentInfo">
-                                {c.status === 'blocked' ? (
-                                    <FaLock color='gray' />
-                                ) : (
-                                    provaCompletada ? (  
-                                    <FaCheckCircle color='#1BA284' size={24}/>
-                                    ) : (
-                                    <div className='Circle'>
-                                        <FaCircle />
-                                    </div>
-                                    )
-                                )}
-                                {renderIcon('Prova')}
-                                <span>{prova.name}</span>
-                                {/*renderScore(provaCompletada)*/}
-                                </div>
-                                {renderButton(progressoProva?.status, moduloId, c.id, prova.id, 'prova')}
-                            </div>
-                            );
-                        })}
-                        </div>
-                    ))}
+                    })}
                     <button
                         className={`nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}`}
                         disabled={!todosConcluidos}

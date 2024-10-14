@@ -75,27 +75,33 @@ function VideoAula({ materialId, userId }) {
             `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}` : 
             `https://www.youtube.com/embed/${videoId}`;
     };
-    
-    return (
-        <div className='containerVideoAula'>
-            {aulas.length > 0 &&
-                <div  className='videoAulaContent'>
-                    <h2 className='contentName'>{aulas[0].name}</h2>
-                    <iframe className='iframeStyle'
-                        src={getEmbedUrl(aulas[0].videoUrl)}
-                        title={aulas[0].name}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
-                    <ButtonConfirm title='Próxima etapa' icon={<FaCircleChevronRight size={25}/>} action={confirmMaterial} disabled={false} />
-                    <div className="descriptionAula">
-                    <p className='descriptionAula-text'>{aulas[0].description}</p>
+
+    try{
+        return (
+            <div className='containerVideoAula'>
+                {aulas.length > 0 &&
+                    <div  className='videoAulaContent'>
+                        <h2 className='contentName'>{aulas[0].name}</h2>
+                        <iframe className='iframeStyle'
+                            src={getEmbedUrl(aulas[0].videoUrl)}
+                            title={aulas[0].name}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                        <ButtonConfirm title='Próxima etapa' icon={<FaCircleChevronRight size={25}/>} action={confirmMaterial} disabled={false} />
+                        <div className="descriptionAula">
+                        <p className='descriptionAula-text'>{aulas[0].description}</p>
+                        </div>
                     </div>
-                </div>
-            }
-        </div>
-    );
+                }
+            </div>
+        );
+    } catch (error) {
+        return <p>Deu Erro</p>
+    }
+    
+    
 }
 
 VideoAula.propTypes = {

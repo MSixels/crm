@@ -15,6 +15,7 @@ function ModuloConteudo() {
     const { moduloId } = useParams()
     const { conteudoId } = useParams()
     const { materialId } = useParams()
+    const { type } = useParams()
     const [modulo, setModulo] = useState([])
     const [conteudo, setConteudo] = useState([]);
     const [aulas, setAulas] = useState([]);
@@ -107,6 +108,8 @@ function ModuloConteudo() {
                     id: doc.id,
                     name: doc.data().name,
                     conteudoId: doc.data().conteudoId,
+                    createdAt: doc.data().createdAt,
+                    type: doc.data().type,
                 }));
 
                 const aulasFiltradas = aulasData.filter(aula => 
@@ -133,6 +136,8 @@ function ModuloConteudo() {
                     id: doc.id,
                     name: doc.data().name,
                     conteudoId: doc.data().conteudoId,
+                    createdAt: doc.data().createdAt,
+                    type: doc.data().type,
                 }));
 
                 
@@ -295,8 +300,10 @@ function ModuloConteudo() {
             <div className='divContent'>
                 {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>}
                 <div className='divMaterial'>
-                    {itemType === 'aula' && <VideoAula materialId={materialId} userId={userId} />}
-                    {itemType === 'prova' && <Prova materialId={materialId} userId={userId}/>}
+                    {type === 'aula' && <VideoAula materialId={materialId} userId={userId} />}
+                    {type === 'prova' && <Prova materialId={materialId} userId={userId}/>}
+                    {type === 'storyTelling' && <p>StoryTelling</p>}
+                    {type === 'game' && <p>Gameficação</p>}
                 </div>
                 
             </div>

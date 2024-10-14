@@ -6,7 +6,8 @@ import InputDate from '../InputDate/InputDate';
 import ButtonBold from '../ButtonBold/ButtonBold';
 import DropDown from '../DropDown/DropDown';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import { firestore } from '../../services/firebaseConfig';
+import { firestore, storage } from '../../services/firebaseConfig';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
 function ComponentLimitado() {
     const [name, setName] = useState('');
@@ -60,6 +61,7 @@ function ComponentLimitado() {
                     description: description,
                     professorId: professor,
                     validade: validade,
+                    createdAt: new Date(),
                 });
                 alert("Módulo salvo com sucesso!");
                 setName('')
@@ -152,7 +154,8 @@ function ComponentLimitado() {
                 await addDoc(collection(firestore, 'conteudo'), {
                     name: nameConteudo,
                     moduloId: modulo,
-                    openDate: liberacao
+                    openDate: liberacao,
+                    createdAt: new Date(),
                 });
                 alert("Conetudo salvo com sucesso!");
                 setNameConteudo('')
@@ -248,7 +251,8 @@ function ComponentLimitado() {
                     conteudoId: conteudo,
                     description: descriptionAula,
                     videoUrl: videoUrl,
-                    type: 'aula'
+                    type: 'aula',
+                    createdAt: new Date(),
                 });
                 alert("Aula salvo com sucesso!");
             } catch (error) {
@@ -290,7 +294,6 @@ function ComponentLimitado() {
    
     const [nameProva, setNameProva] = useState('');
     const [descriptionProva, setDescriptionProva] = useState('');
-    const [respostas, setRespostas] = useState([{ texto: '', correta: false }]);
     const [questoes, setQuestoes] = useState([{ pergunta: '', respostas: [{ texto: '', correta: false }]}]);
 
     useEffect(() => {
@@ -394,7 +397,8 @@ function ComponentLimitado() {
                     conteudoId: conteudo,
                     description: descriptionProva,
                     quests: questsArray,
-                    type: 'prova'
+                    type: 'prova',
+                    createdAt: new Date(),
                 });
     
                 alert("Prova salva com sucesso!");
@@ -471,12 +475,187 @@ function ComponentLimitado() {
         );
     };
 
+
+
+
+
+
+
+
+
+
+
+
+    const [descriptionStoryTelling, setDescriptionStoryTelling] = useState('');
+    const [nameStory, setNameStory] = useState('');
+    const [pdfFile, setPdfFile] = useState(null);
+
+    const getNameStory = (newName) => {
+        setNameStory(newName);
+    };
+
+
+    const getDescriptionStoryTelling = (newDesc) => {
+        setDescriptionStoryTelling(newDesc);
+    };
+
+    const salvarStoryTelling = async (send) => {
+        if (send) {
+            try {
+                if (conteudo === '' || descriptionStoryTelling === '' || nameStory ===  '') {
+                    alert('Preencha os campos da story e adicione ao menos uma resposta');
+                    return;
+                }
+                
+                // Verificar se o arquivo PDF foi selecionado
+                if (!pdfFile) {
+                    alert('Por favor, adicione um arquivo PDF.');
+                    return;
+                }
+    
+                // Fazer upload do PDF para o Firebase Storage
+                const storageRef = ref(storage, `pdfs/${pdfFile.name}`);
+                const uploadTask = uploadBytesResumable(storageRef, pdfFile);
+    
+                uploadTask.on(
+                    'state_changed',
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log(`Progresso: ${progress}%`);
+                    },
+                    (error) => {
+                        console.error("Erro ao fazer upload do PDF:", error);
+                        alert("Erro ao carregar o PDF. Tente novamente.");
+                    },
+                    async () => {
+                        const pdfUrl = await getDownloadURL(uploadTask.snapshot.ref);
+    
+                        const storyData = {
+                            conteudoId: conteudo,
+                            name: nameStory,
+                            description: descriptionStoryTelling,
+                            pdfUrl, 
+                            type: 'storyTelling',
+                            createdAt: new Date(),
+                        };
+    
+                        await addDoc(collection(firestore, 'provas'), storyData);
+    
+                        alert("StoryTelling salvo com sucesso!");
+                    }
+                );
+            } catch (error) {
+                console.error("Erro ao salvar Story:", error);
+                alert("Ocorreu um erro ao salvar a Story. Tente novamente.");
+            }
+        }
+    };
+    
+    const renderCreateStorytelling = () => {
+        return (
+            <div>
+                <h1>Adicionar StoryTelling</h1>
+                <div style={{ alignItems: 'start', display: 'flex', flexDirection: 'column', width: '100%', marginTop: 20 }}>
+                    <InputSend title='Nome' placeH='' onSearchChange={getNameStory} type='text' />
+                    <InputSend title='Descrição' placeH='' onSearchChange={getDescriptionStoryTelling} type='text' />
+                    {loading ? (
+                        <p>Carregando Conteudos...</p> 
+                    ) : (
+                        <DropDown
+                            title='Conteudo'
+                            type='Selecione'
+                            options={optionsConteudo}
+                            onTurmaChange={getConteudo}
+                        />
+                    )}
+
+                    
+                <input 
+                    type="file" 
+                    accept=".pdf" 
+                    onChange={(e) => setPdfFile(e.target.files[0])} 
+                />
+                    
+                </div>
+                <ButtonBold title='Salvar StoryTelling' icon action={() => salvarStoryTelling(true)} />
+            </div>
+        );
+    };
+
+
+
+
+
+
+
+    const [nameGame, setNameGame] = useState('');
+    const [descriptionGame, setDescriptionGame] = useState('')
+
+
+    const getNameGame = (newName) => {
+        setNameGame(newName);
+    };
+
+    const getDescriptionGame = (newDesc) => {
+        setDescriptionGame(newDesc);
+    };
+
+    
+
+    const salvarGame = async (send) => {
+        if (send) {
+            try {
+                if(nameGame === '' || descriptionGame === '' ){
+                    alert('Preencha os campos de Gameficação')
+                    return
+                }
+                await addDoc(collection(firestore, 'aulas'), {
+                    name: nameGame,
+                    conteudoId: conteudo,
+                    description: descriptionGame,
+                    type: 'game',
+                    createdAt: new Date(),
+                });
+                alert("Gameficação salvo com sucesso!");
+            } catch (error) {
+                console.error("Erro ao salvar Aula:", error);
+            }
+        }
+    };
+
+    const renderCreateGame = () => {
+        return (
+            <div>
+                <h1>Adicionar Gameficação</h1>
+                <div style={{alignItems: 'start', display: 'flex', flexDirection: 'column', width: '100%', marginTop: 20}}>
+                {loading ? (
+                    <p>Carregando Conteudos...</p> 
+                ) : (
+                    <DropDown
+                        title='Conteudo'
+                        type='Selecione'
+                        options={optionsConteudo}
+                        onTurmaChange={getConteudo}
+                    />
+                )}
+                <InputSend title='Nome' placeH='' onSearchChange={getNameGame} type='text' />
+                <InputSend title='Descrição' placeH='' onSearchChange={getDescriptionGame} type='text' />
+                </div>
+                <ButtonBold title='Salvar Aula' icon action={() => salvarGame(true)} />
+            </div>
+        );
+    };
+
+
+
     return (
         <div className='containerComponentLimitado'>
             {renderCreateModulo()}
             {renderCreateConteudo()}
             {renderCreateAula()}
             {renderCreateProva()}
+            {renderCreateStorytelling()}
+            {renderCreateGame()}
         </div>
     );
 }

@@ -74,7 +74,7 @@
     cursor: pointer;
     transition: .3s;
 }
-.containerAulas button:hover{
+.containerAulas .btn-access:hover{
     background-color: var(--bg-principal);
     color: var(--bg-White);
 }
@@ -147,8 +147,20 @@
     font-size: 14px;
     font-weight: 500;
     color: var(--bg-principal);
+    cursor: pointer;
 }
-
+.btn-access-disable:disabled{
+    border-radius: 4px;
+    padding: 0.5rem;
+    background-color: var(--bg-White);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bg-principal);
+    cursor: pointer;
+    background-color: var(--secondary500);
+    color: var(--secondary900);
+    border: solid 1px transparent;
+}
 .nextModuleButton:hover {
     background-color: var(--bg-principal-dark);
 }

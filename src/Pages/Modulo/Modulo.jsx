@@ -189,6 +189,8 @@ function Modulo() {
                     id: doc.id,
                     name: doc.data().name,
                     conteudoId: doc.data().conteudoId,
+                    createdAt: doc.data().createdAt,
+                    type: doc.data().type,
                 }));
 
                 const aulasFiltradas = aulasData.filter(aula => 
@@ -215,6 +217,8 @@ function Modulo() {
                     id: doc.id,
                     name: doc.data().name,
                     conteudoId: doc.data().conteudoId,
+                    createdAt: doc.data().createdAt,
+                    type: doc.data().type,
                 }));
 
                 const provasFiltradas = provasData.filter(prova => 
@@ -233,12 +237,29 @@ function Modulo() {
         }
     }, [conteudo]);
 
+
     return (
         <div className='containerModulo'>
             <Header options={options}/>
             <div className='divContent'>
-                <Menu modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>
-                <Aulas modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>
+                <Menu 
+                    modulo={modulo} 
+                    conteudo={conteudo} 
+                    aulas={aulas} 
+                    provas={provas} 
+                    progressAulas={progressAulas} 
+                    progressProvas={progressProvas} 
+                    userId={userId}
+                />
+                <Aulas 
+                    modulo={modulo} 
+                    conteudo={conteudo} 
+                    aulas={aulas} 
+                    provas={provas} 
+                    progressAulas={progressAulas} 
+                    progressProvas={progressProvas} 
+                    userId={userId}
+                />
             </div>
         </div>
     )

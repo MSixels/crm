@@ -28,7 +28,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const day = String(date.getDate() + 1).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lembre-se que os meses começam do 0
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
@@ -57,7 +57,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                 <div key={c.id} className='divConteudos'>
                     <p className='titleConteudo'>{conteudo[0].name}</p>
                     {aulas && aulas
-                    .filter((a) => a.conteudoId === c.id)
+                    .filter((a) => a.conteudoId === c.id && a.type === 'aula')
                     .map((a) => {
                         const progressoAula = progressAulas?.find(
                             (progress) => progress.userId === userId && progress.aulaId === a.id
@@ -90,7 +90,34 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                         );
                     })}
                     {provas && provas
-                    .filter((p) => p.conteudoId === c.id) 
+                    .filter((p) => p.conteudoId === c.id && p.type === 'prova') 
+                    .map((p) => {
+                        const progressoProva = progressProvas?.find(
+                            (progress) => progress.userId === userId && progress.provaId === p.id
+                        );
+
+                        const provaCompletada = progressoProva && progressoProva.status === 'end';
+
+                        return(
+                            <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id)}>
+                                <div className='divCheck'>
+                                    {provaCompletada ? (
+                                        <FaCheckCircle color='#1BA284' size={24} />
+                                    ) : (
+                                        <div className='divCircle'>
+                                            <div className='divBall'></div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className='divIcon'>
+                                    <FaBookOpen />
+                                </div>
+                                <p className='aulaTitle'>{p.name}</p>
+                            </div>
+                        )
+                    })}
+                    {provas && provas
+                    .filter((p) => p.conteudoId === c.id && p.type === 'storyTelling') 
                     .map((p) => {
                         const progressoProva = progressProvas?.find(
                             (progress) => progress.userId === userId && progress.provaId === p.id
@@ -114,6 +141,39 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                                 <p className='aulaTitle'>{p.name}</p>
                             </div>
                         )
+                    })}
+                    {aulas && aulas
+                    .filter((a) => a.conteudoId === c.id && a.type === 'game')
+                    .map((a) => {
+                        const progressoAula = progressAulas?.find(
+                            (progress) => progress.userId === userId && progress.aulaId === a.id
+                        );
+
+                        const aulaCompletada = progressoAula && progressoAula.status === 'end';
+
+                        
+
+                        return (
+                            <div 
+                                key={a.id} 
+                                className={`divAulas ${materialId === a.id ? 'active' : ''}`} 
+                                onClick={() => navigateMaterial(a.id)}
+                            >
+                                <div className='divCheck'>
+                                    {aulaCompletada ? (
+                                        <FaCheckCircle color='#1BA284' size={24} />
+                                    ) : (
+                                        <div className='divCircle'>
+                                            <div className='divBall'></div>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className='divIcon'>
+                                    <FaVideo />
+                                </div>
+                                <p className='aulaTitle'>{a.name}</p>
+                            </div>
+                        );
                     })}
                 </div>
             ))}

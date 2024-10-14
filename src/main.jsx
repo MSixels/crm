@@ -48,7 +48,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: `/aluno/modulo/:moduloId/:conteudoId/:materialId`,
+    path: `/aluno/modulo/:moduloId/:conteudoId/:type/:materialId`,
     element: (
       <ProtectedRoute
         element={<ModuloConteudo />}
