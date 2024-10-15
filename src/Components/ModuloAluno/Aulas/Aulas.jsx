@@ -121,7 +121,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                             <div key={aula.id} className="contentRow">
                                                 <div className="contentInfo">
                                                     {isBlocked ? (
-                                                        <FaLock color='gray' />
+                                                        <FaLock color='gray' size={24}/>
                                                     ) : (
                                                         aulaCompletada ? (
                                                             <FaCheckCircle color='#1BA284' size={24}/>
@@ -140,57 +140,57 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                     })
                                 }
 
-{provas
-    .filter((provas) => provas.conteudoId === c.id && provas.type === 'prova')
-    .sort((a, b) => {
-        const dateProvaA = a.createdAt ? (a.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
-        const dateProvaB = b.createdAt ? (b.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
-        return dateProvaA - dateProvaB;
-    })
-    .map((prova) => {
-        const progressoProva = progressProvas.find(
-            (progress) => progress.userId === userId && progress.provaId === prova.id
-        );
+                                {provas
+                                    .filter((provas) => provas.conteudoId === c.id && provas.type === 'prova')
+                                    .sort((a, b) => {
+                                        const dateProvaA = a.createdAt ? (a.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
+                                        const dateProvaB = b.createdAt ? (b.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
+                                        return dateProvaA - dateProvaB;
+                                    })
+                                    .map((prova) => {
+                                        const progressoProva = progressProvas.find(
+                                            (progress) => progress.userId === userId && progress.provaId === prova.id
+                                        );
 
-        const provaCompletada = progressoProva && progressoProva.status === 'end';
+                                        const provaCompletada = progressoProva && progressoProva.status === 'end';
 
-        const statusProva = (isBlocked, provasBloqueadas, progressoProva) => {
-            if (isBlocked || provasBloqueadas) {
-                return 'blocked';
-            } else {
-                return progressoProva;
-            }
-        };
+                                        const statusProva = (isBlocked, provasBloqueadas, progressoProva) => {
+                                            if (isBlocked || provasBloqueadas) {
+                                                return 'blocked';
+                                            } else {
+                                                return progressoProva;
+                                            }
+                                        };
 
-        return (
-            <div key={prova.id} className="contentRow">
-                <div className="contentInfo">
-                    {isBlocked || provasBloqueadas[c.id] ? (
-                        <FaLock color='gray' />
-                    ) : (
-                        provaCompletada ? (
-                            <FaCheckCircle color='#1BA284' size={24} />
-                        ) : (
-                            <div className='Circle'>
-                                <FaCircle />
-                            </div>
-                        )
-                    )}
-                    {renderIcon('Prova')}
-                    <span>
-                            {prova.name}
-                                {progressoProva?.score !== undefined && (
-                                    <span className={`score ${progressoProva.score >= 50 ? 'green' : 'red'}`}>
-                                        {`${progressoProva.score}`}
-                                        </span>
-                                            )}
-                                        </span>
-                                    </div>
-                                    {renderButton(statusProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'prova')}
-                                </div>
-                                );
-                                })
-                            }
+                                        return (
+                                            <div key={prova.id} className="contentRow">
+                                                <div className="contentInfo">
+                                                    {isBlocked || provasBloqueadas[c.id] ? (
+                                                        <FaLock color='gray' size={24}/>
+                                                    ) : (
+                                                        provaCompletada ? (
+                                                            <FaCheckCircle color='#1BA284' size={24} />
+                                                        ) : (
+                                                            <div className='Circle'>
+                                                                <FaCircle />
+                                                            </div>
+                                                        )
+                                                    )}
+                                                    {renderIcon('Prova')}
+                                                    <span>
+                                                        {prova.name}
+                                                        {progressoProva?.score !== undefined && (
+                                                            <span className={`score ${progressoProva.score >= 50 ? 'green' : 'red'}`}>
+                                                                {`${progressoProva.score}`}
+                                                            </span>
+                                                        )}
+                                                    </span>
+                                                </div>
+                                                {renderButton(statusProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'prova')}
+                                            </div>
+                                        );
+                                    })
+                                }
                                 {provas
                                     .filter((provas) => provas.conteudoId === c.id && provas.type === 'storyTelling')
                                     .sort((a, b) => {
@@ -217,15 +217,15 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                         <div key={prova.id} className="contentRow">
                                         <div className="contentInfo">
                                             {isBlocked || provasBloqueadas[c.id] ? (
-                                            <FaLock color='gray' />
+                                                <FaLock color='gray' size={24}/>
                                             ) : (
-                                            provaCompletada ? (
-                                                <FaCheckCircle color='#1BA284' size={24} />
-                                            ) : (
-                                                <div className='Circle'>
-                                                <FaCircle />
-                                                </div>
-                                            )
+                                                provaCompletada ? (
+                                                    <FaCheckCircle color='#1BA284' size={24} />
+                                                ) : (
+                                                    <div className='Circle'>
+                                                    <FaCircle />
+                                                    </div>
+                                                )
                                             )}
                                             {renderIcon('Prova')}
                                             <span>{prova.name}</span>
@@ -253,7 +253,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                             <div key={aula.id} className="contentRow">
                                                 <div className="contentInfo">
                                                     {isBlocked ? (
-                                                        <FaLock color='gray' />
+                                                        <FaLock color='gray' size={24}/>
                                                     ) : (
                                                         aulaCompletada ? (
                                                             <FaCheckCircle color='#1BA284' size={24}/>

@@ -69,7 +69,7 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
             <div className='divBtnBack'>
                 <IoIosArrowDropleftCircle size={30} onClick={backHome}/>
             </div>
-            {modulo && conteudo && aulas && (
+            {modulo && conteudo && aulas && provas &&(
                 <div className='divContentMenu'>
                     <span className='ft14'>Disponível até {formatDate(modulo.validade)}</span>
                     <div className='divName'>
