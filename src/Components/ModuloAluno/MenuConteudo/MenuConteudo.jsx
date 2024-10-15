@@ -33,8 +33,10 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
         return `${day}/${month}/${year}`;
     };
 
-    const navigateMaterial = (id) => {
-        navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${id}`)
+    const navigateMaterial = (id, type) => {
+        console.log('dados nome menu: ', aulas)
+        console.log('dados nome menu: ',provas)
+        navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${type}/${id}`)
     }
 
     return (
@@ -71,7 +73,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                             <div 
                                 key={a.id} 
                                 className={`divAulas ${materialId === a.id ? 'active' : ''}`} 
-                                onClick={() => navigateMaterial(a.id)}
+                                onClick={() => navigateMaterial(a.id, a.type)}
                             >
                                 <div className='divCheck'>
                                     {aulaCompletada ? (
@@ -99,7 +101,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                         const provaCompletada = progressoProva && progressoProva.status === 'end';
 
                         return(
-                            <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id)}>
+                            <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id, p.type)}>
                                 <div className='divCheck'>
                                     {provaCompletada ? (
                                         <FaCheckCircle color='#1BA284' size={24} />
@@ -125,7 +127,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
 
                         const provaCompletada = progressoProva && progressoProva.status === 'end';
                         return(
-                            <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id)}>
+                            <div key={p.id} className={`divAulas ${materialId === p.id ? 'active' : ''}`} onClick={() => navigateMaterial(p.id, p.type)}>
                                 <div className='divCheck'>
                                     {provaCompletada ? (
                                         <FaCheckCircle color='#1BA284' size={24} />
@@ -157,7 +159,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                             <div 
                                 key={a.id} 
                                 className={`divAulas ${materialId === a.id ? 'active' : ''}`} 
-                                onClick={() => navigateMaterial(a.id)}
+                                onClick={() => navigateMaterial(a.id, a.type)}
                             >
                                 <div className='divCheck'>
                                     {aulaCompletada ? (

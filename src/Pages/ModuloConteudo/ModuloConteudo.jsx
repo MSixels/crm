@@ -167,6 +167,8 @@ function ModuloConteudo() {
                     id: doc.id,
                     name: doc.data().name,
                     conteudoId: doc.data().conteudoId,
+                    createdAt: doc.data().createdAt,
+                    type: doc.data().type,
                 }));
 
                 const aulaEncontrada = aulasData.find(aula => aula.id === materialId);
@@ -181,6 +183,8 @@ function ModuloConteudo() {
                     id: doc.id,
                     name: doc.data().name,
                     conteudoId: doc.data().conteudoId,
+                    createdAt: doc.data().createdAt,
+                    type: doc.data().type,
                 }));
 
                 const provaEncontrada = provasData.find(prova => prova.id === materialId);
