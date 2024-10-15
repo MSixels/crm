@@ -1,0 +1,107 @@
+.storyDiv {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.storyTitle {
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--secondary1000);
+  margin-bottom: 1.5rem;
+}
+
+.storyText {
+  font-size: 1rem;
+  font-weight: 400;
+  max-width: 50%;
+  color: var(--secondary900);
+  margin-bottom: 1.5rem;
+}
+
+.storyFile {
+  margin-bottom: 1.5rem;
+  border: 1px solid #ccc;
+  padding: 10px;
+  height: 20vh;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.storyH3 {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--secondary1000);
+  margin-bottom: 1rem;
+}
+
+.btn-file {
+  padding: 10px;
+  border: 1px solid var(--bg-btnConfirm);
+  color: var(--bg-btnConfirm);
+  background-color: var(--bg-1);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-file :hover {
+  background-color: var(--bg-btnConfirm);
+  color: var(--bg-1);
+}
+
+
+.fileList {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.fileItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bg-block);
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.fileItem button {
+  margin-top: 10px;
+}
+
+.storyResponse {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--bg-block);
+  padding: 10px;
+  height: auto;
+  border-radius: 4px;
+}
+
+.storyResponse textarea {
+  width: 100%;
+  max-width: 100%;
+  height: 20vh;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid var(--bg-block);
+  border-radius: 4px;
+  resize: none;
+}
+
+.charCount {
+  text-align: left;
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+.storyDiv :nth-child(5) {
+width: 240px;
+display: flex;
+}

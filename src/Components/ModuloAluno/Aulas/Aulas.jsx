@@ -140,50 +140,57 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                     })
                                 }
 
-                                {provas
-                                    .filter((provas) => provas.conteudoId === c.id && provas.type === 'prova')
-                                    .sort((a, b) => {
-                                    const dateProvaA = a.createdAt ? (a.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
-                                    const dateProvaB = b.createdAt ? (b.createdAt.seconds * 1000 + b.createdAt.nanoseconds / 1000000) : 0;
-                                    return dateProvaA - dateProvaB;
-                                    })
-                                    .map((prova) => {
-                                    const progressoProva = progressProvas.find(
-                                        (progress) => progress.userId === userId && progress.provaId === prova.id
-                                    );
+{provas
+    .filter((provas) => provas.conteudoId === c.id && provas.type === 'prova')
+    .sort((a, b) => {
+        const dateProvaA = a.createdAt ? (a.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
+        const dateProvaB = b.createdAt ? (b.createdAt.seconds * 1000 + a.createdAt.nanoseconds / 1000000) : 0;
+        return dateProvaA - dateProvaB;
+    })
+    .map((prova) => {
+        const progressoProva = progressProvas.find(
+            (progress) => progress.userId === userId && progress.provaId === prova.id
+        );
 
-                                    const provaCompletada = progressoProva && progressoProva.status === 'end';
+        const provaCompletada = progressoProva && progressoProva.status === 'end';
 
-                                    const stausProva = (isBlocked, provasBloqueadas, progressoProva) => {
-                                        if(isBlocked || provasBloqueadas){
-                                            return 'blocked'
-                                        }else {
-                                            return progressoProva
-                                        }
-                                    }
+        const statusProva = (isBlocked, provasBloqueadas, progressoProva) => {
+            if (isBlocked || provasBloqueadas) {
+                return 'blocked';
+            } else {
+                return progressoProva;
+            }
+        };
 
-                                    return (
-                                        <div key={prova.id} className="contentRow">
-                                        <div className="contentInfo">
-                                            {isBlocked || provasBloqueadas[c.id] ? (
-                                            <FaLock color='gray' />
-                                            ) : (
-                                            provaCompletada ? (
-                                                <FaCheckCircle color='#1BA284' size={24} />
-                                            ) : (
-                                                <div className='Circle'>
-                                                <FaCircle />
-                                                </div>
-                                            )
+        return (
+            <div key={prova.id} className="contentRow">
+                <div className="contentInfo">
+                    {isBlocked || provasBloqueadas[c.id] ? (
+                        <FaLock color='gray' />
+                    ) : (
+                        provaCompletada ? (
+                            <FaCheckCircle color='#1BA284' size={24} />
+                        ) : (
+                            <div className='Circle'>
+                                <FaCircle />
+                            </div>
+                        )
+                    )}
+                    {renderIcon('Prova')}
+                    <span>
+                            {prova.name}
+                                {progressoProva?.score !== undefined && (
+                                    <span className={`score ${progressoProva.score >= 50 ? 'green' : 'red'}`}>
+                                        {`${progressoProva.score}`}
+                                        </span>
                                             )}
-                                            {renderIcon('Prova')}
-                                            <span>{prova.name}</span>
-                                        </div>
-                                        {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'prova')}
-                                        </div>
-                                    );
-                                    })
-                                }
+                                        </span>
+                                    </div>
+                                    {renderButton(statusProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'prova')}
+                                </div>
+                                );
+                                })
+                            }
                                 {provas
                                     .filter((provas) => provas.conteudoId === c.id && provas.type === 'storyTelling')
                                     .sort((a, b) => {
@@ -233,7 +240,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                     .sort((aula1, aula2) => {
                                         const dateAula1 = aula1.createdAt.seconds * 1000 + aula1.createdAt.nanoseconds / 1000000;  
                                         const dateAula2 = aula2.createdAt.seconds * 1000 + aula2.createdAt.nanoseconds / 1000000;  
-                                        return dateAula1 - dateAula2;  // Ordena as aulas pelo createdAt
+                                        return dateAula1 - dateAula2;
                                     })
                                     .map((aula) => {
                                         const progressoAula = progressAulas.find(

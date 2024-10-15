@@ -1,0 +1,24 @@
+.gameDiv {
+  padding: 20px;
+  max-width: 100%;
+}
+
+.gameTitle {
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--secondary1000);
+  margin-bottom: 1.5rem;
+}
+
+.gameDescription {
+  max-width: 50%;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--secondary900);
+  line-height: 36px;
+  margin-bottom: 1rem;
+}
+
+.gameDiv :nth-child(3) {
+  width: 240px;
+}

@@ -7,6 +7,8 @@ import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase
 import { firestore } from '../../services/firebaseConfig'
 import VideoAula from '../../Components/ModuloAluno/VideoAula/VideoAula'
 import Prova from '../../Components/ModuloAluno/Prova/Prova'
+import StoryTelling from '../../Components/ModuloAluno/Storytelling/Storytelling'
+import Game from '../../Components/ModuloAluno/Game/Game'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 
@@ -302,8 +304,8 @@ function ModuloConteudo() {
                 <div className='divMaterial'>
                     {type === 'aula' && <VideoAula materialId={materialId} userId={userId} />}
                     {type === 'prova' && <Prova materialId={materialId} userId={userId}/>}
-                    {type === 'storyTelling' && <p>StoryTelling</p>}
-                    {type === 'game' && <p>Gameficação</p>}
+                    {type === 'storyTelling' && <StoryTelling materialId={materialId} userId={userId}/>}
+                    {type === 'game' && <Game materialId={materialId} userId={userId}/>}
                 </div>
                 
             </div>

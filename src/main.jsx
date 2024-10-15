@@ -13,6 +13,7 @@ import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
 import ModuloConteudo from './Pages/ModuloConteudo/ModuloConteudo.jsx';
 import ComponentLimitado from './Components/ComponentLimitado/ComponentLimitado.jsx';
+//import StoryTelling from './Components/ModuloAluno/Storytelling/Storytelling.jsx';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,17 @@ const router = createBrowserRouter([
       />
     ),
   },
+  /*
+  {
+    path: "/aluno/modulo/:moduloId/:conteudoId/storyTelling/:materialId",
+    element: <StoryTelling />,
+  },
+  {
+    path: "/aluno/modulo/:moduloId/:conteudoId/game/:materialId",
+    element: <Game />,
+  },
+  */
+  
   {
     path: `/aluno/rastreio/:page`,
     element: (

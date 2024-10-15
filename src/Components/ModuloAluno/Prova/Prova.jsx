@@ -53,25 +53,44 @@ function Prova({ materialId, userId }) {
 
   const provaConfirm = async (userId, provaId) => {
     try {
-      const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
-      const progressDoc = await getDoc(progressRef);
+        // Verificar se o documento de progresso já existe
+        const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
+        const progressDoc = await getDoc(progressRef);
 
-      if (progressDoc.exists()) {
-        await setDoc(progressRef, { status: 'end' }, { merge: true });
-        console.log('Progresso da prova atualizado com sucesso!');
-      } else {
-        const progressData = {
-          userId: userId,
-          provaId: provaId,
-          status: 'end',
-        };
-        await setDoc(progressRef, progressData);
-        console.log('Progresso da prova criado e atualizado com sucesso!');
-      }
+        // Calcular o score baseado nas respostas corretas
+        let correctAnswers = 0;
+        const totalQuestions = provas[0].quests.length;
+
+        provas[0].quests.forEach((quest, index) => {
+            const selectedResponseIndex = selectedResponses[index];
+            if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct) {
+                correctAnswers += 1; // Contar uma resposta correta
+            }
+        });
+
+        // Calcular a pontuação final
+        const score = (correctAnswers / totalQuestions) * 100;
+
+        if (progressDoc.exists()) {
+            // Atualizar o progresso existente com a nota
+            await setDoc(progressRef, { status: 'end', score }, { merge: true });
+            console.log('Progresso da prova atualizado com sucesso!');
+        } else {
+            // Criar um novo progresso com a nota
+            const progressData = {
+                userId: userId,
+                provaId: provaId,
+                status: 'end',
+                score: score, // Adicionar a nota calculada
+            };
+            await setDoc(progressRef, progressData);
+            console.log('Progresso da prova criado e atualizado com sucesso!');
+        }
     } catch (error) {
-      console.error('Erro ao criar ou atualizar o progresso da prova:', error);
+        console.error('Erro ao criar ou atualizar o progresso da prova:', error);
     }
-  };
+};
+
 
   const confirmMaterial = (confirm) => {
     if (confirm) {
@@ -146,7 +165,7 @@ function Prova({ materialId, userId }) {
                         title='Salvar e avançar'
                         icon={<FaCircleChevronRight size={18} />}
                         action={handleButtonClick}
-                        disabled={!allQuestionsAnswered} // Desabilita o botão se não estiver tudo respondido
+                        disabled={!allQuestionsAnswered}
                       />
                     </div>
                   )}
