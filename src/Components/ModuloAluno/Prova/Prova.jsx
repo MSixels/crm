@@ -53,35 +53,28 @@ function Prova({ materialId, userId }) {
 
   const provaConfirm = async (userId, provaId) => {
     try {
-        // Verificar se o documento de progresso já existe
         const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
         const progressDoc = await getDoc(progressRef);
-
-        // Calcular o score baseado nas respostas corretas
         let correctAnswers = 0;
         const totalQuestions = provas[0].quests.length;
 
         provas[0].quests.forEach((quest, index) => {
             const selectedResponseIndex = selectedResponses[index];
             if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct) {
-                correctAnswers += 1; // Contar uma resposta correta
+                correctAnswers += 1;
             }
         });
-
-        // Calcular a pontuação final
         const score = (correctAnswers / totalQuestions) * 100;
-
         if (progressDoc.exists()) {
-            // Atualizar o progresso existente com a nota
+            
             await setDoc(progressRef, { status: 'end', score }, { merge: true });
             console.log('Progresso da prova atualizado com sucesso!');
         } else {
-            // Criar um novo progresso com a nota
             const progressData = {
                 userId: userId,
                 provaId: provaId,
                 status: 'end',
-                score: score, // Adicionar a nota calculada
+                score: score, 
             };
             await setDoc(progressRef, progressData);
             console.log('Progresso da prova criado e atualizado com sucesso!');
@@ -90,7 +83,6 @@ function Prova({ materialId, userId }) {
         console.error('Erro ao criar ou atualizar o progresso da prova:', error);
     }
 };
-
 
   const confirmMaterial = (confirm) => {
     if (confirm) {
