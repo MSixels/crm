@@ -13,6 +13,29 @@ function Prova({ materialId, userId }) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { moduloId } = useParams();
   const navigate = useNavigate();
+  const [timeLeft, setTimeLeft] = useState(30 * 60);
+
+  const calculateRemainingTime = () => {
+    const startTime = localStorage.getItem('startTime');
+    if (startTime) {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      return Math.max(30 * 60 - elapsed, 0);
+    }
+    return 30 * 60;
+  };
+
+  useEffect(() => {
+    const savedProvas = JSON.parse(localStorage.getItem('provas'));
+    const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
+    const savedQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'), 10);
+    
+    if (savedProvas) setProvas(savedProvas);
+    if (savedResponses) setSelectedResponses(savedResponses);
+    if (!isNaN(savedQuestionIndex)) setCurrentQuestionIndex(savedQuestionIndex);
+
+    const remainingTime = calculateRemainingTime();
+    setTimeLeft(remainingTime);
+  }, []);
 
   useEffect(() => {
     const fetchProvasData = async () => {
@@ -25,7 +48,20 @@ function Prova({ materialId, userId }) {
 
         const provaFiltrada = provasArray.filter((prova) => prova.id === materialId);
 
-        setProvas(provaFiltrada);
+        let randomQuestions;
+
+        const savedProvas = JSON.parse(localStorage.getItem('provas'));
+        if (savedProvas) {
+          randomQuestions = savedProvas[0].quests;
+        } else {
+
+          randomQuestions = provaFiltrada[0]?.quests
+            .sort(() => 0.5 - Math.random())
+            .slice(0, 5);
+          localStorage.setItem('provas', JSON.stringify([{ ...provaFiltrada[0], quests: randomQuestions }]));
+        }
+
+        setProvas([{ ...provaFiltrada[0], quests: randomQuestions }]);
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
@@ -36,58 +72,102 @@ function Prova({ materialId, userId }) {
     }
   }, [materialId]);
 
+  useEffect(() => {
+    if (timeLeft === 0) {
+      confirmMaterial(true);  
+      navigate(`/aluno/modulo/${moduloId}`);  
+    }
+
+    const intervalId = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        const newTime = prevTime - 1;
+        localStorage.setItem('timeLeft', newTime); 
+        return newTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft, navigate, moduloId]);
+
+  useEffect(() => {
+    if (!localStorage.getItem('startTime')) {
+      localStorage.setItem('startTime', Date.now());
+    }
+  }, []);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
   const handleSelectResponse = (questionIndex, responseIndex) => {
-    setSelectedResponses((prevSelectedResponses) => ({
-      ...prevSelectedResponses,
+    const updatedResponses = {
+      ...selectedResponses,
       [questionIndex]: responseIndex,
-    }));
+    };
+    setSelectedResponses(updatedResponses);
+    localStorage.setItem('selectedResponses', JSON.stringify(updatedResponses));
   };
 
   const handleNextQuestion = () => {
-    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    setCurrentQuestionIndex((prevIndex) => {
+      const newIndex = prevIndex + 1;
+      localStorage.setItem('currentQuestionIndex', newIndex);
+      return newIndex;
+    });
   };
 
   const handlePreviousQuestion = () => {
-    setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+    setCurrentQuestionIndex((prevIndex) => {
+      const newIndex = prevIndex - 1;
+      localStorage.setItem('currentQuestionIndex', newIndex);
+      return newIndex;
+    });
   };
 
   const provaConfirm = async (userId, provaId) => {
     try {
-        const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
-        const progressDoc = await getDoc(progressRef);
-        let correctAnswers = 0;
-        const totalQuestions = provas[0].quests.length;
+      const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
+      const progressDoc = await getDoc(progressRef);
+      let correctAnswers = 0;
+      const totalQuestions = provas[0].quests.length;
 
-        provas[0].quests.forEach((quest, index) => {
-            const selectedResponseIndex = selectedResponses[index];
-            if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct) {
-                correctAnswers += 1;
-            }
-        });
-        const score = (correctAnswers / totalQuestions) * 100;
-        if (progressDoc.exists()) {
-            
-            await setDoc(progressRef, { status: 'end', score }, { merge: true });
-            console.log('Progresso da prova atualizado com sucesso!');
-        } else {
-            const progressData = {
-                userId: userId,
-                provaId: provaId,
-                status: 'end',
-                score: score, 
-            };
-            await setDoc(progressRef, progressData);
-            console.log('Progresso da prova criado e atualizado com sucesso!');
+      provas[0].quests.forEach((quest, index) => {
+        const selectedResponseIndex = selectedResponses[index];
+        if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct) {
+          correctAnswers += 1;
         }
+      });
+      const score = (correctAnswers / totalQuestions) * 100;
+      if (progressDoc.exists()) {
+        await setDoc(progressRef, { status: 'end', score }, { merge: true });
+        console.log('Progresso da prova atualizado com sucesso!');
+      } else {
+        const progressData = {
+          userId: userId,
+          provaId: provaId,
+          status: 'end',
+          score: score, 
+        };
+        await setDoc(progressRef, progressData);
+        console.log('Progresso da prova criado e atualizado com sucesso!');
+      }
     } catch (error) {
-        console.error('Erro ao criar ou atualizar o progresso da prova:', error);
+      console.error('Erro ao criar ou atualizar o progresso da prova:', error);
     }
-};
+  };
 
   const confirmMaterial = (confirm) => {
     if (confirm) {
       if (provas[0].id === materialId) {
-        provaConfirm(userId, materialId).then(() => navigate(`/aluno/modulo/${moduloId}`));
+        provaConfirm(userId, materialId).then(() => {
+          localStorage.removeItem('provas');
+          localStorage.removeItem('selectedResponses');
+          localStorage.removeItem('currentQuestionIndex');
+          localStorage.removeItem('startTime');
+          navigate(`/aluno/modulo/${moduloId}`);
+        });
       }
     }
   };
@@ -100,9 +180,12 @@ function Prova({ materialId, userId }) {
     }
   };
 
-  try{
+  try {
     return (
       <div className='containerProva'>
+        <div className="timer">
+          <p>Tempo restante: {formatTime(timeLeft)}</p>
+        </div>
         {provas.length > 0 && (
           <div>
             <div className='titleIcon'>
@@ -168,11 +251,9 @@ function Prova({ materialId, userId }) {
         )}
       </div>
     );
-  } catch (error){
-    return <p>Deu Erro</p>
+  } catch (error) {
+    return <p>Deu Erro</p>;
   }
-
-  
 }
 
 Prova.propTypes = {
