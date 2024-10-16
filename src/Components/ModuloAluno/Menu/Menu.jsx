@@ -7,12 +7,14 @@ import { useEffect, useState } from 'react';
 import { SiGoogleclassroom } from "react-icons/si";
 import { FaUser } from "react-icons/fa";
 import { MdOutlineErrorOutline } from "react-icons/md";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
     const navigate = useNavigate()
     const [selectOption, setSelectOption] = useState(1)
+    const { moduloId } = useParams()
+    const { type } = useParams()
 
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
         console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
@@ -29,18 +31,26 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
             id: 1,
             icon: <SiGoogleclassroom size={20}/>,
             text: 'Aulas',
+            type: 'aulas'
         },
         {
             id: 2,
             icon: <FaUser size={20}/>,
             text: 'Professor',
+            type: 'professor'
         },
-        {
-            id: 3,
-            icon: <MdOutlineErrorOutline size={20}/>,
-            text: 'Reportar problema',
-        },
+        
     ]
+
+    const navigateToOptions = (type) => {
+        if(type === 'aulas'){
+            navigate(`/aluno/modulo/${moduloId}/aulas`)
+        }else if(type === 'professor'){
+            navigate(`/aluno/modulo/${moduloId}/professor`)
+        }else {
+            navigate(`/aluno/modulo/${moduloId}/aulas`)
+        }
+    }
 
     const backHome = () => {
         navigate('/aluno/home')
@@ -97,7 +107,7 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
             )}
             <div className='divOptions'>
                 {options.map((o) => (
-                    <div key={o.id} className={`option ${selectOption === o.id ? 'active' : ''}`} onClick={() => setSelectOption(o.id)}>
+                    <div key={o.id} className={`option ${type === o.type ? 'active' : ''}`} onClick={() => navigateToOptions(o.type)}>
                         <div className='divIcon'>
                             {o.icon}
                         </div>
@@ -120,3 +130,14 @@ Menu.propTypes = {
 };
 
 export default Menu
+
+/*
+
+{
+            id: 3,
+            icon: <MdOutlineErrorOutline size={20}/>,
+            text: 'Reportar problema',
+            type: 'problema'
+        },
+
+*/

@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { MdEdit } from "react-icons/md";
+import { FaGamepad } from "react-icons/fa6";
 
 function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
     const navigate = useNavigate();
@@ -14,6 +16,10 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     const handleStartContent = (moduloId, conteudoId, type, materialId) => {
         navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${type}/${materialId}`);
     };
+
+    useEffect(() => {
+        console.log('progressProvas em aulas: ', progressProvas)
+    }, [progressProvas])
 
     const renderButton = (status, moduloId, conteudoId, materialId, type) => {
         console.log(`${type}: ${status}`)
@@ -38,6 +44,14 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         } else if (type === "Teste" || type === "Prova") {
             return <div className='divIconAula'>
             <FaBookOpen />
+        </div>;
+        } else if (type === "Story") {
+            return <div className='divIconAula'>
+            <MdEdit />
+        </div>;
+        } else if (type === "Game") {
+            return <div className='divIconAula'>
+            <FaGamepad />
         </div>;
         }
     };
@@ -227,7 +241,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                                     </div>
                                                 )
                                             )}
-                                            {renderIcon('Prova')}
+                                            {renderIcon('Story')}
                                             <span>{prova.name}</span>
                                         </div>
                                         {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'storyTelling')}
@@ -263,7 +277,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                                             </div>
                                                         )
                                                     )}
-                                                    {renderIcon('Aula')}
+                                                    {renderIcon('Game')}
                                                     <span>{aula.name}</span>
                                                 </div>
                                                 {renderButton(progressoAula?.status, moduloId, c.id, aula.id, 'game')}

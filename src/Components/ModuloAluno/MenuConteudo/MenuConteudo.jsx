@@ -25,7 +25,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
     };
 
     const backHome = () => {
-        navigate(`/aluno/modulo/${moduloId}`)
+        navigate(`/aluno/modulo/${moduloId}/aulas`)
     }
 
     const formatDate = (dateString) => {

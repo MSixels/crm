@@ -48,10 +48,12 @@ function ModalCreateAluno({ title, close }) {
 
     const sendEmailToSignUp = async (send) => {
         if (send) {
+            /*
             if (name === '') {
                 setNameError(true);
                 return;
             }
+            */
             if (email === '') {
                 setEmailError(true);
                 return;
@@ -106,9 +108,17 @@ function ModalCreateAluno({ title, close }) {
             const serviceID = 'service_yu2qcoh';
             const templateID = 'template_k0dirrv'; 
             const userID = 'XQKknTXcK4xvRN9B3'; 
+
+            const alunoName = () => {
+                if(name === ''){
+                    return 'Aluno'
+                } else {
+                    return name
+                }
+            }
     
             const templateParams = {
-                to_name: name,
+                to_name: alunoName(),
                 to_email: email,
                 to_password: password,
                 to_type: 'aluno'
@@ -137,7 +147,7 @@ function ModalCreateAluno({ title, close }) {
                         <IoClose size={25} onClick={() => close(false)} />
                     </div>
                 </div>
-                <InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />
+                {/*<InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />*/}
                 <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
                 <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailToSignUp} />
             </div>

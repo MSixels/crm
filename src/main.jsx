@@ -39,7 +39,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: `/aluno/modulo/:moduloId`,
+    path: `/aluno/modulo/:moduloId/:type`,
     element: (
       <ProtectedRoute
         element={<Modulo />}
@@ -58,17 +58,6 @@ const router = createBrowserRouter([
       />
     ),
   },
-  /*
-  {
-    path: "/aluno/modulo/:moduloId/:conteudoId/storyTelling/:materialId",
-    element: <StoryTelling />,
-  },
-  {
-    path: "/aluno/modulo/:moduloId/:conteudoId/game/:materialId",
-    element: <Game />,
-  },
-  */
-  
   {
     path: `/aluno/rastreio/:page`,
     element: (

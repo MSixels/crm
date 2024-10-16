@@ -11,6 +11,7 @@ import { jwtDecode } from 'jwt-decode'
 
 function Modulo() {
     const { moduloId } = useParams()
+    const { type } = useParams()
     const [modulo, setModulo] = useState([])
     const [conteudo, setConteudo] = useState([]);
     const [aulas, setAulas] = useState([]);
@@ -36,7 +37,7 @@ function Modulo() {
         {
             id: 3,
             text: 'Módulos e aulas',
-            route: `/aluno/modulo/${moduloId}`,
+            route: `/aluno/modulo/${moduloId}/${type}`,
             status: 'active'
         },
     ]
@@ -251,7 +252,7 @@ function Modulo() {
                     progressProvas={progressProvas} 
                     userId={userId}
                 />
-                <Aulas 
+                {type === 'aulas' && <Aulas 
                     modulo={modulo} 
                     conteudo={conteudo} 
                     aulas={aulas} 
@@ -259,7 +260,8 @@ function Modulo() {
                     progressAulas={progressAulas} 
                     progressProvas={progressProvas} 
                     userId={userId}
-                />
+                />}
+                
             </div>
         </div>
     )

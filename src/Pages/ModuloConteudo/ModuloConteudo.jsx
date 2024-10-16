@@ -44,7 +44,7 @@ function ModuloConteudo() {
         {
             id: 3,
             text: 'Módulos e aulas',
-            route: `/aluno/modulo/${moduloId}/${conteudoId}/${materialId}`,
+            route: `/aluno/modulo/${moduloId}/${conteudoId}/${type}/${materialId}`,
             status: 'active'
         },
     ]

@@ -47,7 +47,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     };
 
     const openModulo = (id) => {
-        navigate(`/aluno/modulo/${id}`);
+        navigate(`/aluno/modulo/${id}/aulas`);
     };
 
     const formatDate = (dateString) => {
