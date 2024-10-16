@@ -105,9 +105,9 @@ function ModalCreateAluno({ title, close }) {
 
     const sendEmail = (name, email, password) => {
         return new Promise((resolve, reject) => {
-            const serviceID = 'service_yu2qcoh';
-            const templateID = 'template_k0dirrv'; 
-            const userID = 'XQKknTXcK4xvRN9B3'; 
+            const serviceID = 'service_bbm4g9c';
+            const templateID = 'template_ul9y5w5'; 
+            const userID = 'dWO-tVRZLU_OAvoOM';
 
             const alunoName = () => {
                 if(name === ''){
@@ -121,7 +121,8 @@ function ModalCreateAluno({ title, close }) {
                 to_name: alunoName(),
                 to_email: email,
                 to_password: password,
-                to_type: 'aluno'
+                to_type: 'aluno',
+                to_url: 'https://pccn.com.br'
             };
     
             emailjs.send(serviceID, templateID, templateParams, userID)
