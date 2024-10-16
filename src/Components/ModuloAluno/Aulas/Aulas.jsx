@@ -93,9 +93,6 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         });
         setProvasBloqueadas(novasProvasBloqueadas);
     }, [aulas, conteudo, progressAulas, userId]);
-    
-    
-    
 
     return (   
         <div className='containerAulas'>
