@@ -18,8 +18,9 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     };
 
     useEffect(() => {
-        console.log('progressProvas em aulas: ', progressProvas)
-    }, [progressProvas])
+        console.log('Dados de progressProvas:', progressProvas);
+    }, [progressProvas]);
+    
 
     const renderButton = (status, moduloId, conteudoId, materialId, type) => {
         console.log(`${type}: ${status}`)
@@ -190,7 +191,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                                     {renderIcon('Prova')}
                                                     <span>
                                                         {prova.name}
-                                                        {progressoProva?.score !== undefined && (
+                                                        {progressoProva?.score != null && (
                                                             <span className={`score ${progressoProva.score >= 50 ? 'green' : 'red'}`}>
                                                                 {`${progressoProva.score}`}
                                                             </span>
