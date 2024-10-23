@@ -85,3 +85,15 @@
     padding: 10px;
     cursor: pointer;
 }
+@media (max-width: 767px) {
+    .containerRastreios header{
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    .containerRastreios .divPDF{
+        padding-inline: 0px;
+        padding-top: 0px;
+        z-index: 8000;
+    }
+}

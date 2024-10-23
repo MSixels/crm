@@ -170,6 +170,7 @@ function Rastreios({ data, userName }) {
 
     const valoresPDF = (newValuesPDF) => {
         if (newValuesPDF && JSON.stringify(newValuesPDF) !== JSON.stringify(dataPDF)) {
+            console.log(dataPDF)
             setDataPDF(newValuesPDF);
         }
     };

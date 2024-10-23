@@ -40,16 +40,6 @@
 .containerHeader .avatar{
     cursor: pointer;
 }
-@media (max-width: 450px) {
-    .containerHeader header{
-    flex-direction: column;
-    gap: 10px;
-    } 
-    .containerHeader .divOptions{
-        width: 100%;
-    }
-}
-
 .avatar-placeholder {
     width: 40px;
     height: 40px;
@@ -64,4 +54,37 @@
 }
 .letter {
     margin-bottom: 4px;
+}
+
+@media (max-width: 767px) {
+    .containerHeader header{
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 10px;
+    } 
+    .containerHeader .divUser{
+        width: 100%;
+        position: relative;
+        padding-top: 16px;
+    }
+    .containerHeader .divOptions{
+        width: 100%;
+        position: absolute;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 5000;
+    }
+    .containerHeader .divOptions span{
+        font-size: 14px;
+        white-space: nowrap;
+        padding: 5px 12px;
+        width: 100%;
+    }
+    .containerHeader .avatar-placeholder{
+        position: absolute;
+        bottom: 38px;
+        right: 16px;
+
+    }
 }

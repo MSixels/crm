@@ -33,6 +33,7 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     const [showModalNumberPages, setShowModalNumberPages] = useState(false)
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [searchDate, setSearchDate] = useState('')
+    const [isBtnPDFUnicoCalled, setIsBtnPDFUnicoCalled] = useState(false);
 
     useEffect(() => {
         if (data) {
@@ -102,10 +103,22 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     }).slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
     useEffect(() => {
-        if (filteredPatients.length > 0) {
+        if (filteredPatients.length > 0 && !isBtnPDFUnicoCalled) {
             valuesPDF(filteredPatients);  
+            //console.log(filteredPatients);
         }
-    }, [filteredPatients, valuesPDF]);
+    }, [filteredPatients, valuesPDF, isBtnPDFUnicoCalled]);
+
+    const btnPDFUnico = (index) => {
+        setIsBtnPDFUnicoCalled(true); 
+        //console.log(index);
+        //console.log(patient);
+
+        //console.log('Valor função: ', [sortedPatients[index]])
+        
+        valuesPDF([sortedPatients[index]]);
+        btnGerarPDFUnico()
+    };
 
     const handleNextPage = () => {
         if ((currentPage + 1) * itemsPerPage < filteredPatients.length) {
@@ -232,6 +245,11 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     }, [searchDate])
 
     const btnGerarPDF = () => {
+        setIsBtnPDFUnicoCalled(false)
+        confirmPDF(true)
+    }
+
+    const btnGerarPDFUnico = () => {
         confirmPDF(true)
     }
 
@@ -253,77 +271,81 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
                         </div>
                         <ButtonBold title='Gerar PDF' icon={<FaDownLong />} action={btnGerarPDF}/>
                     </header>
-                    <div className='divHeaderValues'>
-                        {header.map((h) => (
-                            <div key={h.id} className='divTitle'>
-                                <p>{h.title}</p>
-                                {h.title === 'DATA DO RASTRIEO' && 
-                                    <div className='iconClick' onClick={toggleSortOrder}>
-                                        {sortOrder === 'desc' ? <FaAngleDown /> : <FaAngleUp />}
-                                    </div>
-                                }
-                            </div>
-                        ))}
-                    </div>
-                    <div className='divValues'>
-                        {sortedPatients.length === 0 ? (
-                            renderDataClean()
-                            ) : (
-                            sortedPatients.map((patient, index) => {
-                                const createdAtDate = new Date(patient.createdAt.seconds * 1000 + patient.createdAt.nanoseconds / 1000000);
-                                const day = String(createdAtDate.getDate()).padStart(2, '0'); 
-                                const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
-                                const year = createdAtDate.getFullYear();
-                                const formattedDate = `${day}/${month}/${year}`;
-
-                                const { tdahPotential } = evaluateTDAHPotential(patient.responses);
-                                const { teaPotential } = evaluateTEAPotential(patient.responses);
-                                const { teapPotential } = evaluateTEAPPotential(patient.responses);
-                                const { tlPotential } = evaluateTLPotential(patient.responses);
-                                const { todPotential } = evaluateTODPotential(patient.responses);
-                                const { tdiPotential } = evaluateTDIPotential(patient.responses);
-
-                                return (
-                                    <div key={index} className='divPatient'>
-                                        <p className='divlineValue'>{patient.patient}</p>
-                                        <p className='divlineValue'>
-                                            {patient.typeQuest === 1 ? '3 a 6 anos' : patient.typeQuest === 2 ? 'Até 8 anos' : patient.typeQuest === 3 ? 'Acima de 8 anos' : ''}
-                                        </p>
-                                        <p className='divlineValue'>{formattedDate}</p> 
-
-                                        {renderGrafic(tdahPotential)}
-                                        {renderGrafic(teaPotential)}
-                                        {renderGrafic(teapPotential)}
-                                        {renderGrafic(tlPotential)}
-                                        {renderGrafic(todPotential)}
-                                        {renderGrafic(tdiPotential)}
-
-                                        <div className='btnEditPatient' onClick={() => openModalEdit(index)}>
-                                            <BsThreeDotsVertical />
+                    <div className='divLimitHeaderValues'>
+                        <div className='divHeaderValues'>
+                            {header.map((h) => (
+                                <div key={h.id} className='divTitle'>
+                                    <p>{h.title}</p>
+                                    {h.title === 'DATA DO RASTRIEO' && 
+                                        <div className='iconClick' onClick={toggleSortOrder}>
+                                            {sortOrder === 'desc' ? <FaAngleDown /> : <FaAngleUp />}
                                         </div>
+                                    }
+                                </div>
+                            ))}
+                        </div>
+                        <div className='divValues'>
+                            {sortedPatients.length === 0 ? (
+                                renderDataClean()
+                                ) : (
+                                sortedPatients.map((patient, index) => {
+                                    const createdAtDate = new Date(patient.createdAt.seconds * 1000 + patient.createdAt.nanoseconds / 1000000);
+                                    const day = String(createdAtDate.getDate()).padStart(2, '0'); 
+                                    const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
+                                    const year = createdAtDate.getFullYear();
+                                    const formattedDate = `${day}/${month}/${year}`;
 
-                                        {activeModalIndex === index && 
-                                            <div className='modalEditPatient'>
-                                                <p className='alert' onClick={() => openConfirmDeleteModal(index)}>Excluir Rastreio</p>
+                                    const { tdahPotential } = evaluateTDAHPotential(patient.responses);
+                                    const { teaPotential } = evaluateTEAPotential(patient.responses);
+                                    const { teapPotential } = evaluateTEAPPotential(patient.responses);
+                                    const { tlPotential } = evaluateTLPotential(patient.responses);
+                                    const { todPotential } = evaluateTODPotential(patient.responses);
+                                    const { tdiPotential } = evaluateTDIPotential(patient.responses);
+
+                                    return (
+                                        <div key={index} className='divPatient'>
+                                            <p className='divlineValue'>{patient.patient}</p>
+                                            <p className='divlineValue'>
+                                                {patient.typeQuest === 1 ? '3 a 6 anos' : patient.typeQuest === 2 ? 'Até 8 anos' : patient.typeQuest === 3 ? 'Acima de 8 anos' : ''}
+                                            </p>
+                                            <p className='divlineValue'>{formattedDate}</p> 
+
+                                            {renderGrafic(tdahPotential)}
+                                            {renderGrafic(teaPotential)}
+                                            {renderGrafic(teapPotential)}
+                                            {renderGrafic(tlPotential)}
+                                            {renderGrafic(todPotential)}
+                                            {renderGrafic(tdiPotential)}
+
+                                            <div className='btnEditPatient' onClick={() => openModalEdit(index)}>
+                                                <BsThreeDotsVertical />
                                             </div>
-                                        }
 
-                                        {confirmDeleteIndex === index && (
-                                            <div className='containerModalConfirmDelete'>
-                                                <div className='modalConfirmDelete'>
-                                                    <p className='titleAlert'>Tem certeza que deseja excluir o rastreio?</p>
-                                                    <div className='divBtns'>
-                                                        <button onClick={() => handleDelete(index)} className='delete'>Confirmar</button>
-                                                        <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
+                                            {activeModalIndex === index && 
+                                                <div className='modalEditPatient'>
+                                                    <p className='alert' onClick={() => openConfirmDeleteModal(index)}>Excluir Rastreio</p>
+                                                    <p className='' onClick={() => btnPDFUnico(index)}>Baixar PDF</p>
+                                                </div>
+                                            }
+
+                                            {confirmDeleteIndex === index && (
+                                                <div className='containerModalConfirmDelete'>
+                                                    <div className='modalConfirmDelete'>
+                                                        <p className='titleAlert'>Tem certeza que deseja excluir o rastreio?</p>
+                                                        <div className='divBtns'>
+                                                            <button onClick={() => handleDelete(index)} className='delete'>Confirmar</button>
+                                                            <button onClick={closeConfirmDeleteModal} className='close'>Cancelar</button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })
-                        )}
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
                     </div>
+                    
                     <div className='footer'>
                         <div className='legendas'>
                             <p>Legenda de diagnóstico</p>
@@ -351,12 +373,15 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
                             </div>
                             
                             <p className='bold'>{currentPage * itemsPerPage + 1}-{Math.min((currentPage + 1) * itemsPerPage, filteredPatients.length)} de {filteredPatients.length}</p>
-                            <div className='divBtnBackNext' onClick={handlePreviousPage}>
-                                <MdArrowBackIosNew />
+                            <div className='btnNextPage'>
+                                <div className='divBtnBackNext' onClick={handlePreviousPage}>
+                                    <MdArrowBackIosNew />
+                                </div>
+                                <div className='divBtnBackNext' onClick={handleNextPage}>
+                                    <GrNext />
+                                </div>
                             </div>
-                            <div className='divBtnBackNext' onClick={handleNextPage}>
-                                <GrNext />
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

@@ -273,3 +273,48 @@
 .containerRastreios .containerRenderModalNumberLiner .option:hover{
     background-color: var(--primary-200);
 }
+.containerRastreios .legendas .btnNextPage{
+    display: flex;
+    gap: 32px;
+}
+@media (max-width: 767px) {
+    .containerRastreios .divConcluidosRastreio header{
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        flex-direction: column;
+    }
+    .containerRastreios .divConcluidosRastreio header .contentHeader{
+        display: flex;
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+    .containerRastreios .legendas{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .containerRastreios .divLimitHeaderValues{
+        overflow: hidden;
+        overflow-x: auto;
+    }
+    .containerRastreios .divConcluidosRastreio .divLimitHeaderValues .divHeaderValues{
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(9, 150px);
+        align-items: center;
+        border-bottom: solid 1px var(--secondary200);
+        width: max-content;
+    }
+    .containerRastreios .divConcluidosRastreio .divValues .divPatient{
+        padding: 16px;
+        display: grid;
+        grid-template-columns: repeat(9, 150px);;
+        align-items: center;
+        border-bottom: solid 1px var(--secondary200);
+        position: relative;
+        width: max-content;
+    }
+}
