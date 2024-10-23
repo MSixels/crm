@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import {  doc, getDoc, setDoc } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -40,37 +40,38 @@ function Prova({ materialId, userId }) {
   useEffect(() => {
     const fetchProvasData = async () => {
       try {
-        const querySnapshot = await getDocs(collection(firestore, 'provas'));
-        const provasArray = [];
-        querySnapshot.forEach((doc) => {
-          provasArray.push({ id: doc.id, ...doc.data() });
-        });
+        const provaDocRef = doc(firestore, 'provas', materialId);
+        const provaDoc = await getDoc(provaDocRef);
+  
+        if (provaDoc.exists()) {
+          const provaData = provaDoc.data();
 
-        const provaFiltrada = provasArray.filter((prova) => prova.id === materialId);
-
-        let randomQuestions;
-
-        const savedProvas = JSON.parse(localStorage.getItem('provas'));
-        if (savedProvas) {
-          randomQuestions = savedProvas[0].quests;
+          let randomQuestions;
+          const savedProvas = JSON.parse(localStorage.getItem('provas'));
+  
+          if (savedProvas && savedProvas[0].id === materialId) {
+            randomQuestions = savedProvas[0].quests; 
+          } else {
+            randomQuestions = provaData.quests
+              .sort(() => 0.5 - Math.random())
+              .slice(0, 5);
+            localStorage.setItem('provas', JSON.stringify([{ ...provaData, quests: randomQuestions }]));
+          }
+  
+          setProvas([{ ...provaData, quests: randomQuestions }]);
         } else {
-
-          randomQuestions = provaFiltrada[0]?.quests
-            .sort(() => 0.5 - Math.random())
-            .slice(0, 5);
-          localStorage.setItem('provas', JSON.stringify([{ ...provaFiltrada[0], quests: randomQuestions }]));
+          console.error('Prova não encontrada');
         }
-
-        setProvas([{ ...provaFiltrada[0], quests: randomQuestions }]);
       } catch (error) {
         console.error('Erro ao buscar dados:', error);
       }
     };
-
+  
     if (materialId) {
       fetchProvasData();
     }
   }, [materialId]);
+  
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -132,14 +133,18 @@ function Prova({ materialId, userId }) {
       const progressDoc = await getDoc(progressRef);
       let correctAnswers = 0;
       const totalQuestions = provas[0].quests.length;
-
+  
+      // Calculando respostas corretas
       provas[0].quests.forEach((quest, index) => {
         const selectedResponseIndex = selectedResponses[index];
-        if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct) {
+        if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct === true) {
           correctAnswers += 1;
         }
       });
+  
+      // Nota baseada no número de respostas corretas
       const score = (correctAnswers / totalQuestions) * 100;
+  
       if (progressDoc.exists()) {
         await setDoc(progressRef, { status: 'end', score }, { merge: true });
         console.log('Progresso da prova atualizado com sucesso!');
@@ -157,7 +162,9 @@ function Prova({ materialId, userId }) {
       console.error('Erro ao criar ou atualizar o progresso da prova:', error);
     }
   };
-
+  
+  
+  
   const confirmMaterial = (confirm) => {
     if (confirm) {
       if (provas[0].id === materialId) {
@@ -171,6 +178,7 @@ function Prova({ materialId, userId }) {
       }
     }
   };
+  
 
   const allQuestionsAnswered = provas[0]?.quests.length === Object.keys(selectedResponses).length;
 
