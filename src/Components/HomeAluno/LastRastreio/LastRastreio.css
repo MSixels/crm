@@ -89,3 +89,9 @@
     justify-content: flex-end;
     margin-top: 16px;
 }
+@media (max-width: 767px) {
+    .divLastRastreio .divContent{
+        width:90%;
+        overflow: hidden;
+    }
+}

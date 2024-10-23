@@ -75,3 +75,18 @@
 .containerModalCreateRastreio .divOptionsFaixas .active .divIcon .circle{
     border: solid 3px var(--primary);
 }
+
+@media (max-width: 767px) {
+    .containerModalCreateRastreio .modalCreate{
+        width: 90%;
+    }
+    .containerModalCreateRastreio .divOptionsFaixas{
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        height: auto;
+    }
+    .containerModalCreateRastreio .divOptionsFaixas .divFaixa{
+        width: 100%;
+    }
+}
