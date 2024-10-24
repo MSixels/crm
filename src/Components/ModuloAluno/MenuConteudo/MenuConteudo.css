@@ -112,3 +112,9 @@
     width: 50px;
     margin-left: 24px;
 }
+
+@media (max-width: 768px) {
+    .containerMenu, .containerMenuConteudo {
+    display: none;
+    }
+}

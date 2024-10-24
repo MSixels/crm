@@ -42,3 +42,15 @@
   color: var(--secondary1000);
   padding: 0.5rem;
 }
+
+@media (max-width: 768px) {
+  .videoAulaContent {
+    margin-top: 1rem;
+    margin-right: 3rem;
+  }
+
+  .iframeStyle {
+    height: 50vh;
+    width: 100%;
+  }
+}

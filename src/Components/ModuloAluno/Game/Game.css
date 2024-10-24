@@ -22,3 +22,13 @@
 .gameDiv :nth-child(3) {
   width: 240px;
 }
+
+@media (max-width: 768px) {
+  .gameDiv {
+    padding-right: 4rem;
+  }
+
+  .gameDescription {
+    max-width: 100%;
+  }
+}

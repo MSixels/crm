@@ -21,6 +21,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         console.log('Dados de progressProvas:', progressProvas);
     }, [progressProvas]);
     
+    
 
     const renderButton = (status, moduloId, conteudoId, materialId, type) => {
         console.log(`${type}: ${status}`)
@@ -240,7 +241,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                                 )
                                             )}
                                             {renderIcon('Story')}
-                                            <span>{prova.name}</span>
+                                            <span >{prova.name}</span>
                                         </div>
                                         {renderButton(stausProva(isBlocked, provasBloqueadas[c.id], progressoProva?.status), moduloId, c.id, prova.id, 'storyTelling')}
                                         </div>
