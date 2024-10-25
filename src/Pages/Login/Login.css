@@ -13,6 +13,8 @@
     flex-direction: column;
     align-items: center;
     gap: 32px;
+    max-width: 600px;
+    width: 90%;
 }
 .containerLogin .divForm{
     color: var(--color-1);
@@ -130,4 +132,19 @@
 
 a {
     cursor: pointer;
+}
+.containerLogin .btnPAcesso{
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 4px;
+    margin-top: 32px;
+    border: solid 2px var(--bg-btnConfirm);
+    color: var(--bg-btnConfirm);
+    cursor: pointer;
+    transition: .3s;
+    background-color: transparent;
+}
+.containerLogin .btnPAcesso:hover{
+    scale: 1.01;
 }

@@ -1,39 +1,25 @@
-import { useState } from 'react';
-import InputSend from '../InputSend/InputSend';
-import './ModalCreateAluno.css';
-import PropTypes from 'prop-types';
-import { IoClose } from "react-icons/io5";
-import { MdEmail } from "react-icons/md";
-import ButtonSend from '../ButtonSend/ButtonSend';
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom'
+import './FirstAccessEmail.css'
+import LogoText from '../../imgs/logoText.png'
+import { MdSchool } from "react-icons/md";
 import { auth, firestore } from '../../services/firebaseConfig';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { useState } from 'react';
 import emailjs from 'emailjs-com';
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import Cookies from 'js-cookie'
+import { FaCircleCheck } from "react-icons/fa6";
 
-
-function ModalCreateAluno({ title, close }) {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [emailError, setEmailError] = useState(false);
-    const [nameError, setNameError] = useState(false);
+function FirstAccess() {
+    const navigate = useNavigate()
+    const [inputEmail, setInputEmail] = useState(false)
+    const [email, setEmail] = useState('')
     const [
         createUserWithEmailAndPassword,
         loading,
     ] = useCreateUserWithEmailAndPassword(auth);
-
-    const getName = (newName) => {
-        setName(newName);
-        if (newName !== '') {
-            setNameError(false);
-        }
-    };
-
-    const getEmail = (newEmail) => {
-        setEmail(newEmail);
-        if (newEmail !== '') {
-            setEmailError(false);
-        }
-    };
+    const name = Cookies.get('name');
+    const [success, setSuccess] = useState(false)
 
     const generateRandomPassword = () => {
         const length = 8;
@@ -48,19 +34,13 @@ function ModalCreateAluno({ title, close }) {
 
     const sendEmailToSignUp = async (send) => {
         if (send) {
-            /*
-            if (name === '') {
-                setNameError(true);
-                return;
-            }
-            */
+
             if (email === '') {
-                setEmailError(true);
+                setInputEmail(true);
                 return;
             }
-    
-            setNameError(false);
-            setEmailError(false);
+
+            setInputEmail(false);
     
             try {
                 const usersRef = collection(firestore, 'users');
@@ -127,6 +107,7 @@ function ModalCreateAluno({ title, close }) {
     
             emailjs.send(serviceID, templateID, templateParams, userID)
             .then((response) => {
+                setSuccess(true)
                 console.log('E-mail enviado com sucesso!', response.status, response.text);
                 resolve(); 
             })
@@ -137,28 +118,49 @@ function ModalCreateAluno({ title, close }) {
         });
     };
 
-    
+    const renderSuccess = () => {
+        return(
+            <div className='success'>
+                <div className='divContent'>
+                    <span className='title w100'>Tudo certo! <FaCircleCheck color='#222D7E'/></span>
+                    <span>Nós te enviamos um e-mail com as instruções para recuperar sua conta.</span>
+                    <a href="/" className='btnLogin w100 textDN'>Voltar para área de login</a>
+                    <button className='resend w100' onClick={() => sendEmailToSignUp(true)}>{loading ? 'Carregando' : 'Reenviar link'}</button>
+                </div>
+            </div>
+        )
+    }
     
     return (
-        <div className='containerModalCreateAluno'>
-            <div className='modalCreate'>
-                <div className='divheader'>
-                    <h3>{title}</h3>
-                    <div className='divClose'>
-                        <IoClose size={25} onClick={() => close(false)} />
+        <div className='containerLogin'>
+            {success && renderSuccess()}
+            <div className='divContent'>
+                <img src={LogoText} alt="logo" style={{width: '186px'}}/>
+                <div className='divForm'>
+                    <div className='divTitle titleFisrt'>
+                        <span className='title titleLink'>Recuperar senha</span>
+                        <span>Informe seu e-mail cadastrado na plataforma. Caso ele exista, enviaremos um link para redefinição de sua senha. Cheque sua caixa de entrada e também a de SPAM.</span>
                     </div>
+                    <div className='divInput'>
+                        <label htmlFor="email" style={{color: inputEmail && 'red'}}>E-mail</label>
+                        <input 
+                            type="email" 
+                            name='email' 
+                            id='email' 
+                            className='input' 
+                            value={email}
+                            onChange={(e) => {setEmail(e.target.value), e.target.value != setInputEmail(false)}}
+                            style={{borderColor: inputEmail && 'red'}}
+                        />
+                    </div>
+                    <div>
+                        <a href="/" className='decorationN loginLink'>Acessar minha conta</a>
+                    </div>
+                    <button className='btnLogin' onClick={() => sendEmailToSignUp(true)}>{loading ? 'Carregando' : 'Enviar link de recuperação'}</button>
                 </div>
-                {/*<InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />*/}
-                <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
-                <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailToSignUp} />
             </div>
         </div>
-    );
+    )
 }
 
-ModalCreateAluno.propTypes = {
-    title: PropTypes.string.isRequired,
-    close: PropTypes.func.isRequired,
-};
-
-export default ModalCreateAluno;
+export default FirstAccess

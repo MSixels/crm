@@ -178,6 +178,10 @@ function Login() {
         navigate(route)
     }
 
+    const openFirstAccess = () => {
+        navigate('/login/aluno/primeiro-acesso')
+    }
+
     return (
         <div className='containerLogin'>
             <div className='divContent'>
@@ -249,6 +253,7 @@ function Login() {
                         <a onClick={() => navigate('/recuperar-senha')}>Esqueci minha senha</a>
                     </div>
                     <button className='btnLogin' onClick={() => openHome(email, senha)}>{loading ? 'Carregando' : 'Fazer login'}</button>
+                    <button className='btnPAcesso' onClick={() => openFirstAccess()}>{loading ? 'Carregando' : 'Primeiro acesso'}</button>
                     <div className='divHelp'>
                         <span>Precisa de ajuda?</span>
                         <a href="">Fale conosco</a>

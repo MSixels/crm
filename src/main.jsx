@@ -13,6 +13,9 @@ import ProtectedRoute from './Components/ProtectedRoute/ProtectedRoute.jsx';
 import Modulo from './Pages/Modulo/Modulo.jsx';
 import ModuloConteudo from './Pages/ModuloConteudo/ModuloConteudo.jsx';
 import ComponentLimitado from './Components/ComponentLimitado/ComponentLimitado.jsx';
+import FirstAccess from './Pages/FirstAccess/FirstAccess.jsx';
+import FirstAccessEmail from './Pages/FirstAccessEmail/FirstAccessEmail.jsx'
+import EmailProtectedRoute from './Components/EmailProtectedRoute/EmailProtectedRoute.jsx';
 //import StoryTelling from './Components/ModuloAluno/Storytelling/Storytelling.jsx';
 
 const router = createBrowserRouter([
@@ -27,6 +30,18 @@ const router = createBrowserRouter([
   {
     path: `/recuperar-senha`,
     element: <RecuperarSenha />,
+  },
+  {
+    path: `/login/aluno/primeiro-acesso`,
+    element: <FirstAccess />,
+  },
+  {
+    path: `/login/aluno/primeiro-acesso/email`,
+    element: (
+      <EmailProtectedRoute 
+        element={<FirstAccessEmail />} 
+      />
+    ),
   },
   {
     path: `/aluno/:page`,
