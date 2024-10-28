@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig';
+import { useNavigate, useParams } from 'react-router-dom';
 import './Game.css';
 import { FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 
 function Game({ materialId }) {
     const [gameData, setGameData] = useState(null);
+    const { moduloId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => { 
         const fetchGameData = async () => {
@@ -33,6 +36,10 @@ function Game({ materialId }) {
         }
     }, [materialId]);
 
+    const handleNextActivity = () => {
+        navigate(`/aluno/modulo/${moduloId}/aulas`);
+    };
+
     if (!gameData) {
         return <div>Loading...</div>;
     }
@@ -41,7 +48,12 @@ function Game({ materialId }) {
         <div className="gameDiv">
             <h2 className="gameTitle">{gameData.name}</h2>
             <p className="gameDescription" dangerouslySetInnerHTML={{ __html: gameData.description }}></p>
-            <ButtonConfirm title='Próxima atvidade' icon={<FaCircleChevronRight size={18} />}/>
+            <ButtonConfirm 
+                title="Próxima atividade" 
+                icon={<FaCircleChevronRight size={18} />} 
+                action={handleNextActivity}
+                disabled={false}
+            />
         </div>
     );
 }
