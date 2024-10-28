@@ -495,8 +495,8 @@ function ComponentLimitado() {
     };
 
 
-    const getDescriptionStoryTelling = (newDesc) => {
-        setDescriptionStoryTelling(newDesc);
+    const getDescriptionStoryTelling = (event) => {
+        setDescriptionStoryTelling(event.target.value);
     };
 
     const salvarStoryTelling = async (send) => {
@@ -557,7 +557,12 @@ function ComponentLimitado() {
                 <h1>Adicionar StoryTelling</h1>
                 <div style={{ alignItems: 'start', display: 'flex', flexDirection: 'column', width: '100%', marginTop: 20 }}>
                     <InputSend title='Nome' placeH='' onSearchChange={getNameStory} type='text' />
-                    <InputSend title='Descrição' placeH='' onSearchChange={getDescriptionStoryTelling} type='text' />
+                    <label htmlFor="descricao">Descrição</label>
+                    <textarea
+                        id="descricao"
+                        value={descriptionStoryTelling}
+                        onChange={getDescriptionStoryTelling}
+                    />
                     {loading ? (
                         <p>Carregando Conteudos...</p> 
                     ) : (
