@@ -1,10 +1,10 @@
-import './ButtonConfirm.css'
-import PropTypes from 'prop-types'
+import './ButtonConfirm.css';
+import PropTypes from 'prop-types';
 
-function ButtonConfirm({title, icon, action, disabled}) {
+function ButtonConfirm({ title, icon, action, disabled }) {
     const executeAction = () => {
-        action(true)
-    }
+        action(true);
+    };
     return (
         <div className='containerButtonConfirm'>
             <button onClick={() => executeAction()} disabled={disabled}>
@@ -12,13 +12,14 @@ function ButtonConfirm({title, icon, action, disabled}) {
                 {icon}
             </button>
         </div>
-    )
+    );
 }
+
 ButtonConfirm.propTypes = {
     title: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    action: PropTypes.string.isRequired,
+    icon: PropTypes.node.isRequired,
+    action: PropTypes.func.isRequired,
     disabled: PropTypes.bool.isRequired,
 };
 
-export default ButtonConfirm
+export default ButtonConfirm;

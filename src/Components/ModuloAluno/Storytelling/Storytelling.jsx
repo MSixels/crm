@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig';
 import { FaCircleChevronRight } from 'react-icons/fa6';
+import { useNavigate, useParams } from 'react-router-dom';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 
 function StoryTelling({ materialId }) {
@@ -10,6 +11,8 @@ function StoryTelling({ materialId }) {
     const [resposta, setResposta] = useState('');
     const [charCount, setCharCount] = useState(0);
     const maxChars = 1500;
+    const { moduloId } = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchStoryData = async () => {
@@ -42,6 +45,10 @@ function StoryTelling({ materialId }) {
             setResposta(text);
             setCharCount(text.length);
         }
+    };
+
+    const handleNextActivity = () => {
+        navigate(`/aluno/modulo/${moduloId}/aulas`);
     };
 
     if (!storyData) {
@@ -86,7 +93,12 @@ function StoryTelling({ materialId }) {
                     {charCount}/{maxChars}
                 </div>
             </div>
-            <ButtonConfirm title='Próxima atvidade' icon={<FaCircleChevronRight size={18} />}/>
+            <ButtonConfirm 
+                title="Próxima atividade" 
+                icon={<FaCircleChevronRight size={18} />} 
+                action={handleNextActivity}
+                disabled={false}
+            />
         </div>
     );
 }
