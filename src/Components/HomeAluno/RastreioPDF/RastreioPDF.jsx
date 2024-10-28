@@ -209,50 +209,64 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                         })
                         }
                     </div>
-                    <p>Descritivo</p>
+                    <p style={{marginTop: 18}}>Descritivo</p>
                     {dataValues.map((data) => {
-                        const renderQuestsType1 = (id, value) => {
+                        
+                        const renderQuestsType1 = (questId, valueId) => {
                             return questsRestreioType1
-                            .filter((q) => q.id === id) 
-                            .map((q) => (
-                                <div key={q.id}>
-                                    <li>{q.quest}</li>
-                                    {q.options.filter((o) => o.id === value).map((o) => (
-                                        <p key={o.id}>{o.text}</p>
-                                    ))}
-                                </div>
-                            ));
+                            .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                                .map((q) => (
+                                    <div key={q.id} className='textsDiv'>
+                                        <li>{q.quest}</li>
+                                        {q.options
+                                            .filter((o) => o.id === valueId)
+                                            .map((o) => (
+                                                <div key={o.id}>
+                                                    <p>{o.text}</p>
+                                                </div>
+                                            ))}
+                                    </div>
+                                ));
                         };
 
-                        const renderQuestsType2 = (id, value) => {
+                        const renderQuestsType2 = (questId, valueId) => {
                             return questsRestreioType2
-                            .filter((q) => q.id === id) 
-                            .map((q) => (
-                                <div key={q.id}>
-                                    <li>{q.quest}</li>
-                                    {q.options.filter((o) => o.id === value).map((o) => (
-                                        <p key={o.id}>{o.text}</p>
-                                    ))}
-                                </div>
-                            ));
+                            .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                                .map((q) => (
+                                    <div key={q.id} className='textsDiv'>
+                                        <li>{q.quest}</li>
+                                        {q.options
+                                            .filter((o) => o.id === valueId)
+                                            .map((o) => (
+                                                <div key={o.id}>
+                                                    <p>{o.text}</p>
+                                                </div>
+                                            ))}
+                                    </div>
+                                ));
                         };
 
-                        const renderQuestsType3 = (id, value) => {
+                        const renderQuestsType3 = (questId, valueId) => {
+                            console.log('dataValuesMap: ', questId + ' ' + valueId);
                             return questsRestreioType3
-                            .filter((q) => q.id === id) 
-                            .map((q) => (
-                                <div key={q.id} className='textsDiv'>
-                                    <li>{q.quest}</li>
-                                    {q.options.filter((o) => o.id === value).map((o) => (
-                                        <p key={o.id}>{o.text}</p>
-                                    ))}
-                                </div>
-                            ));
+                                .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                                .map((q) => (
+                                    <div key={q.id} className='textsDiv'>
+                                        <li>{q.quest}</li>
+                                        {q.options
+                                            .filter((o) => o.id === valueId)
+                                            .map((o) => (
+                                                <div key={o.id}>
+                                                    <p>{o.text}</p>
+                                                </div>
+                                            ))}
+                                    </div>
+                                ));
                         };
 
                         if(data.typeQuest === 1) {
                             return (
-                                <div key={data.id}>
+                                <div key={data.id} className='descritivo'>
                                     {data.responses.map((r) => (
                                         <div key={r.id}>
                                             {renderQuestsType1(r.quest, r.value)}
@@ -262,7 +276,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                             );
                         }else if(data.typeQuest === 2){
                             return (
-                                <div key={data.id}>
+                                <div key={data.id} className='descritivo'>
                                     {data.responses.map((r) => (
                                         <div key={r.id}>
                                             {renderQuestsType2(r.quest, r.value)}
@@ -271,6 +285,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                                 </div>
                             );
                         }else if(data.typeQuest === 3){
+                            console.log('dataResponses: ', data.responses)
                             return (
                                 <div key={data.id} className='descritivo'>
                                     {data.responses.map((r) => (

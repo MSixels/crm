@@ -279,10 +279,10 @@
     flex-direction: column;
     padding-block: 16px;
     padding-left: 12px;
-    gap: 24px;
 }
 .containerRastreioPDF .descritivo .textsDiv{
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin-bottom: 24px;
 }
