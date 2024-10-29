@@ -601,8 +601,8 @@ function ComponentLimitado() {
         setNameGame(newName);
     };
 
-    const getDescriptionGame = (newDesc) => {
-        setDescriptionGame(newDesc);
+    const getDescriptionGame = (event) => {
+        setDescriptionGame(event.target.value);
     };
 
     
@@ -610,18 +610,19 @@ function ComponentLimitado() {
     const salvarGame = async (send) => {
         if (send) {
             try {
-                if(nameGame === '' || descriptionGame === '' ){
-                    alert('Preencha os campos de Gameficação')
-                    return
+                if (nameGame === '' || descriptionGame === '') {
+                    alert('Preencha os campos de Gamificação');
+                    return;
                 }
+                const formattedDescription = descriptionGame.replace(/\n/g, '<br>');
                 await addDoc(collection(firestore, 'aulas'), {
                     name: nameGame,
                     conteudoId: conteudo,
-                    description: descriptionGame,
+                    description: formattedDescription,
                     type: 'game',
                     createdAt: new Date(),
                 });
-                alert("Gameficação salvo com sucesso!");
+                alert("Gamificação salva com sucesso!");
             } catch (error) {
                 console.error("Erro ao salvar Aula:", error);
             }
@@ -644,7 +645,12 @@ function ComponentLimitado() {
                     />
                 )}
                 <InputSend title='Nome' placeH='' onSearchChange={getNameGame} type='text' />
-                <InputSend title='Descrição' placeH='' onSearchChange={getDescriptionGame} type='text' />
+                <label htmlFor="descricao">Descrição</label>
+                    <textarea
+                        id="descricao"
+                        value={descriptionGame}
+                        onChange={getDescriptionGame}
+                    />
                 </div>
                 <ButtonBold title='Salvar Aula' icon action={() => salvarGame(true)} />
             </div>

@@ -24,7 +24,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     
 
     const renderButton = (status, moduloId, conteudoId, materialId, type) => {
-        console.log(`${type}: ${status}`)
+        console.log(`${type}: ${status}`);
         if (status === "end") {
             if (type === "aula" || type === "aovivo") {
                 return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Reassistir</button>;
@@ -32,10 +32,19 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                 return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Ver Respostas</button>;
             }
         } else if (status === "blocked") {
-            return <button className='btn-access-disable' disabled>Blqueado</button>;
+            return <button className='btn-access-disable' disabled>Bloqueado</button>;
         } else {
             return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Iniciar</button>;
         }
+    };
+
+    const statusProva = (isBlocked, provasBloqueadas, progressoProva) => {
+        if (isBlocked || provasBloqueadas) {
+            return 'blocked';
+        } else if (progressoProva?.status === 'end') {
+            return 'end';
+        }
+        return 'active';
     };
 
     const renderIcon = (type) => {

@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import {  doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
 
-function Prova({ materialId, userId }) {
+function Prova({ materialId, userId, contentId }) {
   const [provas, setProvas] = useState([]);
   const [selectedResponses, setSelectedResponses] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -71,12 +71,11 @@ function Prova({ materialId, userId }) {
       fetchProvasData();
     }
   }, [materialId]);
-  
 
   useEffect(() => {
     if (timeLeft === 0) {
       confirmMaterial(true);  
-      navigate(`/aluno/modulo/${moduloId}`);  
+      navigate(`/aluno/modulo/${moduloId}/aula/${contentId}`);
     }
 
     const intervalId = setInterval(() => {
@@ -127,58 +126,47 @@ function Prova({ materialId, userId }) {
     });
   };
 
-  const provaConfirm = async (userId, provaId) => {
+  const provaConfirm = async () => {
     try {
-      const progressRef = doc(firestore, 'progressProvas', `${userId}_${provaId}`);
-      const progressDoc = await getDoc(progressRef);
-      let correctAnswers = 0;
-      const totalQuestions = provas[0].quests.length;
-  
-      // Calculando respostas corretas
+      const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
+      let score = 0;
+
       provas[0].quests.forEach((quest, index) => {
         const selectedResponseIndex = selectedResponses[index];
         if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct === true) {
-          correctAnswers += 1;
+          score += 20;
         }
       });
-  
-      // Nota baseada no número de respostas corretas
-      const score = (correctAnswers / totalQuestions) * 100;
-  
-      if (progressDoc.exists()) {
-        await setDoc(progressRef, { status: 'end', score }, { merge: true });
-        console.log('Progresso da prova atualizado com sucesso!');
-      } else {
-        const progressData = {
-          userId: userId,
-          provaId: provaId,
-          status: 'end',
-          score: score, 
-        };
-        await setDoc(progressRef, progressData);
-        console.log('Progresso da prova criado e atualizado com sucesso!');
-      }
+
+      score = Math.min(score, 100);
+
+      const progressData = {
+        userId,
+        provaId: materialId,
+        status: 'end',
+        score,
+        responses: selectedResponses,
+      };
+
+      await setDoc(progressRef, progressData);
+      console.log('Progresso da prova salvo com sucesso!');
     } catch (error) {
-      console.error('Erro ao criar ou atualizar o progresso da prova:', error);
+      console.error('Erro ao salvar o progresso da prova:', error);
     }
   };
-  
-  
-  
-  const confirmMaterial = (confirm) => {
+
+  const confirmMaterial = async (confirm) => {
     if (confirm) {
       if (provas[0].id === materialId) {
-        provaConfirm(userId, materialId).then(() => {
-          localStorage.removeItem('provas');
-          localStorage.removeItem('selectedResponses');
-          localStorage.removeItem('currentQuestionIndex');
-          localStorage.removeItem('startTime');
-          navigate(`/aluno/modulo/${moduloId}`);
-        });
+        await provaConfirm();
+        localStorage.removeItem('provas');
+        localStorage.removeItem('selectedResponses');
+        localStorage.removeItem('currentQuestionIndex');
+        localStorage.removeItem('startTime');
+        navigate(`/aluno/modulo/${moduloId}/aula/${contentId}`);
       }
     }
   };
-  
 
   const allQuestionsAnswered = provas[0]?.quests.length === Object.keys(selectedResponses).length;
 
@@ -188,85 +176,85 @@ function Prova({ materialId, userId }) {
     }
   };
 
-  try {
-    return (
-      <div className='containerProva'>
-        <div className="timer">
-          <p>Tempo restante: {formatTime(timeLeft)}</p>
-        </div>
-        {provas.length > 0 && (
-          <div>
-            <div className='titleIcon'>
-              <div className='divIconAula'>
-                <FaBookOpen />
-              </div>
-              <h2 className='testTitle'>{provas[0].name}</h2>
-            </div>
-            <p>{provas[0].description}</p>
-            {provas[0].quests.length > 0 && (
-              <div style={{ marginTop: 20 }}>
-                <p className='testQuestion' style={{ marginBottom: 5 }}>
-                  {provas[0].quests[currentQuestionIndex].quest}
-                </p>
-                {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
-                  <ul className='testOptions' key={responseIndex}>
-                    <li className='testOptionItem'>
-                      <label>
-                        <input
-                          type='checkbox'
-                          checked={selectedResponses[currentQuestionIndex] === responseIndex}
-                          onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
-                        />
-                      </label>
-                      {r.text}
-                    </li>
-                  </ul>
-                ))}
-                <div className='navigationButtons'>
-                  <div className="justify-btns">
-                    <button
-                      className='btn-nav'
-                      onClick={handlePreviousQuestion}
-                      disabled={currentQuestionIndex === 0}
-                    >
-                      <FaCircleChevronLeft size={24} />
-                    </button>
-                    <span className='questionCounter'>
-                      {currentQuestionIndex + 1} / {provas[0].quests.length}
-                    </span>
-                    <button
-                      className='btn-nav'
-                      onClick={handleNextQuestion}
-                      disabled={currentQuestionIndex === provas[0].quests.length - 1}
-                    >
-                      <FaCircleChevronRight size={24} />
-                    </button>
-                  </div>
-                  {currentQuestionIndex === provas[0].quests.length - 1 && (
-                    <div className="btn-next-content">
-                      <ButtonConfirm
-                        title='Salvar e avançar'
-                        icon={<FaCircleChevronRight size={18} />}
-                        action={handleButtonClick}
-                        disabled={!allQuestionsAnswered}
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+  return (
+    <div className='containerProva'>
+      <div className="timer">
+        <p>Tempo restante: {formatTime(timeLeft)}</p>
       </div>
-    );
-  } catch (error) {
-    return <p>Deu Erro</p>;
-  }
+      {provas.length > 0 && (
+        <div>
+          <div className='titleIcon'>
+            <div className='divIconAula'>
+              <FaBookOpen />
+            </div>
+            <h2 className='testTitle'>{provas[0].name}</h2>
+          </div>
+          <p>{provas[0].description}</p>
+          {provas[0].quests.length > 0 && (
+            <div style={{ marginTop: 20 }}>
+              <p className='testQuestion' style={{ marginBottom: 5 }}>
+                {provas[0].quests[currentQuestionIndex].quest}
+              </p>
+              {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
+                <ul className='testOptions' key={responseIndex}>
+                  <li className='testOptionItem'>
+                    <label>
+                      <input
+                        type='checkbox'
+                        checked={selectedResponses[currentQuestionIndex] === responseIndex}
+                        onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
+                      />
+                    </label>
+                    {r.text}
+                  </li>
+                </ul>
+              ))}
+              <div className='navigationButtons'>
+                <div className="justify-btns">
+                  <button
+                    className='btn-nav'
+                    onClick={handlePreviousQuestion}
+                    disabled={currentQuestionIndex === 0}
+                  >
+                    <FaCircleChevronLeft size={24} />
+                  </button>
+                  <span className='questionCounter'>
+                    {currentQuestionIndex + 1} / {provas[0].quests.length}
+                  </span>
+                  <button
+                    className='btn-nav'
+                    onClick={handleNextQuestion}
+                    disabled={currentQuestionIndex === provas[0].quests.length - 1}
+                  >
+                    <FaCircleChevronRight size={24} />
+                  </button>
+                </div>
+                {currentQuestionIndex === provas[0].quests.length - 1 && (
+                  <div className="btn-next-content">
+                    <ButtonConfirm
+                      title='Salvar e avançar'
+                      icon={<FaCircleChevronRight size={18} />}
+                      onClick={handleButtonClick}
+                      disabled={!allQuestionsAnswered}
+                    />
+                  </div>
+                )}
+              </div>
+              {!allQuestionsAnswered && (
+                <p className="error-message">Responda todas as perguntas para prosseguir</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 Prova.propTypes = {
-  materialId: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
+  materialId: PropTypes.string.isRequired,
+  contentId: PropTypes.string.isRequired,
 };
 
 export default Prova;

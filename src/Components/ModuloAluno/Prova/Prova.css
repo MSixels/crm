@@ -104,3 +104,9 @@ input[type="checkbox"]:checked::before {
   background-color: var(--bg-btnConfirm);
   border-radius: 50%;
 }
+
+@media (max-width: 768px) {
+  .containerProva {
+    padding: 3rem;
+  }
+}

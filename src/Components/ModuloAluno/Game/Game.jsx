@@ -47,7 +47,10 @@ function Game({ materialId }) {
     return (
         <div className="gameDiv">
             <h2 className="gameTitle">{gameData.name}</h2>
-            <p className="gameDescription" dangerouslySetInnerHTML={{ __html: gameData.description }}></p>
+            <p
+                className="gameDescription"
+                dangerouslySetInnerHTML={{ __html: gameData.description }}
+            ></p>
             <ButtonConfirm 
                 title="Próxima atividade" 
                 icon={<FaCircleChevronRight size={18} />} 
