@@ -8,7 +8,7 @@ import {
     evaluateTLPotential, 
     evaluateTODPotential 
 } from '../../../functions/functions';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCircleCheck } from 'react-icons/fa6';
 import { questsRestreioType1, questsRestreioType2, questsRestreioType3 } from '../../../database';
 
@@ -30,7 +30,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
         {id: 8, title: 'TOD'},
         {id: 9, title: 'TDI'},
     ]
-
+    /*
     const headerU = [
         {id: 1, title: 'TDAH'},
         {id: 2, title: 'TEA'},
@@ -39,7 +39,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
         {id: 5, title: 'TOD'},
         {id: 6, title: 'TDI'},
     ]
-
+    */
     const renderGrafic = (value) => {
         return(
             <div className='containerGraficMiniPDF divlineValuePDF'>
@@ -64,14 +64,14 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
 
     const renderHighGraficUnic = (value) => {
         return(
-            <div className='high divlineValue unicGraph'>
+            <div className='high divlineValue unicGraph newUnicGraph'>
                 <div className={`bar bar-1 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-2 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-3 ${value === 'pp' ? '' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-4 ${value === 'pp' ? '' : value === 'p' ? '' : value === 'mp' ? 'red' : ''}`}></div>
-                <div className='valueGraphText'>
+                {/*<div className='valueGraphText'>
                     <p>{value === 'pp' ? 'Pouco provável' : value === 'p' ? 'Provável' : value === 'mp' ? 'Muito provável' : ''}</p>
-                </div>
+                </div>*/}
             </div>
         )
     }
@@ -178,10 +178,62 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                             <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Avaliador: <p style={{fontWeight: 500}}>{alunoName}</p></p>
                         </div>
                     ))}
+                    <div className='divValorCrianca'>
+                        <p>Caracterização de risco:</p>
+                        <div className='divValuesUnicNew'> {/*divValuesUnic */}
+                            {dataValues.map((patient, index) => {
+                                const { tdahPotential } = evaluateTDAHPotential(patient.responses);
+                                const { teaPotential } = evaluateTEAPotential(patient.responses);
+                                const { teapPotential } = evaluateTEAPPotential(patient.responses);
+                                const { tlPotential } = evaluateTLPotential(patient.responses);
+                                const { todPotential } = evaluateTODPotential(patient.responses);
+                                const { tdiPotential } = evaluateTDIPotential(patient.responses);
+
+                                const potentials = [
+                                    tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential
+                                ];
+                                let statusCrianca = '';
+                                
+                                if (potentials.includes('mp')) {
+                                    statusCrianca = 'mp';
+                                } else if (potentials.includes('p')) {
+                                    statusCrianca = 'p';
+                                } else {
+                                    statusCrianca = 'pp';
+                                }
+
+                                return (
+                                    <div key={index} style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                        {renderHighGraficUnic(statusCrianca)}
+                                        <p style={{fontWeight: 500}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno de desenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno de desenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno de desenvolvimento' : ''}</p>
+                                    </div>
+                                );
+                            })
+                            }
+                        </div>
+                        
+                    </div>
                     
-                    <p style={{paddingTop: 16, borderTop: 'solid 1px #ccc'}}>Caracterização de risco:</p>
-                    <div className='divValuesUnic'>
-                        <div className='divHeaderValues_unic'>
+                    <p style={{ paddingBlock: 24}}><strong>ORIENTAÇÃO À FAMILIA</strong>: Buscar Junto a sua unidade de saúde, auxílio para encaminhamento ao serviço de referência da sua cidade, assim o diagnóstico final será feito, bem como orientações e relatórios devidamente definidos pelo médico.</p>
+                </>
+            )}
+            
+        </div>
+    )
+}
+RastreioPDF.propTypes = {
+    alunoName: PropTypes.string.isRequired,
+    dataCards: PropTypes.array.isRequired,
+    dataValues: PropTypes.array.isRequired,
+};
+
+export default RastreioPDF
+
+
+/*
+//=============================================Resultados da criança =============================//
+<div className='divValuesUnic'>
+    <div className='divHeaderValues_unic'>
                             {headerU.map((h) => (
                                 <div key={h.id} className='divTitle'>
                                     <p className='headerTitlePDF'>{h.title}</p>
@@ -208,60 +260,65 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                             );
                         })
                         }
-                    </div>
-                    <p style={{marginTop: 18}}>Descritivo</p>
+                        </div>
+
+
+
+
+
+                        <p style={{marginTop: 18}}>Descritivo</p>
                     {dataValues.map((data) => {
                         
                         const renderQuestsType1 = (questId, valueId) => {
                             return questsRestreioType1
                             .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
-                                .map((q) => (
-                                    <div key={q.id} className='textsDiv'>
-                                        <li>{q.quest}</li>
-                                        {q.options
-                                            .filter((o) => o.id === valueId)
-                                            .map((o) => (
-                                                <div key={o.id}>
-                                                    <p>{o.text}</p>
-                                                </div>
-                                            ))}
-                                    </div>
-                                ));
+                            .map((q) => (
+                                <div key={q.id} className='textsDiv'>
+                                    <li>{q.quest}</li>
+                                    {q.options
+                                        .filter((o) => o.id === valueId)
+                                        .map((o) => (
+                                            <div key={o.id}>
+                                                <p>{o.text}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            ));
                         };
 
                         const renderQuestsType2 = (questId, valueId) => {
                             return questsRestreioType2
                             .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
-                                .map((q) => (
-                                    <div key={q.id} className='textsDiv'>
-                                        <li>{q.quest}</li>
-                                        {q.options
-                                            .filter((o) => o.id === valueId)
-                                            .map((o) => (
-                                                <div key={o.id}>
-                                                    <p>{o.text}</p>
-                                                </div>
-                                            ))}
-                                    </div>
-                                ));
+                            .map((q) => (
+                                <div key={q.id} className='textsDiv'>
+                                    <li>{q.quest}</li>
+                                    {q.options
+                                        .filter((o) => o.id === valueId)
+                                        .map((o) => (
+                                            <div key={o.id}>
+                                                <p>{o.text}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            ));
                         };
 
                         const renderQuestsType3 = (questId, valueId) => {
                             console.log('dataValuesMap: ', questId + ' ' + valueId);
                             return questsRestreioType3
-                                .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
-                                .map((q) => (
-                                    <div key={q.id} className='textsDiv'>
-                                        <li>{q.quest}</li>
-                                        {q.options
-                                            .filter((o) => o.id === valueId)
-                                            .map((o) => (
-                                                <div key={o.id}>
-                                                    <p>{o.text}</p>
-                                                </div>
-                                            ))}
-                                    </div>
-                                ));
+                            .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                            .map((q) => (
+                                <div key={q.id} className='textsDiv'>
+                                    <li>{q.quest}</li>
+                                    {q.options
+                                        .filter((o) => o.id === valueId)
+                                        .map((o) => (
+                                            <div key={o.id}>
+                                                <p>{o.text}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            ));
                         };
 
                         if(data.typeQuest === 1) {
@@ -299,17 +356,4 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
 
                         return null; 
                     })}
-                    <p style={{ borderTop: 'solid 1px #ccc', paddingBlock: 24, marginTop: 24}}><strong>ORIENTAÇÃO À FAMILIA</strong>: Buscar Junto a sua unidade de saúde, auxílio para encaminhamento ao serviço de referência da sua cidade, assim o diagnóstico final será feito, bem como orientações e relatórios devidamente definidos pelo médico.</p>
-                </>
-            )}
-            
-        </div>
-    )
-}
-RastreioPDF.propTypes = {
-    alunoName: PropTypes.string.isRequired,
-    dataCards: PropTypes.array.isRequired,
-    dataValues: PropTypes.array.isRequired,
-};
-
-export default RastreioPDF
+*/

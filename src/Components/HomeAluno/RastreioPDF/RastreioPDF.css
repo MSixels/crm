@@ -261,7 +261,9 @@
     padding-bottom: 78px;
     padding-inline: 16px;
     gap: 24px;
-    border-bottom: solid 1px #ccc;
+}
+.containerRastreioPDF .divValuesUnicNew{
+    display: flex;
 }
 .containerRastreioPDF .unicGraph{
     display: flex;
@@ -285,4 +287,16 @@
     flex-direction: column;
     gap: 8px;
     margin-bottom: 24px;
+}
+.containerRastreioPDF .divValorCrianca{
+    display: flex;
+    align-items: center;
+    border-top: solid 1px #ccc;
+    border-bottom: solid 1px #ccc;
+    padding-block: 24px;
+    gap: 24px;
+}
+.containerRastreioPDF .newUnicGraph{
+    display: flex;
+    
 }
