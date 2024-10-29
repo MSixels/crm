@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -149,7 +149,10 @@ function Prova({ materialId, userId, contentId }) {
       };
 
       await setDoc(progressRef, progressData);
-      console.log('Progresso da prova salvo com sucesso!');
+
+      await updateDoc(progressRef, { status: 'block' });
+
+      console.log('Progresso da prova salvo com sucesso e status atualizado!');
     } catch (error) {
       console.error('Erro ao salvar o progresso da prova:', error);
     }
@@ -241,7 +244,7 @@ function Prova({ materialId, userId, contentId }) {
                 )}
               </div>
               {!allQuestionsAnswered && (
-                <p className="error-message">Responda todas as perguntas para prosseguir</p>
+                <p className='msg-questions'>Responda todas as perguntas para prosseguir</p>
               )}
             </div>
           )}
@@ -252,8 +255,8 @@ function Prova({ materialId, userId, contentId }) {
 }
 
 Prova.propTypes = {
-  userId: PropTypes.string.isRequired,
   materialId: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
   contentId: PropTypes.string.isRequired,
 };
 
