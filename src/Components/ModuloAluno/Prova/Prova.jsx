@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -75,7 +75,7 @@ function Prova({ materialId, userId, contentId }) {
   useEffect(() => {
     if (timeLeft === 0) {
       confirmMaterial(true);  
-      navigate(`/aluno/modulo/${moduloId}/aula/${contentId}`);
+      navigate(`/aluno/modulo/${moduloId}/aulas`);
     }
 
     const intervalId = setInterval(() => {
@@ -106,6 +106,7 @@ function Prova({ materialId, userId, contentId }) {
       ...selectedResponses,
       [questionIndex]: responseIndex,
     };
+    console.log('updatedResponses: ', updatedResponses)
     setSelectedResponses(updatedResponses);
     localStorage.setItem('selectedResponses', JSON.stringify(updatedResponses));
   };
@@ -130,27 +131,31 @@ function Prova({ materialId, userId, contentId }) {
     try {
       const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
       let score = 0;
+      console.log(provas)
 
       provas[0].quests.forEach((quest, index) => {
         const selectedResponseIndex = selectedResponses[index];
-        if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].correct === true) {
+        //console.log('selectedResponseIndex: ', selectedResponseIndex)
+        //console.log('quest.responses: ',quest.responses[1].value)
+        if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
           score += 20;
         }
       });
 
       score = Math.min(score, 100);
+      console.log('Score: ', score)
 
       const progressData = {
         userId,
         provaId: materialId,
-        status: 'end',
-        score,
+        status: 'block',
+        score: score,
         responses: selectedResponses,
       };
 
-      await setDoc(progressRef, progressData);
+      console.log('progressData: ', progressData)
 
-      await updateDoc(progressRef, { status: 'block' });
+      await setDoc(progressRef, progressData);
 
       console.log('Progresso da prova salvo com sucesso e status atualizado!');
     } catch (error) {
@@ -160,13 +165,13 @@ function Prova({ materialId, userId, contentId }) {
 
   const confirmMaterial = async (confirm) => {
     if (confirm) {
-      if (provas[0].id === materialId) {
+      if (materialId) {
         await provaConfirm();
         localStorage.removeItem('provas');
         localStorage.removeItem('selectedResponses');
         localStorage.removeItem('currentQuestionIndex');
         localStorage.removeItem('startTime');
-        navigate(`/aluno/modulo/${moduloId}/aula/${contentId}`);
+        navigate(`/aluno/modulo/${moduloId}/aulas`);
       }
     }
   };
@@ -174,7 +179,9 @@ function Prova({ materialId, userId, contentId }) {
   const allQuestionsAnswered = provas[0]?.quests.length === Object.keys(selectedResponses).length;
 
   const handleButtonClick = () => {
+    console.log(allQuestionsAnswered)
     if (allQuestionsAnswered) {
+      
       confirmMaterial(true);
     }
   };
@@ -237,7 +244,7 @@ function Prova({ materialId, userId, contentId }) {
                     <ButtonConfirm
                       title='Salvar e avançar'
                       icon={<FaCircleChevronRight size={18} />}
-                      onClick={handleButtonClick}
+                      action={handleButtonClick}
                       disabled={!allQuestionsAnswered}
                     />
                   </div>

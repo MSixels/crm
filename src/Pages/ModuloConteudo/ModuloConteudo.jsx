@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import './ModuloConteudo.css'
 import Header from '../../Components/Header/Header'
 import MenuConteudo from '../../Components/ModuloAluno/MenuConteudo/MenuConteudo'
@@ -27,6 +27,12 @@ function ModuloConteudo() {
     const [userId, setUserId] = useState('')
     const [progressAulas, setProgressAulas] = useState([])
     const [progressProvas, setProgressProvas] = useState([])
+
+    const location = useLocation();
+
+    useEffect(() => {
+        console.log('Rota atual:', location.pathname);
+    }, [location]);
 
     const options = [
         {
