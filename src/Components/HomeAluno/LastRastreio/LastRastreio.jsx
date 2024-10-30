@@ -104,17 +104,8 @@ function LastRastreio({ data, close }) {
                             sortedPatients[0].typeQuest === 3 ? 'acima de 8 anos' : '')
                         : ''}</span></p>
                     </div>
-                    <div className='divTextResults'>
-                        <p>Resultados</p>
-                    </div>
-                    <div className='divHeaderValues'>
-                        {header.map((h) => (
-                            <div key={h.id} className='divTitle'>
-                                <p>{h.title}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className='divValues'>
+                    <div className='divValues caracter'>
+                        <p>Caracterização de risco: </p>
                         {sortedPatients.map((patient, index) => {
                                 const { tdahPotential } = evaluateTDAHPotential(patient.responses);
                                 const { teaPotential } = evaluateTEAPotential(patient.responses);
@@ -123,14 +114,23 @@ function LastRastreio({ data, close }) {
                                 const { todPotential } = evaluateTODPotential(patient.responses);
                                 const { tdiPotential } = evaluateTDIPotential(patient.responses);
 
+                                const potentials = [
+                                    tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential
+                                ];
+                                let statusCrianca = '';
+                                
+                                if (potentials.includes('mp')) {
+                                    statusCrianca = 'mp';
+                                } else if (potentials.includes('p')) {
+                                    statusCrianca = 'p';
+                                } else {
+                                    statusCrianca = 'pp';
+                                }
+
                                 return (
                                     <div key={index} className='divPatient'>
-                                        {renderGrafic(tdahPotential)}
-                                        {renderGrafic(teaPotential)}
-                                        {renderGrafic(teapPotential)}
-                                        {renderGrafic(tlPotential)}
-                                        {renderGrafic(todPotential)}
-                                        {renderGrafic(tdiPotential)}
+                                        {renderGrafic(statusCrianca)}
+                                        <p style={{width: '100%', fontSize: 14}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'mp' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : ''}</p>
                                     </div>
                                 );
                             })

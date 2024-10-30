@@ -69,9 +69,9 @@
     font-size: 5px;
 }
 .containerRastreioPDF .divContentValuesPDF .divPatientsPDF .divPatientPDF{
-    padding:8px;
+    padding: 8px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);;
+    grid-template-columns: repeat(4, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--border-light);
 }
@@ -148,7 +148,7 @@
 .containerRastreioPDF .divValuesPDF .divContentValuesPDF .divHeaderValues{
     padding: 8px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);;
+    grid-template-columns: repeat(4, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--border-light);
 }

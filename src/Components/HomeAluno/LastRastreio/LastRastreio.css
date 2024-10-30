@@ -52,8 +52,6 @@
 }
 .divLastRastreio .divContent .divHeaderValues{
     padding: 16px;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--primary-200);
     gap: 40px;
@@ -72,14 +70,16 @@
     justify-content: center;
     cursor: pointer;
 }
-.divLastRastreio .divContent .divValues .divPatient{
-    padding: 16px;
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);;
+.divLastRastreio .divContent .divValues{
+    display: flex;
     align-items: center;
-    border-bottom: solid 1px var(--primary-200);
+}
+.divLastRastreio .divContent .divValues .divPatient{
+    display: flex;
+    align-items: center;
     position: relative;
-    gap: 40px;
+    gap: 8px;
+    margin-left: 12px;
 }
 .divLastRastreio .divContent .divValues .divPatient .divlineValue{
     font-size: 14px;
@@ -88,6 +88,13 @@
     display: flex;
     justify-content: flex-end;
     margin-top: 16px;
+}
+.divLastRastreio .caracter{
+    display: flex;
+    align-items: center;
+    border-bottom: solid 1px var(--primary-200);
+    padding-block: 16px;
+    gap: 8px;
 }
 @media (max-width: 767px) {
     .divLastRastreio .divContent{
