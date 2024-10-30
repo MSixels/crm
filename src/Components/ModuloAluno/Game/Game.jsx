@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import PropTypes from 'prop-types';
+import { collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig';
 import { useNavigate, useParams } from 'react-router-dom';
 import './Game.css';
 import { FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 
-function Game({ materialId }) {
+function Game({ materialId, userId }) {
     const [gameData, setGameData] = useState(null);
     const { moduloId } = useParams();
     const navigate = useNavigate();
@@ -36,7 +37,35 @@ function Game({ materialId }) {
         }
     }, [materialId]);
 
+    const gameConfirm = async (userId, aulaId) => {
+        try {
+            const progressRef = doc(firestore, 'progressAulas', `${userId}_${aulaId}`);
+            const progressDoc = await getDoc(progressRef);
+            if (progressDoc.exists()) {
+                await setDoc(progressRef, { status: 'end' }, { merge: true });
+                console.log('Progresso atualizado com sucesso!');
+            } else {
+                const progressData = {
+                    userId: userId,
+                    aulaId: aulaId,
+                    status: 'end',
+                };
+                await setDoc(progressRef, progressData);
+                console.log('Progresso criado e atualizado com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao criar ou atualizar o progresso:', error);
+        }
+    };
+
+    const confirmMaterial = () => {
+        if (gameData.id === materialId) {
+            gameConfirm(userId, materialId).then(() => navigate(`/aluno/modulo/${moduloId}/aulas`));
+        }
+    };
+
     const handleNextActivity = () => {
+        confirmMaterial()
         navigate(`/aluno/modulo/${moduloId}/aulas`);
     };
 
@@ -60,5 +89,10 @@ function Game({ materialId }) {
         </div>
     );
 }
+
+Game.propTypes = {
+    materialId: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+};
 
 export default Game;

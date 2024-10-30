@@ -104,11 +104,22 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     useEffect(() => {
         const novasProvasBloqueadas = {};
         conteudo.forEach((conteudoItem) => {
-            const aulasDoConteudo = aulas.filter(aula => aula.conteudoId === conteudoItem.id);
-            const todasAulasConcluidas = aulasDoConteudo.every(aula => {
-                const progressoAula = progressAulas.find(progress => progress.userId === userId && progress.aulaId === aula.id);
-                return progressoAula && progressoAula.status === 'end';
+            const aulasDoConteudo = aulas.filter(aula => aula.conteudoId === conteudoItem.id && aula.type === 'aula');
+            console.log('aulasDoConteudo: ', aulasDoConteudo)
+            const progressosCorrespondentes = progressAulas.filter(progress => 
+                progress.userId === userId && 
+                aulasDoConteudo.some(aula => aula.id === progress.aulaId)
+            );
+
+            progressosCorrespondentes.forEach(progress => {
+                console.log('Progresso encontrado:', { aulaId: progress.aulaId, status: progress.status });
             });
+
+            const todasAulasConcluidas = aulasDoConteudo.every(aula => 
+                progressosCorrespondentes.some(progress => {
+                    return progress.aulaId === aula.id && progress.status === 'end';
+                })
+            );
     
             novasProvasBloqueadas[conteudoItem.id] = !todasAulasConcluidas;
         });
@@ -186,13 +197,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
 
                                         const provaCompletada = progressoProva && progressoProva.status === 'end';
 
-                                        const statusProva = (isBlocked, provasBloqueadas, progressoProva) => {
-                                            if (isBlocked || provasBloqueadas) {
-                                                return 'blocked';
-                                            } else {
-                                                return progressoProva;
-                                            }
-                                        };
+                                        
 
                                         return (
                                             <div key={prova.id} className="contentRow">
