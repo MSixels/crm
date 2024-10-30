@@ -159,7 +159,7 @@ function LastRastreio({ data, close, alunoName, comentarioAtt }) {
                                 return (
                                     <div key={index} className='divPatient'>
                                         {renderGrafic(statusCrianca)}
-                                        <p style={{width: '100%', fontSize: 14}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'mp' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : ''}</p>
+                                        <p style={{width: '100%', fontSize: 14}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno do neurodesenvolvimento' : ''}</p>
                                     </div>
                                 );
                             })
