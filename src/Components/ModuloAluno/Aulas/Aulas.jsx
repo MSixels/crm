@@ -34,7 +34,17 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         } else if (status === "blocked") {
             return <button className='btn-access-disable' disabled>Bloqueado</button>;
         } else {
-            return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Iniciar</button>;
+            return <button className='btn-first-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Iniciar</button>;
+        }
+    };
+
+    const continuarDeOndeParou = () => {
+        const conteudoInacabado = conteudo.find((c) => {
+            const progresso = progressAulas.find((progress) => progress.conteudoId === c.id && progress.status !== 'end');
+            return progresso ? c : null;
+        });
+        if (conteudoInacabado) {
+            handleStartContent(moduloId, conteudoInacabado.id, 'aula', conteudoInacabado.materialId);
         }
     };
 
@@ -114,7 +124,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                             <h2 className='moduleName'>{modulo.name}</h2>
                             <span className='moduleDescription'>{modulo.description}</span>
                         </div>
-                        <button className='btn-continue'>Continuar de onde parou <FaPlay /></button>
+                        <button className='btn-continue' onClick={continuarDeOndeParou}>Continuar de onde parou <FaPlay /></button>
                     </div>
 
                     {conteudo

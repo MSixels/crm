@@ -150,16 +150,31 @@
     color: var(--bg-principal);
     cursor: pointer;
 }
+.btn-first-access {
+    border-radius: 4px;
+    border: 1px solid var(--bg-principal);
+    padding: 0.5rem;
+    background-color: var(--bg-principal);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--bg-White);
+    cursor: pointer;
+}
+
+.btn-first-access:hover{
+    background-color: var(--bg-White);
+    color: var(--bg-principal);
+    border: 1px solid var(--bg-principal);
+}
+
 .btn-access-disable:disabled{
     border-radius: 4px;
     padding: 0.5rem;
-    background-color: var(--bg-White);
+    background-color: var(--secondary200);
     font-size: 14px;
     font-weight: 500;
-    color: var(--bg-principal);
     cursor: pointer;
-    background-color: var(--secondary500);
-    color: var(--secondary900);
+    color: #00000034;
     border: solid 1px transparent;
 }
 .nextModuleButton:hover {

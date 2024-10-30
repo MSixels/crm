@@ -89,6 +89,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                         <p className='titleConteudo'>{conteudo[0].name}</p>
                         {aulas && aulas
                         .filter((a) => a.conteudoId === c.id && a.type === 'aula')
+                        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)) 
                         .map((a) => {
                             const progressoAula = progressAulas?.find(
                                 (progress) => progress.userId === userId && progress.aulaId === a.id
@@ -123,6 +124,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
                         })}
                         {provas && provas
                         .filter((p) => p.conteudoId === c.id && p.type === 'prova') 
+                        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0))
                         .map((p) => {
                             const progressoProva = progressProvas?.find(
                                 (progress) => progress.userId === userId && progress.provaId === p.id
