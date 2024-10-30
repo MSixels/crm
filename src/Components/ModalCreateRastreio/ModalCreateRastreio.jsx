@@ -56,7 +56,7 @@ function ModalCreateRastreio({ title, close }) {
                         <IoClose size={25} onClick={() => close(false)} />
                     </div>
                 </div>
-                <p style={{fontSize: 16}}>Nome do paciente</p>
+                <p style={{fontSize: 16}}>Dados do aluno avaliado</p>
                 <InputSend 
                     title='Nome completo' 
                     placeH='' 
