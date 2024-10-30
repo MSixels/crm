@@ -139,6 +139,9 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
                 <div className={`bar bar-2 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-3 ${value === 'pp' ? '' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-4 ${value === 'pp' ? '' : value === 'p' ? '' : value === 'mp' ? 'red' : ''}`}></div>
+                <div>
+                    <p style={{marginLeft: 12}}>{value === 'pp' ? 'Baixo risco potencial' : value === 'p' ? 'Médio risco potencial' : value === 'mp' ? 'Alto risco potencial' : ''}</p>
+                </div>
             </div>
         )
     }
@@ -158,12 +161,7 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
         {id: 1, title: 'NOME'},
         {id: 2, title: 'FAIXA ETÁRIA'},
         {id: 3, title: 'DATA DO RASTRIEO'}, 
-        {id: 4, title: 'TDAH'},
-        {id: 5, title: 'TEA'},
-        {id: 6, title: 'TEAP'},
-        {id: 7, title: 'TL'},
-        {id: 8, title: 'TOD'},
-        {id: 9, title: 'TDI'},
+        {id: 4, title: 'CARACTERIZAÇÃO DE RISCO'},
     ]
 
     const openModalEdit = (index) => {
@@ -302,6 +300,19 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
                                     const { todPotential } = evaluateTODPotential(patient.responses);
                                     const { tdiPotential } = evaluateTDIPotential(patient.responses);
 
+                                    const potentials = [
+                                        tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential
+                                    ];
+                                    let statusCrianca = '';
+                                    
+                                    if (potentials.includes('mp')) {
+                                        statusCrianca = 'mp';
+                                    } else if (potentials.includes('p')) {
+                                        statusCrianca = 'p';
+                                    } else {
+                                        statusCrianca = 'pp';
+                                    }
+
                                     return (
                                         <div key={index} className='divPatient'>
                                             <p className='divlineValue'>{patient.patient}</p>
@@ -310,12 +321,8 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
                                             </p>
                                             <p className='divlineValue'>{formattedDate}</p> 
 
-                                            {renderGrafic(tdahPotential)}
-                                            {renderGrafic(teaPotential)}
-                                            {renderGrafic(teapPotential)}
-                                            {renderGrafic(tlPotential)}
-                                            {renderGrafic(todPotential)}
-                                            {renderGrafic(tdiPotential)}
+                                            {renderGrafic(statusCrianca)}
+                                            
 
                                             <div className='btnEditPatient' onClick={() => openModalEdit(index)}>
                                                 <BsThreeDotsVertical />

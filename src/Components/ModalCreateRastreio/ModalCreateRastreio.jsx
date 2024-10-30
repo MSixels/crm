@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ModalCreateRastreio({ title, close }) {
     const [name, setName] = useState('')
+    const [escola, setEscola] = useState('')
     const [optionSelected, setOptionSelected] = useState(null)
     const [btnDisabled, setBtnDisabled] = useState(true)
     const navigate = useNavigate()
@@ -19,26 +20,30 @@ function ModalCreateRastreio({ title, close }) {
     ]
 
     useEffect(() => {
-        if (name !== '' && optionSelected != null) {
+        if (name !== '' && optionSelected != null && escola !== '') {
             setBtnDisabled(false);
         } else {
             setBtnDisabled(true);
         }
-    }, [name, optionSelected]);
+    }, [name, optionSelected, escola]);
 
     const handleSearchChange = (newSearchTerm) => {
         setName(newSearchTerm);
         console.log(newSearchTerm); 
     };
 
+    const handleSearchEscola = (newNameEscola) => {
+        setEscola(newNameEscola)
+    }
+
     const novoRastreio = async (send) => {
         if (send) {
             if(optionSelected === 1){
-                navigate(`/aluno/rastreio/novo-rastreio-tipo-1?patient=${name}`)
+                navigate(`/aluno/rastreio/novo-rastreio-tipo-1?patient=${name}&school=${escola}`)
             } else if(optionSelected === 2){
-                navigate(`/aluno/rastreio/novo-rastreio-tipo-2?patient=${name}`)
+                navigate(`/aluno/rastreio/novo-rastreio-tipo-2?patient=${name}&school=${escola}`)
             } else if(optionSelected === 3) {
-                navigate(`/aluno/rastreio/novo-rastreio-tipo-3?patient=${name}`)
+                navigate(`/aluno/rastreio/novo-rastreio-tipo-3?patient=${name}&school=${escola}`)
             }
         }
     };
@@ -53,9 +58,15 @@ function ModalCreateRastreio({ title, close }) {
                 </div>
                 <p style={{fontSize: 16}}>Nome do paciente</p>
                 <InputSend 
-                    title='Nome' 
+                    title='Nome completo' 
                     placeH='' 
                     onSearchChange={handleSearchChange} 
+                    type="text" 
+                />
+                <InputSend 
+                    title='Nome da escola' 
+                    placeH='' 
+                    onSearchChange={handleSearchEscola} 
                     type="text" 
                 />
                 <p style={{fontSize: 16}}>Faixa etária</p>

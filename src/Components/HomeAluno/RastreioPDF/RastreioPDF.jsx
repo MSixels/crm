@@ -23,12 +23,8 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
         {id: 1, title: 'NOME'},
         {id: 2, title: 'FAIXA ETÁRIA'},
         {id: 3, title: 'DATA DO RASTRIEO'}, 
-        {id: 4, title: 'TDAH'},
-        {id: 5, title: 'TEA'},
-        {id: 6, title: 'TEAP'},
-        {id: 7, title: 'TL'},
-        {id: 8, title: 'TOD'},
-        {id: 9, title: 'TDI'},
+        {id: 4, title: 'CARACTERIZAÇÃO DE RISCO'},
+        
     ]
     /*
     const headerU = [
@@ -47,6 +43,9 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                 <div className={`bar bar-2 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-3 ${value === 'pp' ? '' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-4 ${value === 'pp' ? '' : value === 'p' ? '' : value === 'mp' ? 'red' : ''}`}></div>
+                <div className='valueGraphText' style={{marginLeft: 8}}>
+                    <p>{value === 'pp' ? 'Pouco risco potencial' : value === 'p' ? 'Médio risco potencial' : value === 'mp' ? 'Alto risco potencial' : ''}</p>
+                </div>
             </div>
         )
     }
@@ -58,6 +57,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                 <div className={`bar bar-2 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-3 ${value === 'pp' ? '' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
                 <div className={`bar bar-4 ${value === 'pp' ? '' : value === 'p' ? '' : value === 'mp' ? 'red' : ''}`}></div>
+                
             </div>
         )
     }
@@ -74,6 +74,14 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                 </div>*/}
             </div>
         )
+    }
+
+    function formatDateToDDMMYYYY(date) {
+        const createdAtDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
+        const day = String(createdAtDate.getDate()).padStart(2, '0'); 
+        const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
+        const year = createdAtDate.getFullYear();
+        return `${day}/${month}/${year}`;
     }
 
     return (
@@ -124,6 +132,19 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                                         const { todPotential } = evaluateTODPotential(patient.responses);
                                         const { tdiPotential } = evaluateTDIPotential(patient.responses);
 
+                                        const potentials = [
+                                            tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential
+                                        ];
+                                        let statusCrianca = '';
+                                        
+                                        if (potentials.includes('mp')) {
+                                            statusCrianca = 'mp';
+                                        } else if (potentials.includes('p')) {
+                                            statusCrianca = 'p';
+                                        } else {
+                                            statusCrianca = 'pp';
+                                        }
+
                                         return (
                                             <div key={index} className='divPatientPDF'>
                                                 <p className='divlineValuePDF'>{patient.patient}</p>
@@ -132,12 +153,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                                                 </p>
                                                 <p className='divlineValuePDF'>{formattedDate}</p> 
 
-                                                {renderGrafic(tdahPotential)}
-                                                {renderGrafic(teaPotential)}
-                                                {renderGrafic(teapPotential)}
-                                                {renderGrafic(tlPotential)}
-                                                {renderGrafic(todPotential)}
-                                                {renderGrafic(tdiPotential)}
+                                                {renderGrafic(statusCrianca)}
                                                 
                                             </div>
                                         );
@@ -173,13 +189,14 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                     <p style={{paddingBlock: 18, borderBottom: 'solid 1px #ccc', borderTop: 'solid 1px #ccc'}}>Este documento contém sinais de alerta para possíveis transtornos do neurodesenvolvimento, ele não faz diagnóstico e existe a necessidade absoluta da avaliação médica de acordo com os resultados aqui observados.</p>
                     {dataValues.map((data) => (
                         <div key={data.id} style={{ paddingBlock: 16}}>
-                            <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Nome: <p style={{fontWeight: 500}}>{data.patient}</p></p>
-                            <p style={{display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', flexWrap: 'nowrap'}}>Faixa etária: <p style={{fontWeight: 500}}>{data.typeQuest === 1 ? '3 a 6 anos' : data.typeQuest === 2 ? 'Até 8 anos' : data.typeQuest === 3 ? 'Acima de 8 anos' : ''}</p></p>
-                            <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Avaliador: <p style={{fontWeight: 500}}>{alunoName}</p></p>
+                            <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Nome do aluno: <p style={{fontWeight: 500}}>{data?.patient}</p></p>
+                            <p style={{display: 'flex', alignItems: 'center', gap: 8, whiteSpace: 'nowrap', flexWrap: 'nowrap'}}>Nome do professor: <p style={{fontWeight: 500}}>{alunoName}</p></p>
+                            <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Escola: <p style={{fontWeight: 500}}>{data?.school}</p></p>
+                            <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Data: <p style={{fontWeight: 500}}>{formatDateToDDMMYYYY(data?.createdAt)}</p></p>
                         </div>
                     ))}
                     <div className='divValorCrianca'>
-                        <p>Caracterização de risco:</p>
+                        
                         <div className='divValuesUnicNew'> {/*divValuesUnic */}
                             {dataValues.map((patient, index) => {
                                 const { tdahPotential } = evaluateTDAHPotential(patient.responses);
@@ -203,10 +220,21 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                                 }
 
                                 return (
-                                    <div key={index} style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                                        {renderHighGraficUnic(statusCrianca)}
-                                        <p style={{fontWeight: 500}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno de desenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno de desenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno de desenvolvimento' : ''}</p>
+                                    <div key={index}>
+                                        <div  style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                            <p>Caracterização de risco:</p>
+                                            {renderHighGraficUnic(statusCrianca)}
+                                            <p style={{fontWeight: 500}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno do neurodesenvolvimento' : ''}</p>
+                                        </div>
+                                        {patient.comentario && (
+                                            <div style={{ paddingTop: 24, borderTop: 'solid 1px #ccc', marginTop: 24}}>
+                                                <p>
+                                                    <span style={{ fontWeight: 500 }}>Observações do professor:</span> {patient.comentario}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
+                                    
                                 );
                             })
                             }
@@ -214,7 +242,97 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                         
                     </div>
                     
-                    <p style={{ paddingBlock: 24}}><strong>ORIENTAÇÃO À FAMILIA</strong>: Buscar Junto a sua unidade de saúde, auxílio para encaminhamento ao serviço de referência da sua cidade, assim o diagnóstico final será feito, bem como orientações e relatórios devidamente definidos pelo médico.</p>
+                    <p style={{marginTop: 18}}>Descritivo</p>
+                    {dataValues.map((data) => {
+                        
+                        const renderQuestsType1 = (questId, valueId) => {
+                            return questsRestreioType1
+                            .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                            .map((q) => (
+                                <div key={q.id} className='textsDiv'>
+                                    <li>{q.quest}</li>
+                                    {q.options
+                                        .filter((o) => o.id === valueId)
+                                        .map((o) => (
+                                            <div key={o.id}>
+                                                <p>{o.text}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            ));
+                        };
+
+                        const renderQuestsType2 = (questId, valueId) => {
+                            return questsRestreioType2
+                            .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                            .map((q) => (
+                                <div key={q.id} className='textsDiv'>
+                                    <li>{q.quest}</li>
+                                    {q.options
+                                        .filter((o) => o.id === valueId)
+                                        .map((o) => (
+                                            <div key={o.id}>
+                                                <p>{o.text}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            ));
+                        };
+
+                        const renderQuestsType3 = (questId, valueId) => {
+                            console.log('dataValuesMap: ', questId + ' ' + valueId);
+                            return questsRestreioType3
+                            .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
+                            .map((q) => (
+                                <div key={q.id} className='textsDiv'>
+                                    <li>{q.quest}</li>
+                                    {q.options
+                                        .filter((o) => o.id === valueId)
+                                        .map((o) => (
+                                            <div key={o.id}>
+                                                <p>{o.text}</p>
+                                            </div>
+                                        ))}
+                                </div>
+                            ));
+                        };
+
+                        if(data.typeQuest === 1) {
+                            return (
+                                <div key={data.id} className='descritivo'>
+                                    {data.responses.map((r) => (
+                                        <div key={r.id}>
+                                            {renderQuestsType1(r.quest, r.value)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }else if(data.typeQuest === 2){
+                            return (
+                                <div key={data.id} className='descritivo'>
+                                    {data.responses.map((r) => (
+                                        <div key={r.id}>
+                                            {renderQuestsType2(r.quest, r.value)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }else if(data.typeQuest === 3){
+                            console.log('dataResponses: ', data.responses)
+                            return (
+                                <div key={data.id} className='descritivo'>
+                                    {data.responses.map((r) => (
+                                        <div key={r.id}>
+                                            {renderQuestsType3(r.quest, r.value)}
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }
+
+                        return null; 
+                    })}
+                    <p style={{ paddingBlock: 24, borderTop: 'solid 1px #ccc'}}><strong>ORIENTAÇÃO À FAMILIA</strong>: Buscar Junto a sua unidade de saúde, auxílio para encaminhamento ao serviço de referência da sua cidade, assim o diagnóstico final será feito, bem como orientações e relatórios devidamente definidos pelo médico.</p>
                 </>
             )}
             

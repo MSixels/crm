@@ -226,6 +226,12 @@ function Home() {
         return null;
     }
 
+    const fetchCometario = (confirm) => {
+        if(confirm){
+            getRastreios(userId)
+        }
+    }
+
     return (
         <div className='containerHome'>
             <Header options={options} />
@@ -242,7 +248,7 @@ function Home() {
             }
             {page === 'rastreio' && 
                 <div className='divContentHome'>
-                    <Rastreios data={[rastreios]} userName={nome}/>
+                    <Rastreios data={[rastreios]} userName={nome} fetchRestreios={fetchCometario}/>
                 </div>
             }
             {page === 'modulos' && 

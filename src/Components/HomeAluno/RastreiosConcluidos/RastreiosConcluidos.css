@@ -34,7 +34,7 @@
 .containerRastreios .divConcluidosRastreio .divHeaderValues{
     padding: 16px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);;
+    grid-template-columns: repeat(4, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--secondary200);
 }
@@ -55,7 +55,7 @@
 .containerRastreios .divConcluidosRastreio .divValues .divPatient{
     padding: 16px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);;
+    grid-template-columns: repeat(4, 1fr);;
     align-items: center;
     border-bottom: solid 1px var(--secondary200);
     position: relative;
@@ -303,7 +303,7 @@
     .containerRastreios .divConcluidosRastreio .divLimitHeaderValues .divHeaderValues{
         padding: 16px;
         display: grid;
-        grid-template-columns: repeat(9, 150px);
+        grid-template-columns: repeat(4, 150px);
         align-items: center;
         border-bottom: solid 1px var(--secondary200);
         width: max-content;
@@ -311,7 +311,7 @@
     .containerRastreios .divConcluidosRastreio .divValues .divPatient{
         padding: 16px;
         display: grid;
-        grid-template-columns: repeat(9, 150px);;
+        grid-template-columns: repeat(4, 150px);;
         align-items: center;
         border-bottom: solid 1px var(--secondary200);
         position: relative;

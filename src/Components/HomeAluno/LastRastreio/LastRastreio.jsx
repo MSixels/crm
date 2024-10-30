@@ -11,11 +11,14 @@ import {
     evaluateTDIPotential 
 } from '../../../functions/functions'
 import ButtonBold from '../../ButtonBold/ButtonBold';
+import { doc, updateDoc } from 'firebase/firestore';
+import { firestore } from '../../../services/firebaseConfig';
 
-function LastRastreio({ data, close }) {
+function LastRastreio({ data, close, alunoName, comentarioAtt }) {
     const [patients, setPatients] = useState([])
     const searchTerm = '';
     const sortOrder = 'desc';
+    const [comentario, setComentario] = useState('')
 
     useEffect(() => {
         if (data) {
@@ -84,9 +87,37 @@ function LastRastreio({ data, close }) {
         {id: 6, title: 'TDI'},
     ]
 
-    const ConfirmBtn = () => {
+    const ConfirmBtn = async () => {
+        await saveComent()
         close(true)
     }
+
+    function formatDateToDDMMYYYY(date) {
+        const createdAtDate = new Date(date.seconds * 1000 + date.nanoseconds / 1000000);
+        const day = String(createdAtDate.getDate()).padStart(2, '0'); 
+        const month = String(createdAtDate.getMonth() + 1).padStart(2, '0'); 
+        const year = createdAtDate.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    const saveComent = async () => {
+        if (sortedPatients.length > 0 && comentario !== '') {
+            const documentId = sortedPatients[0].id; // ID do documento a ser atualizado
+            const comentarioRef = doc(firestore, "rastreios", documentId);
+    
+            try {
+                await updateDoc(comentarioRef, {
+                    comentario: comentario 
+                });
+                console.log("Comentário atualizado com sucesso!");
+                comentarioAtt(true)
+            } catch (error) {
+                console.error("Erro ao atualizar o comentário:", error);
+            }
+        } else {
+            console.log("Comentário Vazio");
+        }
+    };
 
     return (
         <>
@@ -97,24 +128,13 @@ function LastRastreio({ data, close }) {
                         <p>Veja os resultados abaixo!</p>
                     </header>
                     <div className='infos'>
-                        <p>Nome: <span className='bold'>{sortedPatients.length > 0 ? sortedPatients[0].patient : ''}</span></p>
-                        <p>Faixa etária: <span className='bold'>{sortedPatients.length > 0 ? 
-                            (sortedPatients[0].typeQuest === 1 ? '3 a 6 anos' :
-                            sortedPatients[0].typeQuest === 2 ? 'até 8 anos' :
-                            sortedPatients[0].typeQuest === 3 ? 'acima de 8 anos' : '')
-                        : ''}</span></p>
+                        <p>Nome do aluno: <span className='bold'>{sortedPatients.length > 0 ? sortedPatients[0].patient : ''}</span></p>
+                        <p>Nome do professor: <span className='bold'>{alunoName}</span></p>
+                        <p>Escola: <span className='bold'>{sortedPatients.length > 0 ? sortedPatients[0].school : ''}</span></p>
+                        <p style={{display: 'flex', alignItems: 'center', gap: 8}}>Data: <p style={{fontWeight: 500}}>{formatDateToDDMMYYYY(sortedPatients.length > 0 ? sortedPatients[0].createdAt : '')}</p></p>
                     </div>
-                    <div className='divTextResults'>
-                        <p>Resultados</p>
-                    </div>
-                    <div className='divHeaderValues'>
-                        {header.map((h) => (
-                            <div key={h.id} className='divTitle'>
-                                <p>{h.title}</p>
-                            </div>
-                        ))}
-                    </div>
-                    <div className='divValues'>
+                    <div className='divValues caracter'>
+                        <p>Caracterização de risco: </p>
                         {sortedPatients.map((patient, index) => {
                                 const { tdahPotential } = evaluateTDAHPotential(patient.responses);
                                 const { teaPotential } = evaluateTEAPotential(patient.responses);
@@ -123,35 +143,42 @@ function LastRastreio({ data, close }) {
                                 const { todPotential } = evaluateTODPotential(patient.responses);
                                 const { tdiPotential } = evaluateTDIPotential(patient.responses);
 
+                                const potentials = [
+                                    tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential
+                                ];
+                                let statusCrianca = '';
+                                
+                                if (potentials.includes('mp')) {
+                                    statusCrianca = 'mp';
+                                } else if (potentials.includes('p')) {
+                                    statusCrianca = 'p';
+                                } else {
+                                    statusCrianca = 'pp';
+                                }
+
                                 return (
                                     <div key={index} className='divPatient'>
-                                        {renderGrafic(tdahPotential)}
-                                        {renderGrafic(teaPotential)}
-                                        {renderGrafic(teapPotential)}
-                                        {renderGrafic(tlPotential)}
-                                        {renderGrafic(todPotential)}
-                                        {renderGrafic(tdiPotential)}
+                                        {renderGrafic(statusCrianca)}
+                                        <p style={{width: '100%', fontSize: 14}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno do neurodesenvolvimento' : ''}</p>
                                     </div>
                                 );
                             })
                         }
                     </div>
-                    <div className='footer'>
-                        <div className='legendas'>
-                            <div className='l_graficos'>
-                                <p>Pouco provável</p>
-                                {renderMiniGrafic('pp')}
-                            </div>
-                            <div className='l_graficos'>
-                                <p>Provável</p>
-                                {renderMiniGrafic('p')}
-                            </div>
-                            <div className='l_graficos'>
-                                <p>Muito provável</p>
-                                {renderMiniGrafic('mp')}
-                            </div>
+                   
+                        <div style={{display: 'flex', flexDirection: 'column', position: 'relative', borderBottom: 'solid 1px #ccc', paddingBottom: 12}}>
+                            <label htmlFor="coment" style={{position: 'absolute', top: -10, fontSize: 12, left: 12, backgroundColor: '#FFF', paddingInline: 4}}>Observações</label>
+                            <textarea
+                                name="coment"
+                                id="coment"
+                                maxLength="200"
+                                style={{ height: 150, outline: 'none', padding: 8, border: 'solid 1px #ccc', borderRadius: 4 }}
+                                value={comentario}
+                                onChange={(e) => setComentario(e.target.value)}
+                            ></textarea>
+                            <p style={{marginLeft: 8, fontSize: 12}}>{comentario.length}/200</p>
                         </div>
-                    </div>
+                    
                     <div className='divBtns'>
                         <ButtonBold title='Continuar' action={ConfirmBtn}/>
                     </div>
@@ -164,6 +191,8 @@ function LastRastreio({ data, close }) {
 LastRastreio.propTypes = {
     data: PropTypes.array.isRequired,
     close: PropTypes.bool.isRequired,
+    alunoName: PropTypes.string.isRequired,
+    comentarioAtt: PropTypes.bool.isRequired,
 };
 
 export default LastRastreio;

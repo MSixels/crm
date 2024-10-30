@@ -186,10 +186,10 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                             <h3 style={{ fontSize: 20 }}>{m.name}</h3>
                             <span style={{ fontSize: 16 }}>{m.description}</span>
                             <div className='divProgressInfos'>
-                                <div className={`divInfo ${aulasCompletadas < totalAulasModulo ? 'aulaStart' : aulasCompletadas === totalAulasModulo ? 'aulaEnd' : m.status === 'block' ? 'aulaBlock' : ''}`}>
+                                <div className={`divInfo ${aulasCompletadas < totalAulasModulo ? 'aulaStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 ? 'aulaEnd' : m.status === 'block' ? 'aulaBlock' : 'aulaStart'}`}>
                                     <span>{aulasCompletadas}/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
                                 </div>
-                                <div className={`divInfo ${provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo ? 'provaEnd' : m.status === 'block' ? 'provaBlock' : ''}`}>
+                                <div className={`divInfo ${provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo ? 'provaEnd' : m.status === 'block' ? 'provaBlock' : 'provaStart'}`}>
                                     <span>{provasCompletadas}/{totalProvasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
                                 </div>
                             </div>

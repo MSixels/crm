@@ -21,6 +21,7 @@ function NewRastreio() {
     const [allResponses, setAllResponses] = useState([]);
     const [searchParams] = useSearchParams();
     const patient = searchParams.get('patient');
+    const school = searchParams.get('school');
     const [userId, setUserId] = useState('')
     const [typeQuestSelected, setTypeQuestSelected] = useState(null)
 
@@ -122,6 +123,7 @@ function NewRastreio() {
                 if (patient && allResponses) {
                     const docRef = await addDoc(collection(firestore, "rastreios"), {
                         patient: patient,
+                        school: school,
                         userId: userId,
                         typeQuest: typeQuestSelected,
                         responses: allResponses.concat(responses),
@@ -237,6 +239,7 @@ function NewRastreio() {
                             </div>
                         </div>
                     ))}
+                    
                 </div>
                 <div className='footer'>
                     <div className='backNext'>
