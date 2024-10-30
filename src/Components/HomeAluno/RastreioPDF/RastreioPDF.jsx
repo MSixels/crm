@@ -196,7 +196,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                         </div>
                     ))}
                     <div className='divValorCrianca'>
-                        <p>Caracterização de risco:</p>
+                        
                         <div className='divValuesUnicNew'> {/*divValuesUnic */}
                             {dataValues.map((patient, index) => {
                                 const { tdahPotential } = evaluateTDAHPotential(patient.responses);
@@ -220,16 +220,28 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                                 }
 
                                 return (
-                                    <div key={index} style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                                        {renderHighGraficUnic(statusCrianca)}
-                                        <p style={{fontWeight: 500}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno de neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno de neurodesenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno de neurodesenvolvimento' : ''}</p>
+                                    <div key={index}>
+                                        <div  style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                                            <p>Caracterização de risco:</p>
+                                            {renderHighGraficUnic(statusCrianca)}
+                                            <p style={{fontWeight: 500}}>{statusCrianca === 'pp' ? 'Baixo risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'p' ? 'Médio risco potencial de transtorno do neurodesenvolvimento' : statusCrianca === 'mp' ? 'Alto risco potencial de transtorno do neurodesenvolvimento' : ''}</p>
+                                        </div>
+                                        {patient.comentario && (
+                                            <div style={{ paddingTop: 24, borderTop: 'solid 1px #ccc', marginTop: 24}}>
+                                                <p>
+                                                    <span style={{ fontWeight: 500 }}>Observações do professor:</span> {patient.comentario}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
+                                    
                                 );
                             })
                             }
                         </div>
                         
                     </div>
+                    
                     <p style={{marginTop: 18}}>Descritivo</p>
                     {dataValues.map((data) => {
                         

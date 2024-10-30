@@ -13,7 +13,7 @@ import RastreioPDF from '../RastreioPDF/RastreioPDF'
 import html2pdf from 'html2pdf.js';
 import { FaXmark } from "react-icons/fa6";
 
-function Rastreios({ data, userName }) {
+function Rastreios({ data, userName, fetchRestreios }) {
     const navigate = useNavigate()
     const [showModal, setShowModal] = useState(false)
     const [showNewRastreio, setShowNewRastreio] = useState(false)
@@ -177,7 +177,7 @@ function Rastreios({ data, userName }) {
 
     return (
         <div className='containerRastreios'>
-            {showNewRastreio && <LastRastreio data={data} close={closeNewRastreio}/>}
+            {showNewRastreio && <LastRastreio data={data} close={closeNewRastreio} alunoName={userName} comentarioAtt={fetchRestreios}/>}
             {showPopUp && <PopUpRastreioSuccess title='Ratreio Salvo com sucesso' name={namePopUp} idade={idadePopUp} details='Veja mais detales na listagem' close={closePopUp}/>}
             {showModal && <ModalCreateRastreio title='Novo rastreio' close={closeBtn}/> }
             <header>
@@ -218,6 +218,7 @@ function Rastreios({ data, userName }) {
 Rastreios.propTypes = {
     data: PropTypes.array.isRequired,
     userName: PropTypes.string.isRequired,
+    fetchRestreios: PropTypes.bool.isRequired,
 };
 
 export default Rastreios;

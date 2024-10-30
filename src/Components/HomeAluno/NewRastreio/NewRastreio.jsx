@@ -239,6 +239,7 @@ function NewRastreio() {
                             </div>
                         </div>
                     ))}
+                    
                 </div>
                 <div className='footer'>
                     <div className='backNext'>

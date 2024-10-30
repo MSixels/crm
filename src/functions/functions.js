@@ -5,7 +5,6 @@ export const evaluateTDAHPotential = (responses) => {
     let tdahScores = { never: 0, sometimes: 0, always: 0 };
 
     responses.forEach(response => {
-        //console.log('TDAH Responses', response)
         const { quest, value } = response;
 
         if (quest >= 1 && quest <= 8) {
@@ -19,15 +18,12 @@ export const evaluateTDAHPotential = (responses) => {
         }
     });
 
-    const tdahTotal = tdahScores.never + tdahScores.sometimes + tdahScores.always;
-    let tdahPotential = 'pp'; 
-    if (tdahTotal > 0) {
-        const alwaysPercentage = (tdahScores.always / tdahTotal) * 100;
-        if (alwaysPercentage > 50) {
-            tdahPotential = 'mp'; 
-        } else if (alwaysPercentage > 20) {
-            tdahPotential = 'p'; 
-        }
+    const sometimesAlwaysTotal = tdahScores.sometimes + tdahScores.always;
+    let tdahPotential = 'pp';
+    if (sometimesAlwaysTotal >= 6) {
+        tdahPotential = 'mp';
+    } else if (sometimesAlwaysTotal >= 4) {
+        tdahPotential = 'p';
     }
 
     return { tdahPotential };
@@ -50,15 +46,12 @@ export const evaluateTEAPotential = (responses) => {
         }
     });
 
-    const teaTotal = teaScores.never + teaScores.sometimes + teaScores.always;
+    const sometimesAlwaysTotal = teaScores.sometimes + teaScores.always;
     let teaPotential = 'pp'; 
-    if (teaTotal > 0) {
-        const alwaysPercentage = (teaScores.always / teaTotal) * 100;
-        if (alwaysPercentage > 50) {
-            teaPotential = 'mp'; 
-        } else if (alwaysPercentage > 20) {
-            teaPotential = 'p'; 
-        }
+    if (sometimesAlwaysTotal >= 6) {
+        teaPotential = 'mp';
+    } else if (sometimesAlwaysTotal >= 4) {
+        teaPotential = 'p';
     }
 
     return { teaPotential };
@@ -81,15 +74,12 @@ export const evaluateTEAPPotential = (responses) => {
         }
     });
 
-    const teapTotal = teapScores.never + teapScores.sometimes + teapScores.always;
+    const sometimesAlwaysTotal = teapScores.sometimes + teapScores.always;
     let teapPotential = 'pp'; 
-    if (teapTotal > 0) {
-        const alwaysPercentage = (teapScores.always / teapTotal) * 100;
-        if (alwaysPercentage > 50) {
-            teapPotential = 'mp'; 
-        } else if (alwaysPercentage > 20) {
-            teapPotential = 'p'; 
-        }
+    if (sometimesAlwaysTotal >= 3) {
+        teapPotential = 'mp';
+    } else if (sometimesAlwaysTotal == 2) {
+        teapPotential = 'p';
     }
 
     return { teapPotential };
@@ -112,15 +102,12 @@ export const evaluateTLPotential = (responses) => {
         }
     });
 
-    const tlTotal = tlScores.never + tlScores.sometimes + tlScores.always;
+    const sometimesAlwaysTotal = tlScores.sometimes + tlScores.always;
     let tlPotential = 'pp'; 
-    if (tlTotal > 0) {
-        const alwaysPercentage = (tlScores.always / tlTotal) * 100;
-        if (alwaysPercentage > 50) {
-            tlPotential = 'mp'; 
-        } else if (alwaysPercentage > 20) {
-            tlPotential = 'p'; 
-        }
+    if (sometimesAlwaysTotal >= 3) {
+        tlPotential = 'mp';
+    } else if (sometimesAlwaysTotal == 2) {
+        tlPotential = 'p';
     }
 
     return { tlPotential };
@@ -143,15 +130,12 @@ export const evaluateTODPotential = (responses) => {
         }
     });
 
-    const todTotal = todScores.never + todScores.sometimes + todScores.always;
+    const sometimesAlwaysTotal = todScores.sometimes + todScores.always;
     let todPotential = 'pp'; 
-    if (todTotal > 0) {
-        const alwaysPercentage = (todScores.always / todTotal) * 100;
-        if (alwaysPercentage > 50) {
-            todPotential = 'mp'; 
-        } else if (alwaysPercentage > 20) {
-            todPotential = 'p'; 
-        }
+    if (sometimesAlwaysTotal >= 3) {
+        todPotential = 'mp';
+    } else if (sometimesAlwaysTotal == 2) {
+        todPotential = 'p';
     }
 
     return { todPotential };
@@ -174,15 +158,12 @@ export const evaluateTDIPotential = (responses) => {
         }
     });
 
-    const tdiTotal = tdiScores.never + tdiScores.sometimes + tdiScores.always;
+    const sometimesAlwaysTotal = tdiScores.sometimes + tdiScores.always;
     let tdiPotential = 'pp'; 
-    if (tdiTotal > 0) {
-        const alwaysPercentage = (tdiScores.always / tdiTotal) * 100;
-        if (alwaysPercentage > 50) {
-            tdiPotential = 'mp'; 
-        } else if (alwaysPercentage > 20) {
-            tdiPotential = 'p'; 
-        }
+    if (sometimesAlwaysTotal >= 3) {
+        tdiPotential = 'mp';
+    } else if (sometimesAlwaysTotal == 2) {
+        tdiPotential = 'p';
     }
 
     return { tdiPotential };
