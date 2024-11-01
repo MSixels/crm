@@ -197,12 +197,12 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
 
                                         const provaCompletada = progressoProva && progressoProva.status === 'end';
 
-                                        console.log(`isBlocked ${prova.id}: `, isBlocked)
                                         
+
                                         return (
                                             <div key={prova.id} className="contentRow">
                                                 <div className="contentInfo">
-                                                    {isBlocked || provasBloqueadas[c.id] || progressoProva?.status? (
+                                                    {isBlocked || provasBloqueadas[c.id] ? (
                                                         <FaLock color='gray' size={24}/>
                                                     ) : (
                                                         provaCompletada ? (
