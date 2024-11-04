@@ -88,6 +88,7 @@ function ModalCreateAluno({ title, close }) {
                             userId: userId,
                             isActive: false
                         });
+                        alert("Aluno cadastrado com sucesso!");
     
                         close(false);
                     })
