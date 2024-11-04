@@ -595,39 +595,51 @@ function ComponentLimitado() {
 
     const [nameGame, setNameGame] = useState('');
     const [descriptionGame, setDescriptionGame] = useState('')
+    const [linkGame,  setLinkGame] = useState('')
+
 
 
     const getNameGame = (newName) => {
         setNameGame(newName);
     };
 
+
     const getDescriptionGame = (event) => {
         setDescriptionGame(event.target.value);
     };
 
+    const getLinkGame = (newLink) => {
+        console.log("Link recebido:", newLink);
+        setLinkGame(newLink);
+    };
     
 
     const salvarGame = async (send) => {
         if (send) {
             try {
-                if (nameGame === '' || descriptionGame === '') {
+                if (nameGame === '' || descriptionGame === '' || linkGame === '') {
                     alert('Preencha os campos de Gamificação');
                     return;
                 }
                 const formattedDescription = descriptionGame.replace(/\n/g, '<br>');
+                console.log("Dados que serão salvos:", { nameGame, description: formattedDescription, link: linkGame });
+                
                 await addDoc(collection(firestore, 'aulas'), {
                     name: nameGame,
                     conteudoId: conteudo,
                     description: formattedDescription,
                     type: 'game',
                     createdAt: new Date(),
+                    link: linkGame,
                 });
+                
                 alert("Gamificação salva com sucesso!");
             } catch (error) {
                 console.error("Erro ao salvar Aula:", error);
             }
         }
     };
+    
 
     const renderCreateGame = () => {
         return (
@@ -651,6 +663,8 @@ function ComponentLimitado() {
                         value={descriptionGame}
                         onChange={getDescriptionGame}
                     />
+                    <InputSend title='Link do Game'  placeH='' onSearchChange={getLinkGame} type='text' />
+
                 </div>
                 <ButtonBold title='Salvar Aula' icon action={() => salvarGame(true)} />
             </div>

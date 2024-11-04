@@ -81,15 +81,15 @@ function VideoAula({ materialId, userId }) {
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     />
+                    <div className="descriptionAula">
+                        <p className='descriptionAula-text'>{aulas[0].description}</p>
+                    </div>
                     <ButtonConfirm 
                         title='Próxima etapa' 
                         icon={<FaCircleChevronRight size={25}/>} 
                         action={confirmMaterial} 
                         disabled={false} 
                     />
-                    <div className="descriptionAula">
-                        <p className='descriptionAula-text'>{aulas[0].description}</p>
-                    </div>
                 </div>
             }
         </div>

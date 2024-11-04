@@ -19,9 +19,21 @@
   margin-bottom: 1rem;
 }
 
-.gameDiv :nth-child(3) {
+.btns-story {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btns-story :first-child {
   width: 240px;
 }
+
+.btns-story :nth-child(1) {
+  width: 240px;
+}
+
 
 @media (max-width: 768px) {
   .gameDiv {

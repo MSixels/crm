@@ -59,7 +59,6 @@ function StoryTelling({ materialId }) {
         <div className='storyDiv'>
             <h2 className='storyTitle'>{storyData.name}</h2>
             <p className='storyText'>{storyData.description}</p>
-
             <div className='storyFile'>
                 <h3 className='storyH3'>Materiais</h3>
                 <div className="fileList">
@@ -93,12 +92,13 @@ function StoryTelling({ materialId }) {
                     {charCount}/{maxChars}
                 </div>
             </div>
-            <ButtonConfirm 
-                title="Próxima atividade" 
-                icon={<FaCircleChevronRight size={18} />} 
-                action={handleNextActivity}
+            <div className="btn-right">
+            <span></span>
+            <button                 
+                onClick={handleNextActivity}
                 disabled={false}
-            />
+            >Próxima atividade{<FaCircleChevronRight size={18} />}</button>
+            </div>
         </div>
     );
 }

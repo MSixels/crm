@@ -20,22 +20,23 @@ function Game({ materialId, userId }) {
                 querySnapshot.forEach((doc) => {
                     aulasArray.push({ id: doc.id, ...doc.data() });
                 });
-
+    
                 const gameFiltrado = aulasArray.find(
                     (aula) => aula.id === materialId && aula.type === "game"
                 );
-
+    
                 setGameData(gameFiltrado);
-                console.log("Dados filtrados de game: ", gameFiltrado);
+                console.log("Dados de game recuperados:", gameFiltrado);
             } catch (error) {
                 console.error('Erro ao buscar dados de Game:', error);
             }
         };
-
+    
         if (materialId) {
             fetchGameData();
         }
     }, [materialId]);
+    
 
     const gameConfirm = async (userId, aulaId) => {
         try {
@@ -69,6 +70,17 @@ function Game({ materialId, userId }) {
         navigate(`/aluno/modulo/${moduloId}/aulas`);
     };
 
+    const handlePlayNow = () => {
+        if (gameData?.link) {
+            console.log("Abrindo link:", gameData.link);
+            window.open(gameData.link, '_blank');
+        } else {
+            console.warn("Link indisponível.");
+        }
+    };
+    
+    
+
     if (!gameData) {
         return <div>Loading...</div>;
     }
@@ -80,12 +92,20 @@ function Game({ materialId, userId }) {
                 className="gameDescription"
                 dangerouslySetInnerHTML={{ __html: gameData.description }}
             ></p>
-            <ButtonConfirm 
-                title="Próxima atividade" 
+            <div className="btns-story">
+                <ButtonConfirm
+                title="Jogar agora!" 
                 icon={<FaCircleChevronRight size={18} />} 
-                action={handleNextActivity}
-                disabled={false}
-            />
+                action={handlePlayNow} 
+                disabled={!gameData?.link}
+                />
+                <ButtonConfirm 
+                    title="Próxima atividade" 
+                    icon={<FaCircleChevronRight size={18} />} 
+                    action={handleNextActivity}
+                    disabled={false}
+                />
+            </div>
         </div>
     );
 }
