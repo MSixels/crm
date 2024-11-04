@@ -256,7 +256,7 @@ function Login() {
                     {type === 'aluno' && <button className='btnPAcesso' onClick={() => openFirstAccess()}>{loading ? 'Carregando' : 'Primeiro acesso'}</button>}
                     <div className='divHelp'>
                         <span>Precisa de ajuda?</span>
-                        <a href="">Fale conosco</a>
+                        <a href="https://wa.me/556331423024?text=Ol%C3%A1,%20preciso%20de%20ajuda%20para%20realizar%20o%20acesso">Fale conosco</a>
                     </div>
                 </div>
                 <a href="/" className='decorationN'>Trocar modo de acesso <TfiReload /></a>
