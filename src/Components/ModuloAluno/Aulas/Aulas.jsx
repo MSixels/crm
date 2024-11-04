@@ -151,7 +151,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                                     .sort((aula1, aula2) => {
                                         const dateAula1 = aula1.createdAt.seconds * 1000 + aula1.createdAt.nanoseconds / 1000000;  
                                         const dateAula2 = aula2.createdAt.seconds * 1000 + aula2.createdAt.nanoseconds / 1000000;  
-                                        return dateAula1 - dateAula2;  // Ordena as aulas pelo createdAt
+                                        return dateAula1 - dateAula2;
                                     })
                                     .map((aula) => {
                                         const progressoAula = progressAulas.find(
