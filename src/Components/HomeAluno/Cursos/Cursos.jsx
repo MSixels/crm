@@ -53,7 +53,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const day = String(date.getDate() + 1).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0'); // Lembre-se que os meses começam do 0
+        const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };

@@ -133,7 +133,7 @@ function Home() {
     useEffect(() => {
         const fetchProfessorData = async () => {
             try {
-                const q = query(collection(firestore, "users"), where("type", "==", 2));
+                const q = query(collection(firestore, "users"), where("type", "in", [1, 2]));
                 const querySnapshot = await getDocs(q);
 
                 const professorArray = [];
