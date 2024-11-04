@@ -21,7 +21,7 @@ const EmailProtectedRoute = ({ element }) => {
     }, []);
 
     if (loading) {
-        return <Loading /> // Você pode usar um componente de loading aqui
+        return <Loading /> 
     }
 
     if (!isAuthorized) {

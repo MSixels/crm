@@ -2,7 +2,7 @@ import DropDown from '../../DropDown/DropDown'
 import InputText from '../../InputText/InputText'
 import './Alunos.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
-import { FaCirclePlus } from "react-icons/fa6";
+import { FaAngleDown, FaAngleUp, FaCirclePlus } from "react-icons/fa6";
 import { turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
@@ -13,6 +13,8 @@ import Loading from '../../Loading/Loading';
 import PropTypes from 'prop-types'
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { disableUserInFirestore, reactivateUserInFirestore } from '../../../functions/functions';
+import { MdArrowBackIosNew } from 'react-icons/md';
+import { GrNext } from 'react-icons/gr';
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -23,6 +25,9 @@ function Alunos({ userType }) {
     const [activeModalId, setActiveModalId] = useState(null)
     const [confirmId, setConfirmId] = useState(null)
     const [actionType, setActionType] = useState('')
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [showModalNumberPages, setShowModalNumberPages] = useState(false)
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -54,6 +59,25 @@ function Alunos({ userType }) {
         fetchAlunosFromFirestore()
     }
 
+    const renderModalNumberLiner = () => {
+        const options = [
+            {id: 1, value: 40},
+            {id: 1, value: 20},
+            {id: 1, value: 10},
+            {id: 1, value: 5},
+        ]
+
+        return(
+            <div className='containerRenderModalNumberLiner'>
+                {options.map((o) => (
+                    <div key={o.id} className='option' onClick={() => setItemsPerPage(o.value)}>
+                        {o.value}
+                    </div>
+                ))}
+            </div>
+        )
+    }
+
     const fetchAlunosFromFirestore = async () => {
         try {
             const q = query(collection(firestore, 'users'), where('type', '==', 3)); // Buscar usuários com type 3
@@ -82,7 +106,9 @@ function Alunos({ userType }) {
     }).sort((a, b) => {
         return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
-    
+
+    const slicedAlunos = filtered.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+
     const openEditModal = (id) => {
         setActiveModalId(previd => previd === id ? null : id);
     }
@@ -95,6 +121,18 @@ function Alunos({ userType }) {
     const closeConfirmModal = () => {
         setActiveModalId(null)
         setConfirmId(null); 
+    };
+
+    const handleNextPage = () => {
+        if ((currentPage + 1) * itemsPerPage < filtered.length) {
+            setCurrentPage(prevPage => prevPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(prevPage => prevPage - 1);
+        }
     };
 
     const handleDisable = async (id) => {
@@ -153,7 +191,7 @@ function Alunos({ userType }) {
                             </div>
                         ))}
                     </div>
-                    {filtered.map((a) => {
+                    {slicedAlunos.map((a) => {
                         const turma = turmas.find(t => t.id === a.turma)
                         return(
                             <div key={a.id} className='divAlunos'>
@@ -189,6 +227,26 @@ function Alunos({ userType }) {
                             </div>
                         )
                     })}
+                </div>
+                <div className='legendas'>
+                    <div className='divNumberLines'>
+                        <p>Linhas por página <span className='bold'>{itemsPerPage}</span></p>
+                        <div onClick={() => setShowModalNumberPages(!showModalNumberPages)} className='divIcon'>
+                            {showModalNumberPages ? <FaAngleDown /> : <FaAngleUp />}
+                            {showModalNumberPages && renderModalNumberLiner()}
+                        </div>
+                        
+                    </div>
+                    
+                    <p className='bold'>{currentPage * itemsPerPage + 1}-{Math.min((currentPage + 1) * itemsPerPage, filtered.length)} de {filtered.length}</p>
+                    <div className='btnNextPage'>
+                        <div className='divBtnBackNext' onClick={handlePreviousPage}>
+                            <MdArrowBackIosNew />
+                        </div>
+                        <div className='divBtnBackNext' onClick={handleNextPage}>
+                            <GrNext />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
