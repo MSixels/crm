@@ -24,19 +24,22 @@ function FirstAccess() {
         } else {
             try {
                 const upperCaseName = name.toUpperCase();
-                const upperCaseMatricula = matricula.toUpperCase(); 
+                const cleanedMatricula = matricula.replace(/-/g, '');
+    
+                // Adiciona o hífen antes do último dígito
+                const formattedMatricula = cleanedMatricula.slice(0, cleanedMatricula.length - 1) + '-' + cleanedMatricula.slice(-1);
     
                 const q = query(
                     collection(firestore, "alunos"),
                     where("name", "==", upperCaseName), 
-                    where("matricula", "==", upperCaseMatricula) 
+                    where("matricula", "==", formattedMatricula) 
                 );
     
                 const querySnapshot = await getDocs(q);
     
                 if (!querySnapshot.empty) {
                     Cookies.set('name', upperCaseName);
-                    Cookies.set('matricula', upperCaseMatricula);
+                    Cookies.set('matricula', formattedMatricula);
                     
                     navigate('/login/aluno/primeiro-acesso/email');
                     setAlertCredentialInvalid(false);
