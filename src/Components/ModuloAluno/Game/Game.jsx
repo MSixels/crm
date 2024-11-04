@@ -98,6 +98,7 @@ function Game({ materialId, userId }) {
                 icon={<FaCircleChevronRight size={18} />} 
                 action={handlePlayNow} 
                 disabled={!gameData?.link}
+                type="play"
                 />
                 <ButtonConfirm 
                     title="Próxima atividade" 

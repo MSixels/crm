@@ -26,11 +26,8 @@
   gap: 1rem;
 }
 
-.btns-story :first-child {
-  width: 240px;
-}
 
-.btns-story :nth-child(1) {
+.btns-story :first-child {
   width: 240px;
 }
 
