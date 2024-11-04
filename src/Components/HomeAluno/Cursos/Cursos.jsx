@@ -14,6 +14,40 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     const navigate = useNavigate();
     const [progressAulas, setProgressAulas] = useState([])
     const [progressProvas, setProgressProvas] = useState([])
+    const [modulosUpdate, setModulosUpdate] = useState([])
+
+    useEffect(() => {
+        try {
+            const updatedModulos = modulos.map((modulo) => {
+                let status = "start"; 
+        
+                if (modulo.liberacao) {
+                    const liberacaoDate = new Date(modulo.liberacao);
+                    const today = new Date();
+        
+                    if (liberacaoDate > today) {
+                        status = "block";
+                    }
+                }
+        
+                return {
+                    ...modulo,
+                    status,
+                };
+            });
+        
+            setModulosUpdate(updatedModulos); 
+            console.log("Modulos com status:", updatedModulos);
+        } catch (error) {
+            console.error("Erro ao atualizar modulos:", error);
+            setModulosUpdate(modulos); 
+        }
+    }, [modulos]);
+
+    useEffect(() => {
+        console.log('modulosUpdate: ', modulosUpdate)
+    }, [modulosUpdate])
+    
     
 
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
@@ -32,7 +66,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
         setSearchTerm(e.target.value);
     };
 
-    const filteredModulos = modulos.filter(m => {
+    const filteredModulos = modulosUpdate.filter(m => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
         return removeAccents(m.name).toLowerCase().includes(lowerCaseSearchTerm);
     });
@@ -189,7 +223,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                                 <div className={`divInfo ${aulasCompletadas < totalAulasModulo ? 'aulaStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 ? 'aulaEnd' : m.status === 'block' ? 'aulaBlock' : 'aulaStart'}`}>
                                     <span>{aulasCompletadas}/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
                                 </div>
-                                <div className={`divInfo ${provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo ? 'provaEnd' : m.status === 'block' ? 'provaBlock' : 'provaStart'}`}>
+                                <div className={`divInfo ${provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'provaEnd' : m.status === 'block' ? 'provaBlock' : 'provaStart'}`}>
                                     <span>{provasCompletadas}/{totalProvasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
                                 </div>
                             </div>
@@ -198,8 +232,8 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                                 <span className='progressPorcent'>{m.status !== 'block' ? `${calculateProgress(aulasCompletadas, totalAulasModulo, provasCompletadas, totalProvasModulo) > 0 ? `${calculateProgress(aulasCompletadas, totalAulasModulo, provasCompletadas, totalProvasModulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
                             </div>
                             
-                            <button className={`btn ${aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'btnStart' : aulasCompletadas === totalAulasModulo && provasCompletadas === totalProvasModulo ? 'btnEnd' : m.status === 'block' ? 'provaBlock' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
-                                {aulasCompletadas === totalAulasModulo && provasCompletadas === totalProvasModulo ? 'Ver progresso' : aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'Acessar módulo' : m.status === 'block' ? 'Em breve' : ''}
+                            <button className={`btn ${aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'btnStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 && provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'btnEnd' : m.status === 'block' ? 'btnBlock' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
+                                {aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 && provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'Ver progresso' : aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'Acessar módulo' : m.status === 'block' ? 'Em breve' : ''}
                             </button>
                         </div>
                     );

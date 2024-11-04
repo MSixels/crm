@@ -15,11 +15,12 @@ function ComponentLimitado() {
     const [optionsProfessor, setOptionsProfessor] = useState([]);
     const [professor, setProfessor] = useState('');
     const [validade, setValidade] = useState('');
+    const [liberacaoModulo, setLiberacaoModulo] = useState('')
     const [loading, setLoading] = useState(true); 
 
     const fetchUsersFromFirestore = async () => {
         try {
-            const q = query(collection(firestore, 'users'), where('type', '==', 2)); 
+            const q = query(collection(firestore, 'users'), where("type", "in", [1, 2])); 
             const querySnapshot = await getDocs(q);
             const usersList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             console.log('usersList: ', usersList)
@@ -60,13 +61,16 @@ function ComponentLimitado() {
                     name: name,
                     description: description,
                     professorId: professor,
+                    liberacao: liberacaoModulo,
                     validade: validade,
                     createdAt: new Date(),
+
                 });
                 alert("Módulo salvo com sucesso!");
                 setName('')
                 setDescription('')
                 setProfessor('')
+                setLiberacaoModulo('')
                 setValidade('')
             } catch (error) {
                 console.error("Erro ao salvar módulo:", error);
@@ -92,7 +96,7 @@ function ComponentLimitado() {
                         onTurmaChange={getProfessor}
                     />
                 )}
-                
+                <InputDate title='Data Liberação' placeH='Selecione' onSearchChange={setLiberacaoModulo} />
                 <InputDate title='Validade' placeH='Selecione' onSearchChange={setValidade} />
                 </div>
                 <ButtonBold title='Salvar Módulo' icon action={() => salvarModulo(true)} />
@@ -588,16 +592,9 @@ function ComponentLimitado() {
     };
 
 
-
-
-
-
-
     const [nameGame, setNameGame] = useState('');
     const [descriptionGame, setDescriptionGame] = useState('')
     const [linkGame,  setLinkGame] = useState('')
-
-
 
     const getNameGame = (newName) => {
         setNameGame(newName);
