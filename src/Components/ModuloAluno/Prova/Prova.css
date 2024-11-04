@@ -26,6 +26,7 @@
   border: 2px solid var(--bg-block);
   border-radius: 8px; 
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .navigationButtons {

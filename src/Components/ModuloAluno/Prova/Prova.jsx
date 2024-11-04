@@ -15,6 +15,16 @@ function Prova({ materialId, userId, contentId }) {
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState(30 * 60);
 
+  useEffect(() => {
+    const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
+    const savedQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'), 10);
+    
+    if (savedResponses) setSelectedResponses(savedResponses);
+    if (!isNaN(savedQuestionIndex)) setCurrentQuestionIndex(savedQuestionIndex);
+
+    setTimeLeft(calculateRemainingTime());
+  }, []);
+
   const calculateRemainingTime = () => {
     const startTime = localStorage.getItem('startTime');
     if (startTime) {
@@ -25,39 +35,28 @@ function Prova({ materialId, userId, contentId }) {
   };
 
   useEffect(() => {
-    const savedProvas = JSON.parse(localStorage.getItem('provas'));
-    const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
-    const savedQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'), 10);
-    
-    if (savedProvas) setProvas(savedProvas);
-    if (savedResponses) setSelectedResponses(savedResponses);
-    if (!isNaN(savedQuestionIndex)) setCurrentQuestionIndex(savedQuestionIndex);
-
-    const remainingTime = calculateRemainingTime();
-    setTimeLeft(remainingTime);
-  }, []);
-
-  useEffect(() => {
     const fetchProvasData = async () => {
       try {
         const provaDocRef = doc(firestore, 'provas', materialId);
         const provaDoc = await getDoc(provaDocRef);
-  
+
         if (provaDoc.exists()) {
           const provaData = provaDoc.data();
-
+          
           let randomQuestions;
-          const savedProvas = JSON.parse(localStorage.getItem('provas'));
-  
-          if (savedProvas && savedProvas[0].id === materialId) {
-            randomQuestions = savedProvas[0].quests; 
+          const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
+          const progressDoc = await getDoc(progressRef);
+          
+          if (progressDoc.exists() && progressDoc.data().randomizedQuests) {
+            randomQuestions = progressDoc.data().randomizedQuests;
           } else {
             randomQuestions = provaData.quests
               .sort(() => 0.5 - Math.random())
               .slice(0, 5);
-            localStorage.setItem('provas', JSON.stringify([{ ...provaData, quests: randomQuestions }]));
+            
+            await setDoc(progressRef, { userId, provaId: materialId, randomizedQuests: randomQuestions });
           }
-  
+
           setProvas([{ ...provaData, quests: randomQuestions }]);
         } else {
           console.error('Prova não encontrada');
@@ -66,22 +65,22 @@ function Prova({ materialId, userId, contentId }) {
         console.error('Erro ao buscar dados:', error);
       }
     };
-  
+
     if (materialId) {
       fetchProvasData();
     }
-  }, [materialId]);
+  }, [materialId, userId]);
 
   useEffect(() => {
     if (timeLeft === 0) {
-      confirmMaterial(true);  
+      confirmMaterial(true);
       navigate(`/aluno/modulo/${moduloId}/aulas`);
     }
 
     const intervalId = setInterval(() => {
       setTimeLeft((prevTime) => {
         const newTime = prevTime - 1;
-        localStorage.setItem('timeLeft', newTime); 
+        localStorage.setItem('timeLeft', newTime);
         return newTime;
       });
     }, 1000);
@@ -106,7 +105,6 @@ function Prova({ materialId, userId, contentId }) {
       ...selectedResponses,
       [questionIndex]: responseIndex,
     };
-    console.log('updatedResponses: ', updatedResponses)
     setSelectedResponses(updatedResponses);
     localStorage.setItem('selectedResponses', JSON.stringify(updatedResponses));
   };
@@ -131,33 +129,23 @@ function Prova({ materialId, userId, contentId }) {
     try {
       const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
       let score = 0;
-      console.log(provas)
-
       provas[0].quests.forEach((quest, index) => {
         const selectedResponseIndex = selectedResponses[index];
-        //console.log('selectedResponseIndex: ', selectedResponseIndex)
-        //console.log('quest.responses: ',quest.responses[1].value)
         if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
           score += 20;
         }
       });
 
-      score = Math.min(score, 100);
-      console.log('Score: ', score)
-
+      score = Math.min(score, 100); 
       const progressData = {
         userId,
         provaId: materialId,
-        status: 'block',
-        score: score,
+        status: 'end',
+        score,
         responses: selectedResponses,
       };
 
-      console.log('progressData: ', progressData)
-
       await setDoc(progressRef, progressData);
-
-      console.log('Progresso da prova salvo com sucesso e status atualizado!');
     } catch (error) {
       console.error('Erro ao salvar o progresso da prova:', error);
     }
@@ -179,9 +167,7 @@ function Prova({ materialId, userId, contentId }) {
   const allQuestionsAnswered = provas[0]?.quests.length === Object.keys(selectedResponses).length;
 
   const handleButtonClick = () => {
-    console.log(allQuestionsAnswered)
     if (allQuestionsAnswered) {
-      
       confirmMaterial(true);
     }
   };
@@ -206,13 +192,12 @@ function Prova({ materialId, userId, contentId }) {
                 {provas[0].quests[currentQuestionIndex].quest}
               </p>
               {provas[0].quests[currentQuestionIndex].responses.map((r, responseIndex) => (
-                <ul className='testOptions' key={responseIndex}>
+                <ul className='testOptions' key={responseIndex} onClick={() => handleSelectResponse(currentQuestionIndex, responseIndex)}>
                   <li className='testOptionItem'>
                     <label>
                       <input
                         type='checkbox'
                         checked={selectedResponses[currentQuestionIndex] === responseIndex}
-                        onChange={() => handleSelectResponse(currentQuestionIndex, responseIndex)}
                       />
                     </label>
                     {r.text}
