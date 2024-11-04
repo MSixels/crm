@@ -220,10 +220,10 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                             <h3 style={{ fontSize: 20 }}>{m.name}</h3>
                             <span style={{ fontSize: 16 }}>{m.description}</span>
                             <div className='divProgressInfos'>
-                                <div className={`divInfo ${aulasCompletadas < totalAulasModulo ? 'aulaStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 ? 'aulaEnd' : m.status === 'block' ? 'aulaBlock' : 'aulaStart'}`}>
+                                <div className={`divInfo ${m.status === 'block' ? 'aulaBlock' : aulasCompletadas < totalAulasModulo ? 'aulaStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 ? 'aulaEnd' : 'aulaStart'}`}>
                                     <span>{aulasCompletadas}/{totalAulasModulo} {totalAulasModulo > 1 ? 'aulas' : 'aula'}</span>
                                 </div>
-                                <div className={`divInfo ${provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'provaEnd' : m.status === 'block' ? 'provaBlock' : 'provaStart'}`}>
+                                <div className={`divInfo ${m.status === 'block' ? 'provaBlock' : provasCompletadas < totalProvasModulo ? 'provaStart' : provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'provaEnd' : 'provaStart'}`}>
                                     <span>{provasCompletadas}/{totalProvasModulo} {totalProvasModulo > 1 ? 'provas' : 'prova'}</span>
                                 </div>
                             </div>
@@ -232,8 +232,12 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                                 <span className='progressPorcent'>{m.status !== 'block' ? `${calculateProgress(aulasCompletadas, totalAulasModulo, provasCompletadas, totalProvasModulo) > 0 ? `${calculateProgress(aulasCompletadas, totalAulasModulo, provasCompletadas, totalProvasModulo)}% Concluído` : 'Não iniciado'}` : (<> <FaLock /> Bloqueado</>)}</span>
                             </div>
                             
-                            <button className={`btn ${aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'btnStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 && provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'btnEnd' : m.status === 'block' ? 'btnBlock' : ''}`} disabled={m.status === 'block'} onClick={() => openModulo(m.id)}>
-                                {aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 && provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'Ver progresso' : aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'Acessar módulo' : m.status === 'block' ? 'Em breve' : ''}
+                            <button
+                                className={`btn ${m.status === 'block' ? 'btnBlock' : aulasCompletadas < totalAulasModulo || provasCompletadas < totalProvasModulo ? 'btnStart' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 && provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'btnEnd' : ''}`}
+                                disabled={m.status === 'block'}
+                                onClick={() => openModulo(m.id)}
+                            >
+                                {m.status === 'block' ? 'Em breve' : aulasCompletadas === totalAulasModulo && totalAulasModulo > 0 && provasCompletadas === totalProvasModulo && totalProvasModulo > 0 ? 'Ver progresso' : 'Acessar módulo'}
                             </button>
                         </div>
                     );
