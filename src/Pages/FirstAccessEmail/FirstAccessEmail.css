@@ -51,3 +51,18 @@
     text-decoration: none;
     text-align: center;
 }
+.btnLoginFirst{
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 4px;
+    margin-top: 12px;
+    background-color: var(--bg-btnConfirm);
+    color: #FFF;
+    cursor: pointer;
+    transition: .3s;
+    margin-bottom: 24px;
+}
+.btnLoginFirst:hover{
+    scale: 1.01;
+}

@@ -123,9 +123,8 @@ function FirstAccess() {
             <div className='success'>
                 <div className='divContent'>
                     <span className='title w100'>Tudo certo! <FaCircleCheck color='#222D7E'/></span>
-                    <span>Nós te enviamos um e-mail com as instruções para recuperar sua conta.</span>
+                    <span>Enviamos um e-mail para {email} com seus dados de login. Por favor, verifique sua caixa de entrada</span>
                     <a href="/" className='btnLogin w100 textDN'>Voltar para área de login</a>
-                    <button className='resend w100' onClick={() => sendEmailToSignUp(true)}>{loading ? 'Carregando' : 'Reenviar link'}</button>
                 </div>
             </div>
         )
@@ -138,8 +137,7 @@ function FirstAccess() {
                 <img src={LogoText} alt="logo" style={{width: '186px'}}/>
                 <div className='divForm'>
                     <div className='divTitle titleFisrt'>
-                        <span className='title titleLink'>Recuperar senha</span>
-                        <span>Informe seu e-mail cadastrado na plataforma. Caso ele exista, enviaremos um link para redefinição de sua senha. Cheque sua caixa de entrada e também a de SPAM.</span>
+                        <span className='title titleLink'>Informe seu e-mail de acesso</span>
                     </div>
                     <div className='divInput'>
                         <label htmlFor="email" style={{color: inputEmail && 'red'}}>E-mail</label>
@@ -153,10 +151,11 @@ function FirstAccess() {
                             style={{borderColor: inputEmail && 'red'}}
                         />
                     </div>
+                    <button className='btnLoginFirst' onClick={() => sendEmailToSignUp(true)}>{loading ? 'Carregando' : 'Continuar'}</button>
                     <div>
-                        <a href="/" className='decorationN loginLink'>Acessar minha conta</a>
+                        <a href="/" className='decorationN loginLink'>Voltar para tela de login</a>
                     </div>
-                    <button className='btnLogin' onClick={() => sendEmailToSignUp(true)}>{loading ? 'Carregando' : 'Enviar link de recuperação'}</button>
+                    
                 </div>
             </div>
         </div>

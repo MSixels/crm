@@ -107,6 +107,7 @@
     border-radius: 4px;
     margin-top: 32px;
     background-color: var(--bg-btnConfirm);
+    font-weight: 500;
     color: #FFF;
     cursor: pointer;
     transition: .3s;
@@ -139,11 +140,11 @@ a {
     font-size: 16px;
     border-radius: 4px;
     margin-top: 32px;
-    border: solid 2px var(--bg-btnConfirm);
-    color: var(--bg-btnConfirm);
+    color: var(--primary);
     cursor: pointer;
     transition: .3s;
-    background-color: transparent;
+    background-color: var(--yellow-1);
+    font-weight: 500;
 }
 .containerLogin .btnPAcesso:hover{
     scale: 1.01;
