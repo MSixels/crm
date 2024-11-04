@@ -21,21 +21,24 @@ function FirstAccess() {
             setInputMatricula(true);
         } else {
             try {
-                const cleanedMatricula = matricula.replace(/-/g, '');
+                // Remove o hífen da matrícula do usuário
+                const cleanedUserMatricula = matricula.replace(/-/g, '');
     
-                // Adiciona o hífen antes do último dígito
-                const formattedMatricula = cleanedMatricula.slice(0, cleanedMatricula.length - 1) + '-' + cleanedMatricula.slice(-1);
-    
-                const q = query(
-                    collection(firestore, "alunos"),
-                    where("matricula", "==", formattedMatricula)
-                );
-    
+                const q = query(collection(firestore, "alunos"));
                 const querySnapshot = await getDocs(q);
     
-                if (!querySnapshot.empty) {
-                    Cookies.set('matricula', formattedMatricula);
-                    
+                // Verifica se a matrícula do usuário corresponde a alguma matrícula no banco de dados
+                let matriculaFound = false;
+    
+                querySnapshot.forEach(doc => {
+                    const dbMatricula = doc.data().matricula.replace(/-/g, ''); // Remove o hífen da matrícula no banco de dados
+                    if (dbMatricula === cleanedUserMatricula) {
+                        matriculaFound = true;
+                    }
+                });
+    
+                if (matriculaFound) {
+                    Cookies.set('matricula', cleanedUserMatricula);
                     navigate('/login/aluno/primeiro-acesso/email');
                     setAlertCredentialInvalid(false);
                 } else {
@@ -73,7 +76,7 @@ function FirstAccess() {
                     </div>
                     {alertCredentialInvalid && 
                         <div style={{marginBottom: 20}}>
-                            <p style={{color: 'red'}}>Nome ou matrícula não encontrados</p>
+                            <p style={{color: 'red'}}>Matrícula não encontrada</p>
                             <p style={{color: 'red'}}>Tente novamente</p>
                         </div>
                     }
