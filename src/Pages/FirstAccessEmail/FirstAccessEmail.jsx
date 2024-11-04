@@ -18,7 +18,7 @@ function FirstAccess() {
         createUserWithEmailAndPassword,
         loading,
     ] = useCreateUserWithEmailAndPassword(auth);
-    const name = Cookies.get('name');
+    const name = ''
     const [success, setSuccess] = useState(false)
 
     const generateRandomPassword = () => {
@@ -34,12 +34,12 @@ function FirstAccess() {
 
     const sendEmailToSignUp = async (send) => {
         if (send) {
-
+    
             if (email === '') {
                 setInputEmail(true);
                 return;
             }
-
+    
             setInputEmail(false);
     
             try {
@@ -48,32 +48,26 @@ function FirstAccess() {
                 const querySnapshot = await getDocs(emailQuery);
     
                 if (!querySnapshot.empty) {
-                    
                     alert("E-mail já cadastrado.");
                     return;
                 }
     
                 const randomPassword = generateRandomPassword();
     
+                const userCredential = await createUserWithEmailAndPassword(email, randomPassword);
+                const userId = userCredential.user.uid;
+    
+                await setDoc(doc(firestore, 'users', userId), {
+                    name: name,
+                    email: email,
+                    type: 3,
+                    userId: userId,
+                    isActive: false
+                });
+    
                 await sendEmail(name, email, randomPassword);
     
-                createUserWithEmailAndPassword(email, randomPassword)
-                    .then(async (userCredential) => {
-                        const userId = userCredential.user.uid;
-    
-                        await setDoc(doc(firestore, 'users', userId), {
-                            name: name,
-                            email: email,
-                            type: 3,
-                            userId: userId,
-                            isActive: false
-                        });
-    
-                        close(false);
-                    })
-                    .catch((error) => {
-                        console.error("Erro ao criar usuário no Firebase Auth:", error);
-                    });
+                close(false);
     
             } catch (error) {
                 console.error('Erro ao verificar ou enviar e-mail:', error);
@@ -81,8 +75,6 @@ function FirstAccess() {
         }
     };
     
-    
-
     const sendEmail = (name, email, password) => {
         return new Promise((resolve, reject) => {
             const serviceID = 'service_bbm4g9c';
