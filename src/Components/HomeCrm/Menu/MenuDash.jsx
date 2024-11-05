@@ -51,7 +51,7 @@ function MenuDash({page}) {
             id: 4,
             icon: <FaBookOpen size={20}/>, 
             name: 'Módulos',
-            status: 'block'
+            status: 'active'
         },
         {
             id: 5,

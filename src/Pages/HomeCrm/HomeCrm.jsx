@@ -20,7 +20,7 @@ function HomeCrm() {
     const navigate = useNavigate()
     const [userType, setUserType] = useState(null)
 
-    const validPages = ['alunos', 'usuarios']; 
+    const validPages = ['alunos', 'usuarios', 'modulos']; 
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {

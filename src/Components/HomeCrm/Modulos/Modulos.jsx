@@ -2,7 +2,7 @@ import { FaCirclePlus } from 'react-icons/fa6'
 import ButtonBold from '../../ButtonBold/ButtonBold'
 import InputText from '../../InputText/InputText'
 import './Modulos.css'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ModalCreateModulo from '../../ModalCreateModulo/ModalCreateModulo'
 
 function Modulos() {
@@ -15,6 +15,19 @@ function Modulos() {
     const closeBtn = (close) => {
         setShowModal(close)
     }
+    const header = [
+        { title: 'Nome' },
+        { title: 'Turmas' },
+        { title: 'Alunos' },
+        { title: 'Professor' },
+    ]
+
+    
+
+    useEffect(() => {
+        
+        
+    }, [])
     return(
         <div className='containerModulos'>
             {showModal && <ModalCreateModulo title='Novo Módulo' close={closeBtn}/> }
@@ -26,6 +39,17 @@ function Modulos() {
                     </div>
                     <ButtonBold title='Novo módulo' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
                 </div>
+                <div className='divInfos'>
+                    <div className='divHeader'>
+                        {header.map((h, index) => (
+                            <div key={index} className='title'>
+                                <span className='bold'>{h.title}</span>
+                            </div>
+                        ))}
+                    </div>
+                    
+                </div>
+                
             </div>
         </div>
     )
