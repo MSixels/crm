@@ -66,7 +66,7 @@ function MenuDash({page}) {
             id: 6,
             icon: <IoChatbubbleEllipsesSharp size={20}/>, 
             name: 'StoryTelling',
-            status: 'active'
+            status: 'block'
         },
     ]
 
