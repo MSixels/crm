@@ -561,7 +561,7 @@ export const questsRestreioType3 = [
     },
     {
         id: 16, 
-        quest: 'Não possui habilidade de comunicação não verbal?',
+        quest: 'Possui habilidade de comunicação não verbal?',
         options: optionsRastreios    
     },
     {
