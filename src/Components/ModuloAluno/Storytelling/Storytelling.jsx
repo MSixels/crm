@@ -1,18 +1,31 @@
 import './Storytelling.css';
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
-import { firestore } from '../../../services/firebaseConfig';
+import { collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import { firestore, auth } from '../../../services/firebaseConfig';
 import { FaCircleChevronRight } from 'react-icons/fa6';
 import { useNavigate, useParams } from 'react-router-dom';
-import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 
 function StoryTelling({ materialId }) {
     const [storyData, setStoryData] = useState(null);
     const [resposta, setResposta] = useState('');
     const [charCount, setCharCount] = useState(0);
+    const [isSending, setIsSending] = useState(false); 
+    const [errorMessage, setErrorMessage] = useState(''); 
+    const [userId, setUserId] = useState(null);
+
     const maxChars = 1500;
     const { moduloId } = useParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const user = auth.currentUser;
+            if (user) {
+                setUserId(user.uid); 
+            }
+        };
+        fetchUser();
+    }, []);
 
     useEffect(() => {
         const fetchStoryData = async () => {
@@ -41,14 +54,39 @@ function StoryTelling({ materialId }) {
 
     const handleRespostaChange = (e) => {
         const text = e.target.value;
+        setErrorMessage(''); 
         if (text.length <= maxChars) {
             setResposta(text);
             setCharCount(text.length);
         }
     };
+    
+    async function markStoryAsCompleted(userId, materialId) {
+        try {
+            const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
+            await setDoc(progressRef, { userId, provaId: materialId, status: 'end' }, { merge: true });
+            console.log("Progresso do StoryTelling atualizado para 'end'");
+        } catch (error) {
+            console.error("Erro ao atualizar progresso do StoryTelling:", error);
+        }
+    }
 
-    const handleNextActivity = () => {
-        navigate(`/aluno/modulo/${moduloId}/aulas`);
+    const handleNextActivity = async () => {
+        if (!userId) {
+            console.error('Usuário não autenticado');
+            return;
+        }
+
+        if (resposta.trim() === '') {
+            setErrorMessage('Por favor, escreva sua resposta antes de prosseguir.');
+            return;
+        }
+        setIsSending(true);
+        await markStoryAsCompleted(userId, materialId);
+        setTimeout(() => {
+            setIsSending(false);
+            navigate(`/aluno/modulo/${moduloId}/aulas`);
+        }, 2000);
     };
 
     if (!storyData) {
@@ -83,21 +121,24 @@ function StoryTelling({ materialId }) {
             <div className="storyResponse">
                 <h3 className='storyH3'>Resposta</h3>
                 <textarea
-                    placeholder='Sua Resposta aqui.'
+                    placeholder={errorMessage || 'Sua Resposta aqui.'}
                     value={resposta}
                     onChange={handleRespostaChange}
                     maxLength={maxChars}
+                    className={errorMessage ? 'error' : ''}
                 ></textarea>
                 <div className='charCount'>
                     {charCount}/{maxChars}
                 </div>
             </div>
-            <div className="btn-right">
+            <div  className="btn-right">
             <span></span>
-            <button                 
-                onClick={handleNextActivity}
-                disabled={false}
-            >Próxima atividade{<FaCircleChevronRight size={18} />}</button>
+                <button                 
+                    onClick={handleNextActivity}
+                    disabled={isSending}
+                >
+                    {isSending ? 'Enviando atividade...' : <>Enviar e prosseguir<FaCircleChevronRight size={18} /></>}
+                </button>
             </div>
         </div>
     );

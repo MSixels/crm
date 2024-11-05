@@ -28,8 +28,8 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         if (status === "end") {
             if (type === "aula" || type === "aovivo") {
                 return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Reassistir</button>;
-            } else if (type === "teste" || type === "prova") {
-                return <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Ver Respostas</button>;
+            } else if (type === "storyTelling" || type === "game" || type === "teste" || type === "prova") {
+                return <button className='btn-access-disable' disabled>Concluído</button>;
             }
         } else if (status === "blocked") {
             return <button className='btn-access-disable' disabled>Bloqueado</button>;
@@ -37,6 +37,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
             return <button className='btn-first-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>Iniciar</button>;
         }
     };
+    
 
     const continuarDeOndeParou = () => {
         const conteudoInacabado = conteudo.find((c) => {

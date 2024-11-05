@@ -124,6 +124,11 @@
     font-weight: bold;
 }
 
+.error {
+  border: 1px solid red;
+  background-color: #ffe6e6;
+}
+
 @media (max-width: 768px) {
   .storyDiv {
     padding-right: 4rem;
