@@ -18,9 +18,15 @@ function Prova({ materialId, userId, contentId }) {
   useEffect(() => {
     const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
     const savedQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'), 10);
+    const savedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
     
     if (savedResponses) setSelectedResponses(savedResponses);
     if (!isNaN(savedQuestionIndex)) setCurrentQuestionIndex(savedQuestionIndex);
+    if (savedQuestions) {
+      setProvas([{ quests: savedQuestions }]);
+    } else {
+      fetchProvasData();
+    }
 
     setTimeLeft(calculateRemainingTime());
   }, []);
@@ -34,42 +40,27 @@ function Prova({ materialId, userId, contentId }) {
     return 30 * 60;
   };
 
-  useEffect(() => {
-    const fetchProvasData = async () => {
-      try {
-        const provaDocRef = doc(firestore, 'provas', materialId);
-        const provaDoc = await getDoc(provaDocRef);
+  const fetchProvasData = async () => {
+    try {
+      const provaDocRef = doc(firestore, 'provas', materialId);
+      const provaDoc = await getDoc(provaDocRef);
 
-        if (provaDoc.exists()) {
-          const provaData = provaDoc.data();
-          
-          let randomQuestions;
-          const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
-          const progressDoc = await getDoc(progressRef);
-          
-          if (progressDoc.exists() && progressDoc.data().randomizedQuests) {
-            randomQuestions = progressDoc.data().randomizedQuests;
-          } else {
-            randomQuestions = provaData.quests
-              .sort(() => 0.5 - Math.random())
-              .slice(0, 5);
-            
-            await setDoc(progressRef, { userId, provaId: materialId, randomizedQuests: randomQuestions });
-          }
+      if (provaDoc.exists()) {
+        const provaData = provaDoc.data();
+        
+        const randomQuestions = provaData.quests
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 5);
 
-          setProvas([{ ...provaData, quests: randomQuestions }]);
-        } else {
-          console.error('Prova não encontrada');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados:', error);
+        localStorage.setItem(`randomQuestions_${materialId}`, JSON.stringify(randomQuestions));
+        setProvas([{ ...provaData, quests: randomQuestions }]);
+      } else {
+        console.error('Prova não encontrada');
       }
-    };
-
-    if (materialId) {
-      fetchProvasData();
+    } catch (error) {
+      console.error('Erro ao buscar dados:', error);
     }
-  }, [materialId, userId]);
+  };
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -129,17 +120,20 @@ function Prova({ materialId, userId, contentId }) {
     try {
       const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
       let score = 0;
-      provas[0].quests.forEach((quest, index) => {
+      const randomizedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
+
+      randomizedQuestions.forEach((quest, index) => {
         const selectedResponseIndex = selectedResponses[index];
         if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
           score += 20;
         }
       });
 
-      score = Math.min(score, 100); 
+      score = Math.min(score, 100);
       const progressData = {
         userId,
         provaId: materialId,
+        type: 'prova',
         status: 'end',
         score,
         responses: selectedResponses,
@@ -159,6 +153,7 @@ function Prova({ materialId, userId, contentId }) {
         localStorage.removeItem('selectedResponses');
         localStorage.removeItem('currentQuestionIndex');
         localStorage.removeItem('startTime');
+        localStorage.removeItem(`randomQuestions_${materialId}`);
         navigate(`/aluno/modulo/${moduloId}/aulas`);
       }
     }

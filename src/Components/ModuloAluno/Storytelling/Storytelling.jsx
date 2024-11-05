@@ -61,11 +61,18 @@ function StoryTelling({ materialId }) {
         }
     };
     
-    async function markStoryAsCompleted(userId, materialId) {
+    async function markStoryAsCompleted(userId, materialId, conteudoId, resposta) {
         try {
             const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
-            await setDoc(progressRef, { userId, provaId: materialId, status: 'end' }, { merge: true });
-            console.log("Progresso do StoryTelling atualizado para 'end'");
+            await setDoc(progressRef, {
+                userId,
+                provaId: materialId,
+                conteudoId,
+                type: 'storyTelling',
+                status: 'end',
+                response: resposta
+            }, { merge: true });
+            console.log("Progresso do StoryTelling atualizado para 'end' com a resposta do usuário");
         } catch (error) {
             console.error("Erro ao atualizar progresso do StoryTelling:", error);
         }
@@ -82,7 +89,7 @@ function StoryTelling({ materialId }) {
             return;
         }
         setIsSending(true);
-        await markStoryAsCompleted(userId, materialId);
+        await markStoryAsCompleted(userId, materialId, storyData.conteudoId, resposta);
         setTimeout(() => {
             setIsSending(false);
             navigate(`/aluno/modulo/${moduloId}/aulas`);
