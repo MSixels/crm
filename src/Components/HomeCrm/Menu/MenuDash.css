@@ -8,11 +8,13 @@
     background-color: #FFF;
     height: 100%;
     position: fixed;
+    overflow-y: auto;
+    padding-bottom: 100px;
 }
 .containerMenuDash .divOptions{
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 24px;
 }
 .containerMenuDash .divOption{
     display: flex;

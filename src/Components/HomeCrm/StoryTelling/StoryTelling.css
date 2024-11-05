@@ -1,0 +1,111 @@
+.containerStoryTelling{
+    padding: 32px;
+}
+.containerStoryTelling .divContent{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 32px;
+    background-color: #FFF;
+    border-radius: 4px;
+    height: auto;
+    padding-bottom: 16px;
+    font-size: 16px;
+    position: relative;
+}
+.containerStoryTelling .divInfos {
+    display: flex;
+    flex-direction: column;
+}
+.containerStoryTelling .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+.containerStoryTelling .divContent .divInputs{
+    display: flex;
+    gap: 8px;
+}
+.containerStoryTelling .divConteudos{
+    position: relative;
+}
+.containerStoryTelling .divHeader,
+.containerStoryTelling .divConteudos {
+    display: grid;
+    grid-template-columns: 1fr 1fr ;
+    align-items: center;
+    border-bottom: solid 1px var(--secondary200);
+}
+.containerStoryTelling .divHeader .title,
+.containerStoryTelling .divConteudos .spanBox {
+    padding: 16px;
+    overflow: hidden;        
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+    position: relative;
+}
+.containerStoryTelling .legendas{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap:32px;
+    font-size: 12px;
+    padding-top: 16px;
+    padding-inline: 12px;
+}
+.containerStoryTelling .legendas .bold{
+    font-weight: bold;
+}
+.containerStoryTelling .legendas .divBtnBackNext{
+    cursor: pointer;
+}
+.containerStoryTelling .legendas .l_graficos{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.containerStoryTelling .legendas .btnNextPage{
+    display: flex;
+    gap: 32px;
+}
+.containerStoryTelling .containerRenderModalNumberLiner{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    bottom: 15px;
+    right: 10px;
+    background-color: #FFF;
+    z-index: 2000;
+    border: solid 1px var(--primary-200);
+    padding: 3px;
+    border-radius: 4px;
+}
+.containerStoryTelling .containerRenderModalNumberLiner .option{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 2px;
+}
+.containerStoryTelling .containerRenderModalNumberLiner .option:hover{
+    background-color: var(--primary-200);
+}
+.containerStoryTelling .divNumberLines{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.containerStoryTelling .divNumberLines .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+}
+.containerStoryTelling .bold{
+    font-weight: bold;
+}

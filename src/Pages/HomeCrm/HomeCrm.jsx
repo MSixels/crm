@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { auth, firestore } from '../../services/firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
+import StoryTelling from '../../Components/HomeCrm/StoryTelling/StoryTelling'
 
 function HomeCrm() {
     const { page } = useParams()
@@ -20,7 +21,7 @@ function HomeCrm() {
     const navigate = useNavigate()
     const [userType, setUserType] = useState(null)
 
-    const validPages = ['alunos', 'usuarios', 'modulos']; 
+    const validPages = ['alunos', 'usuarios', 'storytelling']; 
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -84,6 +85,7 @@ function HomeCrm() {
                     {page === 'turmas' && <Turmas />}
                     {page === 'modulos' && <Modulos />}
                     {page === 'usuarios' && <Usuarios userType={userType}/>}
+                    {page === 'storytelling' && <StoryTelling userType={userType}/>}
                 </div>
             </div>
         </div>
