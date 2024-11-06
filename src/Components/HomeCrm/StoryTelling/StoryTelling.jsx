@@ -105,16 +105,16 @@ function StoryTelling({ userType }) {
 
     const renderModalNumberLiner = () => {
         const options = [
-            {id: 1, value: 40},
-            {id: 1, value: 20},
-            {id: 1, value: 10},
-            {id: 1, value: 5},
+            {value: 40},
+            {value: 20},
+            {value: 10},
+            {value: 5},
         ]
 
         return(
             <div className='containerRenderModalNumberLiner'>
-                {options.map((o) => (
-                    <div key={o.id} className='option' onClick={() => setItemsPerPage(o.value)}>
+                {options.map((o, index) => (
+                    <div key={index} className='option' onClick={() => setItemsPerPage(o.value)}>
                         {o.value}
                     </div>
                 ))}

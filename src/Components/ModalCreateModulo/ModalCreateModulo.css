@@ -18,7 +18,7 @@
     border-radius: 4px;
     gap: 18px;
     width: 90%;
-    max-width: 500px;
+    max-width: 600px;
 }
 .containerModalCreateModulo .modalCreate .divheader{
     display: flex;
@@ -32,4 +32,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+@media (max-width: 767px){
+    .containerModalCreateModulo .divFooter{
+        flex-wrap: wrap;
+    }
 }

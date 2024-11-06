@@ -114,6 +114,16 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: `/professor/modulos/:moduloId`,
+    element: (
+      <ProtectedRoute
+        element={<HomeCrm />}
+        typeUser={2} 
+        allowedTypes={[1, 2]} 
+      />
+    ),
+  },
+  {
     path: `/professor/route-secret`,
     element: (
       <ProtectedRoute

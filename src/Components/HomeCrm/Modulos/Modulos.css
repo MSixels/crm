@@ -25,18 +25,72 @@
     display: flex;
     flex-direction: column;
 }
-.containerModulos .divHeader{
+.containerModulos .divHeader,
+.containerModulos .divValues {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
     border-bottom: solid 1px var(--secondary200);
+    font-size: 16px;
+    overflow: hidden;
+    position: relative;
 }
-.containerModulos .divHeader .title{
+.containerModulos .divValues:last-child{
+    border-bottom: none;
+}
+.containerModulos .divHeader .title,
+.containerModulos .divValues .spanBox {
     padding: 16px;
     overflow: hidden;        
     text-overflow: ellipsis; 
     white-space: nowrap;
     position: relative;
-    font-size: 16px;
+}
+.containerModulos .bold{
     font-weight: bold;
+}
+.containerModulos .divValues .active{
+    color: var(--success);
+}
+.containerModulos .divValues .block{
+    color: var(--color-block);
+}
+.containerModulos .divValues .end{
+    color: var(--error);
+}
+.containerModulos .divValues .btnEdit{
+    position: absolute;
+    right: 16px;
+    border: solid 1px var(--secondary200);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.containerModulos .divValues .modalEditUser{
+    position: absolute;
+    right: 36px;
+    padding: 3px;
+    border: solid 1px var(--primary-200);
+    border-radius: 4px;
+    background-color: #FFF;
+    z-index: 2000;
+}
+.containerModulos .divValues .modalEditUser p{
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    transition: .3s;
+}
+.containerModulos .divValues .modalEditUser .alert{
+    color: var(--error);
+}
+.containerModulos .divValues .modalEditUser .alert:hover{
+    background-color: var(--errorHover);
+}
+.containerModulos .divValues .modalEditUser .text:hover{
+    background-color: var(--primary-200);
 }

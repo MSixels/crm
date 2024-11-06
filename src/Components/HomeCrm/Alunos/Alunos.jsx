@@ -1,4 +1,3 @@
-import DropDown from '../../DropDown/DropDown'
 import InputText from '../../InputText/InputText'
 import './Alunos.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
@@ -18,7 +17,7 @@ import { GrNext } from 'react-icons/gr';
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchDrop, setSearchDrop] = useState('Selecione')
+    
     const [showModal, setShowModal] = useState(false)
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -28,6 +27,7 @@ function Alunos({ userType }) {
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [showModalNumberPages, setShowModalNumberPages] = useState(false)
+    const [usersScore, setUsersScore] = useState([])
     const header = [
         { title: 'Nome' },
         { title: 'E-mail' },
@@ -49,6 +49,29 @@ function Alunos({ userType }) {
         setSearchDrop(newDrop);
     };
     */
+
+    const fetchProgressProvas = async () => {
+        try {
+            const q = query(
+                collection(firestore, 'progressProvas'),
+                where('score', '!=', null)
+            );
+    
+            const querySnapshot = await getDocs(q);
+    
+            const progressProvasList = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                score: doc.data().score,
+                userId: doc.data().userId
+            }));
+            console.log('progressProvasList: ', progressProvasList);
+            setUsersScore(progressProvasList);
+        } catch (error) {
+            console.error("Erro ao carregar progressProvas:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
     
     const clickBtn = (openModal) => {
         setShowModal(openModal)
@@ -61,16 +84,17 @@ function Alunos({ userType }) {
 
     const renderModalNumberLiner = () => {
         const options = [
-            {id: 1, value: 40},
-            {id: 1, value: 20},
-            {id: 1, value: 10},
-            {id: 1, value: 5},
+            {value: 100},
+            {value: 40},
+            {value: 20},
+            {value: 10},
+            {value: 5},
         ]
 
         return(
             <div className='containerRenderModalNumberLiner'>
-                {options.map((o) => (
-                    <div key={o.id} className='option' onClick={() => setItemsPerPage(o.value)}>
+                {options.map((o, index) => (
+                    <div key={index} className='option' onClick={() => setItemsPerPage(o.value)}>
                         {o.value}
                     </div>
                 ))}
@@ -94,16 +118,26 @@ function Alunos({ userType }) {
 
     useEffect(() => {
         fetchAlunosFromFirestore()
-        
+        fetchProgressProvas()
     }, [])
 
-    const filtered = alunos.filter(a => {
+    const filtered = alunos
+    .filter(a => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
-        const matchesSearchTerm = removeAccents(a.name).toLowerCase().includes(lowerCaseSearchTerm);
-        const matchesTurma = searchDrop === 'Selecione' || turmas.find(t => t.id === a.turma)?.name === searchDrop;
-    
-        return matchesSearchTerm && matchesTurma;
-    }).sort((a, b) => {
+        const matchesSearchTerm = removeAccents(a.name).toLowerCase().includes(lowerCaseSearchTerm) ||
+        (a.email && removeAccents(a.email).toLowerCase().includes(lowerCaseSearchTerm));
+        
+
+        return matchesSearchTerm;
+    })
+    .map(a => {
+        const alunoScores = usersScore.filter(score => score.userId === a.id);
+        const totalScore = alunoScores.reduce((acc, score) => acc + score.score, 0);
+        const averageScore = alunoScores.length ? (totalScore / alunoScores.length).toFixed(0) : "0";
+
+        return { ...a, averageScore: Number(averageScore) }; 
+    })
+    .sort((a, b) => {
         return removeAccents(a.name).localeCompare(removeAccents(b.name), 'pt', { sensitivity: 'base' });
     });
 
@@ -178,7 +212,7 @@ function Alunos({ userType }) {
             <div className='divContent'>
                 <div className='header'>
                     <div className='divInputs'>
-                        <InputText title='Pesquisa na lista' placeH='Nome do aluno' onSearchChange={handleSearchChange}/>
+                        <InputText title='Pesquisa na lista' placeH='Nome ou email' onSearchChange={handleSearchChange}/>
                         {/*<DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />*/}
                     </div>
                     {userType === 1 && <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
@@ -191,42 +225,44 @@ function Alunos({ userType }) {
                             </div>
                         ))}
                     </div>
-                    {slicedAlunos.map((a) => {
-                        const turma = turmas.find(t => t.id === a.turma)
-                        return(
-                            <div key={a.id} className='divAlunos'>
-                                <span className='spanBox'>{a.name ? a.name : 'Sem nome'}</span>
-                                <span className='spanBox'>{a.email}</span>
-                                <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
-                                <span className='spanBox'><span className={`${a.media < 50 ? 'ruim' : a.media >= 50 ? 'boa' : ''}`}>{a.media ? a.media : 'N'}</span> / {a.media ? '100' : 'A'}</span>
-                                <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
-                                {userType === 1 && 
-                                <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
-                                    <BsThreeDotsVertical />
-                                </div>
-                                }
-                                
-                                {activeModalId === a.id && 
-                                    <div className='modalEditUser'>
-                                        {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
+                    <div className='divValues'>
+                        {slicedAlunos.map((a) => {
+                            const turma = turmas.find(t => t.id === a.turma)
+                            return(
+                                <div key={a.id} className='divAlunos'>
+                                    <span className='spanBox'>{a.name ? a.name : 'Sem nome'}</span>
+                                    <span className='spanBox'>{a.email}</span>
+                                    <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
+                                    <span className='spanBox'><span className={`${a.averageScore < 50 ? 'ruim' : a.averageScore >= 50 ? 'boa' : ''}`}>{a.averageScore ? a.averageScore : 'N'}</span> / {a.averageScore ? '100' : 'A'}</span>
+                                    <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
+                                    {userType === 1 && 
+                                    <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
+                                        <BsThreeDotsVertical />
                                     </div>
-                                }
-                                {confirmId === a.id && (
-                                    <div className='containerModalConfirmDelete'>
-                                        <div className='modalConfirmDelete'>
-                                            <p className='titleAlert'>Tem certeza que deseja {actionType === 'active' ? 'reativar' : 'desativar'} esse usuário?</p>
-                                            <div className='divBtns'>
-                                                <button onClick={() => actionType === 'active' ? handleReactivate(a.id) : handleDisable(a.id)} className='delete'>
-                                                    Confirmar
-                                                </button>
-                                                <button onClick={closeConfirmModal} className='close'>Cancelar</button>
+                                    }
+                                    
+                                    {activeModalId === a.id && 
+                                        <div className='modalEditUser'>
+                                            {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
+                                        </div>
+                                    }
+                                    {confirmId === a.id && (
+                                        <div className='containerModalConfirmDelete'>
+                                            <div className='modalConfirmDelete'>
+                                                <p className='titleAlert'>Tem certeza que deseja {actionType === 'active' ? 'reativar' : 'desativar'} esse usuário?</p>
+                                                <div className='divBtns'>
+                                                    <button onClick={() => actionType === 'active' ? handleReactivate(a.id) : handleDisable(a.id)} className='delete'>
+                                                        Confirmar
+                                                    </button>
+                                                    <button onClick={closeConfirmModal} className='close'>Cancelar</button>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
-                            </div>
-                        )
-                    })}
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
                 </div>
                 <div className='legendas'>
                     <div className='divNumberLines'>

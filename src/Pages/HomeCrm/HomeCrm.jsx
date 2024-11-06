@@ -15,10 +15,12 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import StoryTelling from '../../Components/HomeCrm/StoryTelling/StoryTelling'
 import StoryTellingDetails from '../../Components/HomeCrm/StoryTellingDetails/StoryTellingDetails'
+import ModuloDetails from '../../Components/HomeCrm/ModuloDetails/ModuloDetails'
 
 function HomeCrm() {
     const { page } = useParams()
     const { conteudoId } = useParams()
+    const { moduloId } = useParams()
     const location = useLocation();
     const [userId, setUserId] = useState('')
     const navigate = useNavigate()
@@ -79,15 +81,16 @@ function HomeCrm() {
         <div className='containerHomeCrm'>
             <Header userId={userId}/>
             <div className='divContent'>
-                <MenuDash page={page} conteudoId={conteudoId}/>
+                <MenuDash page={page} conteudoId={conteudoId} moduloId={moduloId}/>
                 <div className='divPages'>
                     {page === 'dashboard' && <DashProf />}
                     {page === 'alunos' && <Alunos userType={userType}/>}
                     {page === 'turmas' && <Turmas />}
-                    {page === 'modulos' && <Modulos />}
+                    {page === 'modulos' && <Modulos userType={userType}/>}
                     {page === 'usuarios' && <Usuarios userType={userType}/>}
                     {page === 'storytelling' && <StoryTelling userType={userType} />}
                     {location.pathname === `/professor/storytelling/${conteudoId}` && <StoryTellingDetails conteudoId={conteudoId}/>}
+                    {location.pathname === `/professor/modulos/${moduloId}` && <ModuloDetails userType={userType} moduloId={moduloId}/>}
                 </div>
             </div>
         </div>

@@ -67,16 +67,30 @@ function StoryTellingDetails({ conteudoId }) {
                 console.log('Nenhum userId encontrado nos progressProvas.');
                 return [];
             }
-            const q = query(
-                collection(firestore, 'users'),
-                where('userId', 'in', userIds)  
-            );
     
-            const querySnapshot = await getDocs(q);
-            const usersList = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            // Dividir os userIds em grupos de 30
+            const userIdChunks = [];
+            for (let i = 0; i < userIds.length; i += 30) {
+                userIdChunks.push(userIds.slice(i, i + 30));
+            }
+    
+            let usersList = [];
+    
+            // Realizar as consultas para cada chunk de userIds
+            for (const chunk of userIdChunks) {
+                const q = query(
+                    collection(firestore, 'users'),
+                    where('userId', 'in', chunk)
+                );
+    
+                const querySnapshot = await getDocs(q);
+                const chunkUsers = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+    
+                usersList = [...usersList, ...chunkUsers];
+            }
     
             setUsers(usersList); 
             console.log('Users: ', usersList);
