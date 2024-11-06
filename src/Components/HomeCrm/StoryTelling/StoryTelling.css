@@ -1,5 +1,8 @@
 .containerStoryTelling{
     padding: 32px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .containerStoryTelling .divContent{
     display: flex;
@@ -108,4 +111,15 @@
 }
 .containerStoryTelling .bold{
     font-weight: bold;
+}
+.containerStoryTelling .divIconView{
+    position: absolute;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    background-color: var(--primary-200);
+    border-radius: 25px;
+    cursor: pointer;
 }

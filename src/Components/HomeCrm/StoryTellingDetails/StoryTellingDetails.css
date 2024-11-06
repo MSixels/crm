@@ -1,0 +1,84 @@
+.containerStoryTellingDetails{
+    padding: 32px;
+}
+.containerStoryTellingDetails .headerStory{
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    color: var(--secondary1000);
+    justify-content: space-between;
+}
+.containerStoryTellingDetails .headerStory .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 25px;
+    background-color: var(--secondary1000);
+    color: #FFF;
+    cursor: pointer;
+}
+.containerStoryTellingDetails .storyTellingList{
+    display: flex;
+    flex-direction: column;
+    margin-top: 32px;
+    background-color: #FFF;
+    border-radius: 8px;
+}
+.containerStoryTellingDetails .storyTellingList .divStory{
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    border-bottom: solid 1px var(--color-3);
+}
+.containerStoryTellingDetails .storyTellingList .divStory:last-child{
+    border-bottom: none;
+}
+.containerStoryTellingDetails .imgUserStory{
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.containerStoryTellingDetails .notImg{
+    background-color: var(--color-3);
+    color: #FFF;
+    font-weight: bold;
+}
+.containerStoryTellingDetails .imgUserStory img{
+    width: 100%;
+}
+.containerStoryTellingDetails .divUser{
+    display: flex;
+    gap: 12px;
+    font-weight: bold;
+}
+.containerStoryTellingDetails .storyTellingList .divStory .progressItem{
+    margin-left: 54px;
+    font-size: 16px
+}
+.containerStoryTellingDetails .storyTellingList .divHeaderStory{
+    display: flex;
+    padding: 24px;
+
+}
+.containerStoryTellingDetails .storyTellingList .divValues{
+    overflow-y: auto;
+    height: 100%;
+    max-height: calc(100vh - 320px);
+}
+.containerStoryTellingDetails .storyTellingList .divValues::-webkit-scrollbar {
+    width: 6px; 
+}
+  
+.containerStoryTellingDetails .storyTellingList .divValues::-webkit-scrollbar-thumb {
+    background-color: #ccc; 
+    border-radius: 10px;
+}
+  
+.containerStoryTellingDetails .storyTellingList .divValues::-webkit-scrollbar-track {
+    background-color: #f1f1f1; 
+}

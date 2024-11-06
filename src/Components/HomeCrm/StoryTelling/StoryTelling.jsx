@@ -10,11 +10,12 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
-import { GoDotFill } from 'react-icons/go'
+import { FaAngleRight } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom'
 
 function StoryTelling({ userType }) {
+    const navigate = useNavigate()
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchDrop, setSearchDrop] = useState('Selecione')
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(5);
     const [showModalNumberPages, setShowModalNumberPages] = useState(false)
@@ -28,16 +29,37 @@ function StoryTelling({ userType }) {
     ]
 
     const removeAccents = (text) => {
-        if (typeof text !== 'string') return ''; // Retorna uma string vazia se o valor não for uma string
+        if (typeof text !== 'string') return '';
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    };
+
+    const handleSearchChange = (newSearchTerm) => {
+        setSearchTerm(newSearchTerm);
+    };
+
+    const handleNextPage = () => {
+        if ((currentPage + 1) * itemsPerPage < filtered.length) {
+            setCurrentPage(prevPage => prevPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 0) {
+            setCurrentPage(prevPage => prevPage - 1);
+        }
     };
 
     const fetchStoryTellingFromFirestore = async () => {
         try {
-            const q = query(collection(firestore, 'progressProvas'), where('type', '==', 'storyTelling'));
+            const q = query(
+                collection(firestore, 'progressProvas'),
+                where('type', '==', 'storyTelling')
+            );
             const querySnapshot = await getDocs(q);
-            
-            const storyTellingList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const storyTellingList = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                conteudoId: doc.data().conteudoId
+            }));
             
             setStoryTellings(storyTellingList);
             console.log('storyTellingList', storyTellingList);
@@ -102,13 +124,16 @@ function StoryTelling({ userType }) {
     
     
     const filtered = conteudos
+    .filter(conteudo => {
+        if (!searchTerm) {
+            return true;
+        }
+        const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
+        return removeAccents(conteudo.name).toLowerCase().includes(lowerCaseSearchTerm);
+    })
     .map(conteudo => {
         const count = storyTellings.filter(st => st.conteudoId === conteudo.id).length;
-
-        return { 
-            conteudoName: conteudo.name, 
-            storyTellingCount: count 
-        };
+        return { conteudoId: conteudo.id, conteudoName: conteudo.name, storyTellingCount: count };
     })
     .sort((a, b) => {
         return b.storyTellingCount - a.storyTellingCount || removeAccents(a.conteudoName).localeCompare(removeAccents(b.conteudoName), 'pt', { sensitivity: 'base' });
@@ -120,6 +145,63 @@ function StoryTelling({ userType }) {
     useEffect(() => {
         console.log('slicedStory: ', slicedStory)
     }, [slicedStory])
+
+    const renderStoryTelling = () => {
+        return(
+            <>
+                <h2 style={{ fontSize: 32}}>Storytelling</h2>
+                <p style={{ fontSize: 24, fontWeight: 500, marginTop: 12 }}>Selecione na lista abaixo um conteudo para acessar as respostas</p>
+                <div className='divContent'>
+                    <div className='header'>
+                        <div className='divInputs'>
+                            <InputText title='Pesquisa por' placeH='Nome do conteudo' onSearchChange={handleSearchChange}/>
+                        </div>
+                        {/*userType === 1 && <ButtonBold title='Vincular aluno' icon={<FaCirclePlus size={20}/>} />*/}
+                    </div>
+                    <div className='divInfos'>
+                        <div className='divHeader'>
+                            {header.map((h, index) => (
+                                <div key={index} className='title'>
+                                    <span className='bold'>{h.title}</span>
+                                </div>
+                            ))}
+                        </div>
+                        {slicedStory.map((a) => {
+                            return(
+                                <div key={a.id} className='divConteudos'>
+                                    <span className='spanBox'>{a.conteudoName ? a.conteudoName : 'Sem nome'}</span>
+                                    <span className='spanBox'>{a.storyTellingCount}</span>
+                                    <div className='divIconView' onClick={() => navigate(`/professor/storytelling/${a.conteudoId}`)}>
+                                        <FaAngleRight />
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                    <div className='legendas'>
+                        <div className='divNumberLines'>
+                            <p>Linhas por página <span className='bold'>{itemsPerPage}</span></p>
+                            <div onClick={() => setShowModalNumberPages(!showModalNumberPages)} className='divIcon'>
+                                {showModalNumberPages ? <FaAngleDown /> : <FaAngleUp />}
+                                {showModalNumberPages && renderModalNumberLiner()}
+                            </div>
+                            
+                        </div>
+                        
+                        <p className='bold'>{currentPage * itemsPerPage + 1}-{Math.min((currentPage + 1) * itemsPerPage, filtered.length)} de {filtered.length}</p>
+                        <div className='btnNextPage'>
+                            <div className='divBtnBackNext' onClick={handlePreviousPage}>
+                                <MdArrowBackIosNew />
+                            </div>
+                            <div className='divBtnBackNext' onClick={handleNextPage}>
+                                <GrNext />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </>
+        )
+    }
     
     if (loading) {
         return <Loading />
@@ -127,66 +209,13 @@ function StoryTelling({ userType }) {
 
     return (
         <div className='containerStoryTelling'>
-            <h2 style={{ fontSize: 32}}>Storytelling</h2>
-            <p style={{ fontSize: 24, fontWeight: 500, marginTop: 12 }}>Selecione na lista abaixo um conteudo para acessar as respostas</p>
-            <div className='divContent'>
-                <div className='header'>
-                    <div className='divInputs'>
-                        <InputText title='Pesquisa por' placeH='Nome do conteudo' />
-                        {/*<DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />*/}
-                    </div>
-                    {userType === 1 && <ButtonBold title='Vincular aluno' icon={<FaCirclePlus size={20}/>} />}
-                </div>
-                <div className='divInfos'>
-                    <div className='divHeader'>
-                        {header.map((h, index) => (
-                            <div key={index} className='title'>
-                                <span className='bold'>{h.title}</span>
-                            </div>
-                        ))}
-                    </div>
-                    {slicedStory.map((a) => {
-                        return(
-                            <div key={a.id} className='divConteudos'>
-                                <span className='spanBox'>{a.conteudoName ? a.conteudoName : 'Sem nome'}</span>
-                                <span className='spanBox'>{a.storyTellingCount}</span>
-                            </div>
-                        )
-                    })}
-                </div>
-                <div className='legendas'>
-                    <div className='divNumberLines'>
-                        <p>Linhas por página <span className='bold'>{itemsPerPage}</span></p>
-                        <div onClick={() => setShowModalNumberPages(!showModalNumberPages)} className='divIcon'>
-                            {showModalNumberPages ? <FaAngleDown /> : <FaAngleUp />}
-                            {showModalNumberPages && renderModalNumberLiner()}
-                        </div>
-                        
-                    </div>
-                    
-                    <p className='bold'>{currentPage * itemsPerPage + 1}-{Math.min((currentPage + 1) * itemsPerPage, filtered.length)} de {filtered.length}</p>
-                    <div className='btnNextPage'>
-                        <div className='divBtnBackNext' >
-                            <MdArrowBackIosNew />
-                        </div>
-                        <div className='divBtnBackNext' >
-                            <GrNext />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {renderStoryTelling()}
         </div>
     )
 }
 StoryTelling.propTypes = {
     userType: PropTypes.number.isRequired,
+    conteudoId: PropTypes.string.isRequired,
 };
 
 export default StoryTelling
-
-/*
-
-
-
-
-*/

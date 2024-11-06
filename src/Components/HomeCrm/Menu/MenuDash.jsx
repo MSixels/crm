@@ -9,7 +9,7 @@ import { PiStudentBold } from "react-icons/pi";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 
-function MenuDash({page}) {
+function MenuDash({page, conteudoId}) {
     const [selectedOption, setSelectedOption] = useState(1)
     const navigate = useNavigate()
 
@@ -26,10 +26,12 @@ function MenuDash({page}) {
             setSelectedOption(5)
         } else if(page === 'storytelling'){
             setSelectedOption(6)
+        } else if(conteudoId){
+            setSelectedOption(6)
         } else {
             setSelectedOption(1)
         }
-    }, [page])
+    }, [page, conteudoId])
 
     const options = [
         {
@@ -66,7 +68,7 @@ function MenuDash({page}) {
             id: 6,
             icon: <IoChatbubbleEllipsesSharp size={20}/>, 
             name: 'StoryTelling',
-            status: 'block'
+            status: 'active'
         },
     ]
 
@@ -107,6 +109,7 @@ function MenuDash({page}) {
 }
 MenuDash.propTypes = {
     page: PropTypes.string.isRequired,
+    conteudoId: PropTypes.string.isRequired,
 };
 
 export default MenuDash

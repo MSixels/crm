@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import DashProf from '../../Components/HomeCrm/DashProf/DashProf'
 import MenuDash from '../../Components/HomeCrm/Menu/MenuDash'
 import Header from '../../Components/Header/Header'
@@ -14,14 +14,15 @@ import { auth, firestore } from '../../services/firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import StoryTelling from '../../Components/HomeCrm/StoryTelling/StoryTelling'
+import StoryTellingDetails from '../../Components/HomeCrm/StoryTellingDetails/StoryTellingDetails'
 
 function HomeCrm() {
     const { page } = useParams()
+    const { conteudoId } = useParams()
+    const location = useLocation();
     const [userId, setUserId] = useState('')
     const navigate = useNavigate()
     const [userType, setUserType] = useState(null)
-
-    const validPages = ['alunos', 'usuarios', 'storytelling']; 
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -29,6 +30,10 @@ function HomeCrm() {
             await updateDoc(userRef, { isActive: true });
         }
     });
+
+    useEffect(() => {
+        console.log(location)
+    }, [location])
 
     useEffect(() => {
         const sessao = Cookies.get('accessToken');
@@ -69,23 +74,20 @@ function HomeCrm() {
         }
     }, [userId]);
 
-    
-    if (!validPages.includes(page)) {
-        return null;
-    }
 
     return (
         <div className='containerHomeCrm'>
             <Header userId={userId}/>
             <div className='divContent'>
-                <MenuDash page={page}/>
+                <MenuDash page={page} conteudoId={conteudoId}/>
                 <div className='divPages'>
                     {page === 'dashboard' && <DashProf />}
                     {page === 'alunos' && <Alunos userType={userType}/>}
                     {page === 'turmas' && <Turmas />}
                     {page === 'modulos' && <Modulos />}
                     {page === 'usuarios' && <Usuarios userType={userType}/>}
-                    {page === 'storytelling' && <StoryTelling userType={userType}/>}
+                    {page === 'storytelling' && <StoryTelling userType={userType} />}
+                    {location.pathname === `/professor/storytelling/${conteudoId}` && <StoryTellingDetails conteudoId={conteudoId}/>}
                 </div>
             </div>
         </div>
