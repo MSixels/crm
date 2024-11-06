@@ -131,9 +131,9 @@ function StoryTellingDetails({ conteudoId }) {
 
     return (
         <div className='containerStoryTellingDetails'>
-            <div className='headerStory' onClick={() => navigate('/professor/storytelling')}>
+            <div className='headerStory'>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12}}>
-                    <div className='divIcon'>
+                    <div className='divIcon' onClick={() => navigate('/professor/storytelling')}>
                         <IoMdArrowRoundBack />
                     </div>
                     <h2 style={{ fontSize: 24 }}>Storytelling - {conteudo.name}</h2>
