@@ -685,7 +685,7 @@ function ComponentLimitado() {
         return text
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[-\s]/g, ''); 
+            .replace(/[-\s]/g, '');
     };
 
     const fetchMatriculas = async () => {
@@ -713,31 +713,49 @@ function ComponentLimitado() {
         const alunoName = removeAccentsAndSpecialChars(a.name || '').toLowerCase();
         const alunoMatricula = removeAccentsAndSpecialChars(a.matricula || '').toLowerCase();
 
-        const matchesSearchTerm = alunoName.includes(lowerCaseSearchTerm) ||
-            alunoMatricula.includes(lowerCaseSearchTerm);
+        return alunoName.includes(lowerCaseSearchTerm) || alunoMatricula.includes(lowerCaseSearchTerm);
+    });
 
-        return matchesSearchTerm;
+    // Contar duplicatas de `name` e `matricula`
+    const nameCounts = {};
+    const matriculaCounts = {};
+
+    filtered.forEach(aluno => {
+        const normalizedAlunoName = removeAccentsAndSpecialChars(aluno.name || '').toLowerCase();
+        const normalizedAlunoMatricula = removeAccentsAndSpecialChars(aluno.matricula || '').toLowerCase();
+
+        nameCounts[normalizedAlunoName] = (nameCounts[normalizedAlunoName] || 0) + 1;
+        matriculaCounts[normalizedAlunoMatricula] = (matriculaCounts[normalizedAlunoMatricula] || 0) + 1;
     });
 
     const renderBuscarMatricula = () => {
         return (
             <div>
                 <h1>Buscar Matrícula</h1>
-                <div style={{alignItems: 'start', display: 'flex', flexDirection: 'column', width: '100%', marginTop: 20}}>
-                    <InputText title='Pesquisa na tabela' placeH='Matrícula' onSearchChange={handleSearchChange}/>
+                <div style={{ alignItems: 'start', display: 'flex', flexDirection: 'column', width: '100%', marginTop: 20 }}>
+                    <InputText title='Pesquisa na tabela' placeH='Matrícula' onSearchChange={handleSearchChange} />
                 </div>
 
                 <div>
-                    {filtered.map(aluno => (
-                        <div key={aluno.id}>
-                            <p>Nome: {aluno.name}</p>
-                            <p>Matrícula: {aluno.matricula}</p>
-                        </div>
-                    ))}
+                    {filtered.map(aluno => {
+                        const normalizedAlunoName = removeAccentsAndSpecialChars(aluno.name || '').toLowerCase();
+                        const normalizedAlunoMatricula = removeAccentsAndSpecialChars(aluno.matricula || '').toLowerCase();
+
+                        // Aplicar cor vermelha para itens duplicados
+                        const nameStyle = nameCounts[normalizedAlunoName] > 1 ? { color: 'red' } : {};
+                        const matriculaStyle = matriculaCounts[normalizedAlunoMatricula] > 1 ? { color: 'red' } : {};
+
+                        return (
+                            <div key={aluno.id}>
+                                <p style={nameStyle}>Nome: {aluno.name}</p>
+                                <p style={matriculaStyle}>Matrícula: {aluno.matricula}</p>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         );
-    }
+    };
 
 
 
