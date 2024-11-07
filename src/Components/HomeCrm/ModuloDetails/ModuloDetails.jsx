@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import './ModuloDetails.css'
 import PropTypes from 'prop-types'
-import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig';
 import Loading from '../../Loading/Loading';
 import { FaBookOpen } from "react-icons/fa";
@@ -10,6 +10,10 @@ import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
+import ButtonBold from '../../ButtonBold/ButtonBold';
+import { FaCirclePlus } from "react-icons/fa6";
+import ModalCreateConteudo from '../../ModalCreateConteudo/ModalCreateConteudo';
+import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem';
 
 function ModuloDetails({ moduloId }) {
     const navigate = useNavigate()
@@ -19,6 +23,9 @@ function ModuloDetails({ moduloId }) {
     const [conteudos, setConteudos] = useState([]);
     const [aulas, setAulas] = useState([]);
     const [provas, setProvas] = useState([]);
+    const [showModalConteudo, setShowModalConteudo] = useState(false)
+    const [conteudoDelete, setConteudoDelete] = useState('')
+    const [showModalDelete, setShowModalDelete] = useState(false)
 
     const optionsHeader = [
         {id: 1, icon: <FaBookOpen />, title: 'Conteúdo'},
@@ -30,6 +37,7 @@ function ModuloDetails({ moduloId }) {
             const moduloRef = doc(firestore, 'modulos', moduloId);
             const moduloSnapshot = await getDoc(moduloRef);
             if (moduloSnapshot.exists()) {
+                setLoading(false)
                 setModulo(moduloSnapshot.data());
                 console.log(moduloSnapshot.data())
             } else {
@@ -127,6 +135,36 @@ function ModuloDetails({ moduloId }) {
         
     }, [conteudos])
 
+    const closeModalConteudo = () => {
+        setShowModalConteudo(false)
+    }
+
+    const itemDelete = (id) => {
+        setConteudoDelete(id)
+        setShowModalDelete(true)
+    }
+
+    const deleteConteudo = async () => {
+        try {
+            console.log(conteudoDelete)
+            if (!firestore) {
+                throw new Error('Instância Firestore não encontrada');
+            }
+            const conteudoRef = doc(firestore, 'conteudo', conteudoDelete);
+            await deleteDoc(conteudoRef);
+            setShowModalDelete(false)
+            console.log(`Conteúdo com id ${conteudoDelete} deletado com sucesso.`);
+            fetchConteudos(moduloId)
+        } catch (error) {
+            console.error("Erro ao deletar conteúdo:", error);
+        }
+    };
+
+    const cancelarDelete = () => {
+        setShowModalDelete(false)
+        setConteudoDelete('')
+    }
+
     if (loading) {
         return <Loading />;
     }
@@ -138,9 +176,29 @@ function ModuloDetails({ moduloId }) {
     const renderConteudo = () => {
         return (
             <div className='divConteudos'>
-                <h2>Conteúdo</h2>
+                {showModalConteudo && <ModalCreateConteudo 
+                    title='Novo Conteúdo' 
+                    close={closeModalConteudo} 
+                    moduloId={moduloId} 
+                    updateDocs={() => fetchConteudos(moduloId)}/>
+                }
+                {showModalDelete && <ModalDeleteItem 
+                    confirm={deleteConteudo} 
+                    cancel={cancelarDelete} 
+                    text='Tem certeza que deseja excluir ese conteúdo?'/>
+                }
+                <div className='header'>
+                    <h2>Conteúdo</h2>
+                    <ButtonBold 
+                        title='Novo Conteúdo' 
+                        icon={<FaCirclePlus size={24}/>} 
+                        action={() => setShowModalConteudo(true)}
+                    />
+                </div>
+                
                 <div>
-                    {conteudos.map((c) => {
+                    {conteudos.length < 1 ? <div><p>Este módulo ainda não tem conteúdos! Adicione um conteúdo!</p></div> : 
+                    conteudos.map((c) => {
                         const itensRelacionados = [
                             ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'aula').map(item => ({ ...item, type: 'aula' })),
                             ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'game').map(item => ({ ...item, type: 'game' })),
@@ -170,11 +228,18 @@ function ModuloDetails({ moduloId }) {
                                         </div>
                                     ))
                                 ) : (
-                                    <p>Nenhum item relacionado encontrado</p>
+                                    <p>Conteúdo vazio! Adicione um material!</p>
                                 )}
+                                <div className='divBtnDelete'>
+                                    <button className='btnDelete' onClick={() => itemDelete(c.id)}>
+                                        <p>Excluir conteúdo</p>
+                                    </button>
+                                </div>
                             </div>
                         );
-                    })}
+                    })
+                    }
+                    
                 </div>
             </div>
         );

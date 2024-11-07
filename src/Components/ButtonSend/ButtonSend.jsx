@@ -1,13 +1,13 @@
 import './ButtonSend.css'
 import PropTypes from 'prop-types'
 
-function ButtonSend({title, icon, action, disabled = false}) {  
+function ButtonSend({title, icon, action, disable = false}) {  
     const executeAction = () => {
         action(true)
     }
     return (
         <div className='containerButtonSend'>
-            <button onClick={() => executeAction()} disabled={disabled}>
+            <button onClick={() => executeAction()} disabled={disable}>
                 <span>{title}</span>
                 {icon}
             </button>
@@ -19,7 +19,7 @@ ButtonSend.propTypes = {
     title: PropTypes.string.isRequired,
     icon: PropTypes.element.isRequired,
     action: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,  
+    disable: PropTypes.bool
 };
 
 export default ButtonSend;

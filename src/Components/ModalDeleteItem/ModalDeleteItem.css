@@ -1,0 +1,48 @@
+.containerModalDeleteItem{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    background-color: var(--blur);
+}
+.containerModalDeleteItem .modalConfirmDelete{
+    display: flex;
+    flex-direction: column;
+    background-color: #FFF;
+    padding: 24px;
+    border-radius: 4px;
+    gap: 24px;
+}
+.containerModalDeleteItem .modalConfirmDelete .titleAlert{
+    font-size: 18px;
+    font-weight: 500;
+}
+.containerModalDeleteItem .modalConfirmDelete .divBtns{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 32px;
+}
+.containerModalDeleteItem .modalConfirmDelete .divBtns button{
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 4px;
+    transition: .3s;
+}
+.containerModalDeleteItem .modalConfirmDelete .divBtns .delete{
+    color: var(--error);
+    font-weight: 500;
+}
+.containerModalDeleteItem .modalConfirmDelete .divBtns .delete:hover{
+    background-color: var(--errorHover);
+}
+.containerModalDeleteItem .modalConfirmDelete .divBtns .close:hover{
+    background-color: #00000025;
+}

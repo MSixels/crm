@@ -101,3 +101,26 @@
     color: #FFF;
     cursor: pointer;
 }
+.containerModuloDetails .divConteudos .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerModuloDetails .divConteudos .divConteudo .divBtnDelete{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    margin-top: 12px;
+}
+.containerModuloDetails .divConteudos .divConteudo .divBtnDelete button{
+    border: none;
+    background-color: var(--error);
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: #FFF;
+    cursor: pointer;
+    transition: .3s;
+}
+.containerModuloDetails .divConteudos .divConteudo .divBtnDelete button:hover{
+    scale: 1.02;
+}

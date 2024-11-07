@@ -4,12 +4,13 @@ import InputText from '../../InputText/InputText'
 import './Modulos.css'
 import { useEffect, useState } from 'react'
 import ModalCreateModulo from '../../ModalCreateModulo/ModalCreateModulo'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
 import PropTypes from 'prop-types'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
+import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem'
 
 function Modulos({ userType }) {
     const navigate = useNavigate()
@@ -19,6 +20,8 @@ function Modulos({ userType }) {
     const [alunos, setAlunos] = useState([])
     const [loading, setLoading] = useState(true)
     const [activeModalId, setActiveModalId] = useState(null)
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [moduloDelete, setModuloDelete] = useState('')
 
     const clickBtn = (openModal) => {
         setShowModal(openModal)
@@ -54,7 +57,6 @@ function Modulos({ userType }) {
 
             if (professorIds.length === 0) {
                 setProfessores([]); 
-                console.log("Nenhum professor encontrado.");
                 return;
             }
 
@@ -101,11 +103,28 @@ function Modulos({ userType }) {
     }, [])
 
     useEffect(() => {
-        if(modulos){
-            fetchProfessores(modulos)
-            fetchUsersType3()
+        try{
+            if(modulos){
+                fetchProfessores(modulos)
+                fetchUsersType3()
+            }
+        } catch(error){
+            console.log(error)
         }
+        
     }, [modulos])
+
+    const updateElemnts = async () => {
+        try {
+            await fetchModulos();     
+            if (modulos && modulos.length > 0) {
+                await fetchProfessores(modulos);
+                await fetchUsersType3();
+            }
+        } catch (error) {
+            console.log('Error no update', error);
+        }
+    };
 
     useEffect(() => {
         if(modulos.length > 0 && professores.length > 0 && alunos.length > 0){
@@ -150,9 +169,49 @@ function Modulos({ userType }) {
         setActiveModalId(previd => previd === id ? null : id);
     }
 
+    const itemDelete = (id) => {
+        setModuloDelete(id)
+        setShowDeleteModal(true)
+    }
+
+    const deleteModulo = async () => {
+        try {
+    
+            if (!firestore) {
+                throw new Error('Instância Firestore não encontrada');
+            }
+    
+            const moduloRef = doc(firestore, 'modulos', moduloDelete);
+            await deleteDoc(moduloRef);
+    
+            const conteudoQuery = query(
+                collection(firestore, 'conteudo'),
+                where('moduloId', '==', moduloDelete)
+            );
+            const querySnapshot = await getDocs(conteudoQuery);
+    
+            querySnapshot.forEach(async (docSnap) => {
+                const conteudoRef = doc(firestore, 'conteudo', docSnap.id);
+                await deleteDoc(conteudoRef);
+            });
+    
+            setShowDeleteModal(false);
+            fetchModulos();
+    
+        } catch (error) {
+            console.error("Erro ao deletar conteúdo:", error);
+        }
+    };
+
+    const cancelarDelete = () => {
+        setShowDeleteModal(false)
+        setModuloDelete('')
+    }  
+
     return(
         <div className='containerModulos'>
-            {showModal && <ModalCreateModulo title='Novo Módulo' close={closeBtn} /> }
+            {showModal && <ModalCreateModulo title='Novo Módulo' close={closeBtn} updateDocs={updateElemnts}/> }
+            {showDeleteModal && <ModalDeleteItem confirm={deleteModulo} cancel={cancelarDelete} text='Tem certeza que deseja excluir esse módulo?'/>}
             <h1>Módulos</h1>
             <div className='divContent'>
                 <div className='header'>
@@ -173,19 +232,17 @@ function Modulos({ userType }) {
                         {modulos.map((m) => {
                             if(professores.length > 0){
                                 const professor = professores.find(p => p.id === m.professorId);
+                                const professorName = professor ? professor.name : ''; 
                                 const countAlunos = alunos.length
-                                return(
+                                return (
                                     <div key={m.id} className='divValues'>
                                         <p className='spanBox'>{m.name}</p>
                                         <p className='spanBox'>N / A</p>
                                         <p className='spanBox'>{countAlunos}</p>
-                                        <p className='spanBox'>{professor.name ? professor.name : ''}</p>
+                                        <p className='spanBox'>{professorName}</p>
                                         <p className={`spanBox ${m.liberacao ? checkDates(m.liberacao, m.validade).liberacaoClass : 'active'}`}>
                                             {m.liberacao ? formatDate(m.liberacao) : 'N / A'}
                                         </p>
-                                        {/*<p className={`spanBox ${m.validade ? checkDates(m.liberacao, m.validade).validadeClass : 'active'}`}>
-                                            {m.validade ? formatDate(m.validade) : 'N / A'}
-                                        </p>*/}
                                         {userType === 1 && 
                                             <div className='btnEdit' onClick={() => openEditModal(m.id)}>
                                                 <BsThreeDotsVertical />
@@ -194,10 +251,11 @@ function Modulos({ userType }) {
                                         {activeModalId === m.id && 
                                             <div className='modalEditUser'>
                                                 <p className='text' onClick={() => navigate(`/professor/modulos/${m.id}`)}>Ver detalhes</p>
+                                                <p className='text alert' onClick={() => itemDelete(m.id)}>Excluir módulo</p>
                                             </div>
                                         }
                                     </div>
-                                )
+                                );
                             }
                         })}
                     </div>

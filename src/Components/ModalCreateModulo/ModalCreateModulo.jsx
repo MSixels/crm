@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import ButtonBold from '../ButtonBold/ButtonBold';
 import InputSend from '../InputSend/InputSend';
 import './ModalCreateModulo.css'
 import PropTypes from 'prop-types'
@@ -10,7 +9,7 @@ import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../../services/firebaseConfig';
 import ButtonSend from '../ButtonSend/ButtonSend';
 
-function ModalCreateModulo({title, close}) {
+function ModalCreateModulo({title, close, updateDocs}) {
     const [professores, setProfessores] = useState([])
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [name, setName] = useState('');
@@ -18,6 +17,7 @@ function ModalCreateModulo({title, close}) {
     const [liberacao, setLiberacao] = useState('')
     const [validade, setValidade] = useState('')
     const [loading, setLoading] = useState(false)
+    const [showErro, setShowErro] = useState(false)
 
     const handleDropChange = (newDrop) => {
         setSearchDrop(newDrop);
@@ -60,12 +60,20 @@ function ModalCreateModulo({title, close}) {
 
     const salvarModulo = async (send) => {
         if (send) {
-            setLoading(true)
+            setLoading(true);
             try {
-                if(name === '' || description === '' || searchDrop.id === '' || validade === '' || liberacao === ''){
-                    alert('Preencha os campos de Modulo')
-                    return
+                if (
+                    name === '' || 
+                    description === '' || 
+                    !searchDrop?.id ||
+                    validade === '' || 
+                    liberacao === ''
+                ) {
+                    setShowErro(true);
+                    setLoading(false);
+                    return;
                 }
+    
                 await addDoc(collection(firestore, 'modulos'), {
                     name: name,
                     description: description,
@@ -74,12 +82,13 @@ function ModalCreateModulo({title, close}) {
                     validade: validade,
                     createdAt: new Date(),
                 });
-                alert("Módulo salvo com sucesso!");
-                setLoading(false)
-                close()                
+    
+                setLoading(false);
+                updateDocs()
+                close();
             } catch (error) {
                 console.error("Erro ao salvar módulo:", error);
-                setLoading(false)
+                setLoading(false);
             }
         }
     };
@@ -100,7 +109,8 @@ function ModalCreateModulo({title, close}) {
                     <InputDate title='Liberação em' onSearchChange={setLiberacao}/>
                     <InputDate title='Válido até' onSearchChange={setValidade}/>
                 </div>
-                <ButtonSend title={loading ? 'Salvando' : 'Salvar Módulo'} icon action={() => salvarModulo(true)} disabled={loading}/>
+                {showErro && <p style={{color: 'red'}}>Preencha todos os campos!</p>}
+                <ButtonSend title={loading ? 'Salvando' : 'Salvar Módulo'} action={() => salvarModulo(true)} disabled={loading}/>
             </div>
         </div>
     )
@@ -108,7 +118,8 @@ function ModalCreateModulo({title, close}) {
 
 ModalCreateModulo.propTypes = {
     title: PropTypes.string.isRequired,
-    close: PropTypes.string.isRequired
+    close: PropTypes.func.isRequired,
+    updateDocs: PropTypes.func.isRequired,
 };
 
 export default ModalCreateModulo
