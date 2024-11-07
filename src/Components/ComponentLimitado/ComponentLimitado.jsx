@@ -8,6 +8,7 @@ import DropDown from '../DropDown/DropDown';
 import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore, storage } from '../../services/firebaseConfig';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import InputText from '../InputText/InputText';
 
 function ComponentLimitado() {
     const [name, setName] = useState('');
@@ -120,15 +121,15 @@ function ComponentLimitado() {
 
     const fetchModulosFromFirestore = async () => {
         try {
-            const q = query(collection(firestore, 'modulos'));  // Consulta todos os documentos da coleção 'modulos'
+            const q = query(collection(firestore, 'modulos')); 
             const querySnapshot = await getDocs(q);
             const modulosList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            console.log('modulosList: ', modulosList);  // Exibe os módulos no console
-            setOptionsModulos(modulosList);  // Atualiza o estado com a lista de módulos
+            console.log('modulosList: ', modulosList);
+            setOptionsModulos(modulosList); 
         } catch (error) {
-            console.error("Erro ao buscar módulos:", error);  // Exibe erro no console
+            console.error("Erro ao buscar módulos:", error); 
         } finally {
-            setLoading(false);  // Define como false após os dados serem carregados
+            setLoading(false); 
         }
     };
 
@@ -511,13 +512,11 @@ function ComponentLimitado() {
                     return;
                 }
                 
-                // Verificar se o arquivo PDF foi selecionado
                 if (!pdfFile) {
                     alert('Por favor, adicione um arquivo PDF.');
                     return;
                 }
     
-                // Fazer upload do PDF para o Firebase Storage
                 const storageRef = ref(storage, `pdfs/${pdfFile.name}`);
                 const uploadTask = uploadBytesResumable(storageRef, pdfFile);
     
@@ -670,6 +669,78 @@ function ComponentLimitado() {
 
 
 
+
+
+
+
+
+    const [searchTerm, setSearchTerm] = useState('');
+    const [alunos, setAlunos] = useState([]);
+
+    const handleSearchChange = (newSearchTerm) => {
+        setSearchTerm(newSearchTerm);
+    };
+
+    const removeAccentsAndSpecialChars = (text) => {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[-\s]/g, ''); 
+    };
+
+    const fetchMatriculas = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(firestore, 'alunos'));
+
+            const alunosList = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+
+            setAlunos(alunosList);
+            console.log("Alunos carregados com sucesso:", alunosList);
+        } catch (error) {
+            console.error("Erro ao carregar os alunos:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchMatriculas();
+    }, []);
+
+    const filtered = alunos.filter(a => {
+        const lowerCaseSearchTerm = removeAccentsAndSpecialChars(searchTerm).toLowerCase();
+        const alunoName = removeAccentsAndSpecialChars(a.name || '').toLowerCase();
+        const alunoMatricula = removeAccentsAndSpecialChars(a.matricula || '').toLowerCase();
+
+        const matchesSearchTerm = alunoName.includes(lowerCaseSearchTerm) ||
+            alunoMatricula.includes(lowerCaseSearchTerm);
+
+        return matchesSearchTerm;
+    });
+
+    const renderBuscarMatricula = () => {
+        return (
+            <div>
+                <h1>Buscar Matrícula</h1>
+                <div style={{alignItems: 'start', display: 'flex', flexDirection: 'column', width: '100%', marginTop: 20}}>
+                    <InputText title='Pesquisa na tabela' placeH='Matrícula' onSearchChange={handleSearchChange}/>
+                </div>
+
+                <div>
+                    {filtered.map(aluno => (
+                        <div key={aluno.id}>
+                            <p>Nome: {aluno.name}</p>
+                            <p>Matrícula: {aluno.matricula}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    }
+
+
+
     return (
         <div className='containerComponentLimitado'>
             {renderCreateModulo()}
@@ -678,6 +749,7 @@ function ComponentLimitado() {
             {renderCreateProva()}
             {renderCreateStorytelling()}
             {renderCreateGame()}
+            {renderBuscarMatricula()}
         </div>
     );
 }

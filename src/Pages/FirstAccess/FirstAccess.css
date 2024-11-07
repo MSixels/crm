@@ -7,3 +7,13 @@
     text-align: center;
     margin-top: 16px;
 }
+.containerLogin .block{
+    background-color: var(--secondary500);
+    color: var(--secondary1000);
+}
+.containerLogin .mT-20{
+    margin-top: -8px;
+}
+.containerLogin .alert{
+    background-color: var(--error);
+}

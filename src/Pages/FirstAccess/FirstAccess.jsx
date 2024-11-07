@@ -1,44 +1,87 @@
-import { useNavigate } from 'react-router-dom'
-import './FirstAccess.css'
-import LogoText from '../../imgs/logoText.png'
-import { MdSchool } from "react-icons/md";
+import { useNavigate } from 'react-router-dom';
+import './FirstAccess.css';
+import LogoText from '../../imgs/logoText.png';
 import { firestore } from '../../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { useState } from 'react';
-import Cookies from 'js-cookie'
-import { TfiReload } from 'react-icons/tfi';
+import Cookies from 'js-cookie';
 
 function FirstAccess() {
-    const navigate = useNavigate()
-    const [inputName, setInputName] = useState(false)
-    const [inputMatricula, setInputMatricula] = useState(false)
-    const [name, setName] = useState('')
-    const [matricula, setMatricula] = useState('')
-    const [alertCredentialInvalid, setAlertCredentialInvalid] = useState(false)
+    const navigate = useNavigate();
+    const [inputMatricula, setInputMatricula] = useState(false);
+    const [nameData, setNameData] = useState('');
+    const [matriculaData, setMatriculaData] = useState('');
+    const [matricula, setMatricula] = useState('');
+    const [alertCredentialInvalid, setAlertCredentialInvalid] = useState(false);
+    const [isConfirmButtonDisabled, setIsConfirmButtonDisabled] = useState(true);
 
-    const access = async () => {
+    // Função para remover acentos e caracteres especiais
+    const removeAccentsAndSpecialChars = (text) => {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[-\s]/g, ''); 
+    };
+
+    const buscarMatricula = async () => {
         if (matricula === '') {
             setInputMatricula(true);
+            return;
+        }
+
+        try {
+            const cleanedUserMatricula = removeAccentsAndSpecialChars(matricula);
+
+            const q = query(collection(firestore, "alunos"));
+            const querySnapshot = await getDocs(q);
+
+            let userFound = null;
+
+            querySnapshot.forEach(doc => {
+                const dbMatricula = removeAccentsAndSpecialChars(doc.data().matricula);
+                if (dbMatricula === cleanedUserMatricula) {
+                    userFound = doc.data();
+                }
+            });
+
+            if (userFound) {
+                setNameData(userFound.name);
+                setMatriculaData(userFound.matricula)
+                setAlertCredentialInvalid(false);
+                 
+            } else {
+                setAlertCredentialInvalid(true);
+                setIsConfirmButtonDisabled(true); 
+                setNameData('');
+                setMatriculaData('') 
+            }
+        } catch (error) {
+            console.error("Erro ao buscar aluno:", error);
+            alert('Erro ao buscar aluno.');
+        }
+    };
+
+    const access = async () => {
+        if (!matriculaData || !nameData) {
+            alert('Ocorreu um erro tente novamente')
+            return
         } else {
             try {
-                // Remove o hífen da matrícula do usuário
-                const cleanedUserMatricula = matricula.replace(/-/g, '');
-    
                 const q = query(collection(firestore, "alunos"));
                 const querySnapshot = await getDocs(q);
-    
-                // Verifica se a matrícula do usuário corresponde a alguma matrícula no banco de dados
+
                 let matriculaFound = false;
-    
+
                 querySnapshot.forEach(doc => {
-                    const dbMatricula = doc.data().matricula.replace(/-/g, ''); // Remove o hífen da matrícula no banco de dados
-                    if (dbMatricula === cleanedUserMatricula) {
+                    const dbMatricula = (doc.data().matricula); 
+                    if (dbMatricula === matriculaData) {
                         matriculaFound = true;
                     }
                 });
-    
+
                 if (matriculaFound) {
-                    Cookies.set('matricula', cleanedUserMatricula);
+                    Cookies.set('name', nameData)
+                    Cookies.set('matricula', matriculaData);
                     navigate('/login/aluno/primeiro-acesso/email');
                     setAlertCredentialInvalid(false);
                 } else {
@@ -50,6 +93,17 @@ function FirstAccess() {
             }
         }
     };
+
+    const confirmUser = () => {
+        setIsConfirmButtonDisabled(false);
+    }
+
+    const cancelUser = () => {
+        setNameData('')
+        setMatriculaData('')
+        setIsConfirmButtonDisabled(true);
+        setMatricula('')
+    }
 
     return (
         <div className='containerLogin'>
@@ -61,7 +115,6 @@ function FirstAccess() {
                         <span style={{width: '100%'}}>Você deve informar os dados que recebeu para criar sua conta.</span>
                     </div>
                     
-                    
                     <div className='divInput'>
                         <label htmlFor="matricula" style={{color: inputMatricula && 'red'}}>Número de matrícula</label>
                         <input 
@@ -70,7 +123,10 @@ function FirstAccess() {
                             id='matricula' 
                             className='input' 
                             value={matricula}
-                            onChange={(e) => {setMatricula(e.target.value), e.target.value != setInputMatricula(false)}}
+                            onChange={(e) => {
+                                setMatricula(e.target.value);
+                                setInputMatricula(false);
+                            }}
                             style={{borderColor: inputMatricula && 'red'}}
                         />
                     </div>
@@ -80,70 +136,25 @@ function FirstAccess() {
                             <p style={{color: 'red'}}>Tente novamente</p>
                         </div>
                     }
-                    <button className='btnLogin' onClick={access}>Confirmar</button>
+                    {nameData && matriculaData && (
+                        <div style={{marginBottom: 20}}>
+                            <p style={{fontWeight: 'bold'}}>{nameData}</p>
+                            <p>Matrícula: {matriculaData}</p>
+                        </div>
+                    )}
+                    {nameData && matriculaData && isConfirmButtonDisabled ? 
+                    (   
+                        <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
+                            <button className='btnLogin mT-20' onClick={confirmUser}>Sou eu </button>
+                            <button className='btnLogin mT-20 alert' onClick={cancelUser}>Não sou eu</button>
+                        </div>
+                    ) : nameData && matriculaData ? '' : <button className='btnLogin' onClick={buscarMatricula}>Buscar</button>}
+                    <button className={`btnLogin ${isConfirmButtonDisabled && 'block'}`} onClick={access} disabled={isConfirmButtonDisabled}>Confirmar</button>
                     <a href="/" className='decorationN loginLink'>Voltar para tela de login</a>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default FirstAccess
-
-
-/*
-
-
-
-const access = async () => {
-        if (name === '') {
-            setInputName(true);
-        } else if (matricula === '') {
-            setInputMatricula(true);
-        } else {
-            try {
-                const upperCaseName = name.toUpperCase();
-                const cleanedMatricula = matricula.replace(/-/g, '');
-    
-                // Adiciona o hífen antes do último dígito
-                const formattedMatricula = cleanedMatricula.slice(0, cleanedMatricula.length - 1) + '-' + cleanedMatricula.slice(-1);
-    
-                const q = query(
-                    collection(firestore, "alunos"),
-                    where("name", "==", upperCaseName), 
-                    where("matricula", "==", formattedMatricula) 
-                );
-    
-                const querySnapshot = await getDocs(q);
-    
-                if (!querySnapshot.empty) {
-                    Cookies.set('name', upperCaseName);
-                    Cookies.set('matricula', formattedMatricula);
-                    
-                    navigate('/login/aluno/primeiro-acesso/email');
-                    setAlertCredentialInvalid(false);
-                } else {
-                    setAlertCredentialInvalid(true);
-                }
-            } catch (error) {
-                console.error("Erro ao buscar aluno:", error);
-                alert('Erro ao buscar aluno.');
-            }
-        }
-    };
-    
-    
-    
-    <div className='divInput'>
-                        <label htmlFor="name" style={{color: inputName && 'red'}}>Nome completo</label>
-                        <input 
-                            type="name" 
-                            name='name' 
-                            id='name' 
-                            className='input' 
-                            value={name}
-                            onChange={(e) => {setName(e.target.value), e.target.value != setInputName(false)}}
-                            style={{borderColor: inputName && 'red'}}
-                        />
-                    </div>
-    */
+export default FirstAccess;
