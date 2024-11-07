@@ -140,7 +140,7 @@
     width: 260px;
 }
 
-.btn-access {
+.btn-access, .btn-view-responses {
     border-radius: 4px;
     border: 1px solid var(--bg-principal);
     padding: 0.5rem;
@@ -165,6 +165,11 @@
     background-color: var(--bg-White);
     color: var(--bg-principal);
     border: 1px solid var(--bg-principal);
+}
+
+.btn-view-responses:hover {
+    background-color: var(--bg-principal);
+    color: var(--bg-White);
 }
 
 .btn-access-disable:disabled{
