@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
+import { TbRuler3 } from 'react-icons/tb';
+import Loading from '../../Loading/Loading';
 
 function Prova({ materialId, userId, contentId }) {
   const [provas, setProvas] = useState([]);
@@ -14,6 +16,8 @@ function Prova({ materialId, userId, contentId }) {
   const { moduloId } = useParams();
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState(30 * 60);
+  const [provaFinish, setProvaFinish] = useState([])
+  const [loading, setLoading] = useState(TbRuler3)
 
   useEffect(() => {
     const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
@@ -30,6 +34,38 @@ function Prova({ materialId, userId, contentId }) {
 
     setTimeLeft(calculateRemainingTime());
   }, []);
+
+  const fetchProgressProvas = async (materialId, userId) => {
+    try {
+        const progressProvasRef = collection(firestore, 'progressProvas');  
+        
+        const q = query(
+            progressProvasRef,
+            where("type", "==", "prova"),          
+            where("userId", "==", userId),        
+            where("provaId", "==", materialId)    
+        );
+
+        const querySnapshot = await getDocs(q);
+        
+        const progressProvasList = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        console.log("Progress provas encontrados NEW:", progressProvasList);
+        setProvaFinish(progressProvasList)
+        setLoading(false)
+    } catch (error) {
+        console.error("Erro ao buscar progressProvas:", error);
+        setLoading(false)
+    }
+};
+
+// Chama a função para buscar as provas
+  useEffect(() => {
+      fetchProgressProvas(materialId, userId);
+  }, [materialId, userId]);
 
   const calculateRemainingTime = () => {
     const startTime = localStorage.getItem('startTime');
@@ -167,8 +203,15 @@ function Prova({ materialId, userId, contentId }) {
     }
   };
 
-  return (
-    <div className='containerProva'>
+  const renderResposta = () => {
+    return(
+      {/*======= Componente de ProvaEnd =======*/}
+    )
+  }
+
+  const renderProvas = () => {
+    return(
+      <>
       <div className="timer">
         <p>Tempo restante: {formatTime(timeLeft)}</p>
       </div>
@@ -237,6 +280,21 @@ function Prova({ materialId, userId, contentId }) {
           )}
         </div>
       )}
+      </>
+    )
+  }
+
+  useEffect(() => {
+    console.log('provaFinish: ', provaFinish)
+  }, [provaFinish])
+
+  if(loading){
+    return <Loading />
+  }
+
+  return (
+    <div className='containerProva'>
+      {provaFinish.length > 0 ? renderResposta() : renderProvas()}
     </div>
   );
 }
