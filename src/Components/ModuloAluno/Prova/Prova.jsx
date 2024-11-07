@@ -205,7 +205,7 @@ function Prova({ materialId, userId, contentId }) {
 
   const renderResposta = () => {
     return(
-      {/*======= Componente de ProvaEnd =======*/}
+      {/*======= Crie o componente de Repostas Aqui =======*/}
     )
   }
 
