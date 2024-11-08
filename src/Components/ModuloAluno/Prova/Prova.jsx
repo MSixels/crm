@@ -8,6 +8,7 @@ import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TbRuler3 } from 'react-icons/tb';
 import Loading from '../../Loading/Loading';
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 
 function Prova({ materialId, userId, contentId }) {
   const [provas, setProvas] = useState([]);
@@ -23,7 +24,7 @@ function Prova({ materialId, userId, contentId }) {
     const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
     const savedQuestionIndex = parseInt(localStorage.getItem('currentQuestionIndex'), 10);
     const savedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
-    
+
     if (savedResponses) setSelectedResponses(savedResponses);
     if (!isNaN(savedQuestionIndex)) setCurrentQuestionIndex(savedQuestionIndex);
     if (savedQuestions) {
@@ -31,8 +32,6 @@ function Prova({ materialId, userId, contentId }) {
     } else {
       fetchProvasData();
     }
-
-    setTimeLeft(calculateRemainingTime());
   }, []);
 
   const fetchProgressProvas = async (materialId, userId) => {
@@ -55,6 +54,8 @@ function Prova({ materialId, userId, contentId }) {
 
         console.log("Progress provas encontrados NEW:", progressProvasList);
         setProvaFinish(progressProvasList)
+        console.log(progressProvasList[0].responses)
+        setSelectedResponses(progressProvasList[0].responses || [])
         setLoading(false)
     } catch (error) {
         console.error("Erro ao buscar progressProvas:", error);
@@ -62,7 +63,6 @@ function Prova({ materialId, userId, contentId }) {
     }
 };
 
-// Chama a função para buscar as provas
   useEffect(() => {
       fetchProgressProvas(materialId, userId);
   }, [materialId, userId]);
@@ -136,6 +136,11 @@ function Prova({ materialId, userId, contentId }) {
     localStorage.setItem('selectedResponses', JSON.stringify(updatedResponses));
   };
 
+  useEffect(() => {
+    const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
+    console.log('Respostas salvas recuperadas:', savedResponses);
+  }, []);
+
   const handleNextQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => {
       const newIndex = prevIndex + 1;
@@ -203,11 +208,96 @@ function Prova({ materialId, userId, contentId }) {
     }
   };
 
-  const renderResposta = () => {
-    return(
-      {/*======= Crie o componente de Repostas Aqui =======*/}
-    )
-  }
+  const resultadoProva = () => {
+    const score = provaFinish[0]?.score || 0;
+    const aprovado = score >= 50;
+  
+    return (
+      <div className="resultadoProva">
+        <div className="titleIcon">
+          <div className="divIconAula">
+            <FaBookOpen />
+          </div>
+          <h2 className="testTitle">Nome da Prova</h2>
+        </div>
+        <div className="resultadoProva__status">
+          {aprovado ? (
+            <FaCheckCircle color="#1BA284" size={48} className="icon aprovado" />
+          ) : (
+            <FaTimesCircle color="#D32F2F" size={48} className="icon reprovado" />
+          )}
+          <p className="text-aviso">
+            {aprovado
+              ? 'Parabéns, você foi aprovado(a). Continue seus estudos na próxima aula.'
+              : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova mais uma vez!'}
+          </p>
+          <p className="resultadoProva__score" style={{ backgroundColor: score < 50 ? '#D32F2F' : '#1BA284' }}>
+          {score} PTS
+        </p>
+          <button
+            className="resultadoProva__button"
+            onClick={() => navigate(`/aluno/modulo/${moduloId}/aulas`)}
+          >
+            {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
+          </button>
+        </div>
+        <div className="perguntas_respostas">
+          <ul>
+            {provas[0]?.quests.map((quest, index) => {
+              const selectedResponseIndex = selectedResponses[index];
+              const selectedResponse =
+                selectedResponseIndex !== undefined
+                  ? quest.responses[selectedResponseIndex]
+                  : null;
+              const isCorrect = selectedResponse?.value === true;
+              const isWrong = selectedResponse?.value === false;
+              return (
+                <li key={index}>
+                  <p className="pergunta_recebida">{quest.quest}</p>
+                  {selectedResponse && (
+                    <div
+                      className={`resposta_selecionada ${
+                        isCorrect ? 'correta' : isWrong ? 'errada' : ''
+                      }`}
+                    >
+                      <div
+                        className={`circle-checkbox ${
+                          isCorrect ? 'correta' : isWrong ? 'errada' : ''
+                        }`}
+                      >
+                        <div
+                          className={`circle-inner ${
+                            isCorrect ? 'correta' : isWrong ? 'errada' : ''
+                          }`}
+                          >
+                          </div>
+                      </div>
+                      <p title={selectedResponse.text}>
+                        {selectedResponse.text.length > 140
+                          ? `${selectedResponse.text.substring(0, 90)}...`
+                          : selectedResponse.text}
+                      </p>
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        <div className="btn_final">
+          <span></span>
+          <button
+            className="resultadoProva__button"
+            onClick={() => navigate(`/aluno/modulo/${moduloId}/aulas`)}
+          >
+            {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
+          </button>
+        </div>
+      </div>
+    );
+  };
+  
+
 
   const renderProvas = () => {
     return(
@@ -294,7 +384,7 @@ function Prova({ materialId, userId, contentId }) {
 
   return (
     <div className='containerProva'>
-      {provaFinish.length > 0 ? renderResposta() : renderProvas()}
+      {provaFinish.length > 0 ? resultadoProva() : renderProvas()}
     </div>
   );
 }
