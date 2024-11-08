@@ -72,7 +72,7 @@ function VideoAula({ materialId, userId }) {
     };
     
     const embedUrl = getEmbedUrl(aulas[0]?.videoUrl);
-    
+    // Testando push certo
 
     return (
         <div className='containerVideoAula'>
@@ -96,6 +96,7 @@ function VideoAula({ materialId, userId }) {
                             Acessar link
                         </button>
                     )}
+                    
                     <div className="descriptionAula">
                         <p className='descriptionAula-text'>{aulas[0].description}</p>
                     </div>
