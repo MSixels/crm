@@ -61,26 +61,41 @@ function VideoAula({ materialId, userId }) {
     };
 
     const getEmbedUrl = (videoUrl) => {
-        const videoId = videoUrl.split('v=')[1];
-        const ampersandPosition = videoId ? videoId.indexOf('&') : -1;
-        return ampersandPosition !== -1 ? 
-            `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}` : 
-            `https://www.youtube.com/embed/${videoId}`;
+        if (videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be'))) {
+            const videoId = videoUrl.split('v=')[1];
+            const ampersandPosition = videoId ? videoId.indexOf('&') : -1;
+            return ampersandPosition !== -1 ? 
+                `https://www.youtube.com/embed/${videoId.substring(0, ampersandPosition)}` : 
+                `https://www.youtube.com/embed/${videoId}`;
+        }
+        return null;
     };
+    
+    const embedUrl = getEmbedUrl(aulas[0]?.videoUrl);
+    
 
     return (
         <div className='containerVideoAula'>
             {aulas.length > 0 &&
                 <div className='videoAulaContent'>
                     <h2 className='contentName'>{aulas[0].name}</h2>
-                    <iframe
-                        className='iframeStyle'
-                        src={getEmbedUrl(aulas[0].videoUrl)}
-                        title={aulas[0].name}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    />
+                    {embedUrl ? (
+                        <iframe
+                            className='iframeStyle'
+                            src={embedUrl}
+                            title={aulas[0].name}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    ) : (
+                        <button
+                            className='linkButton'
+                            onClick={() => window.open(aulas[0].videoUrl, '_blank')}
+                        >
+                            Acessar link
+                        </button>
+                    )}
                     <div className="descriptionAula">
                         <p className='descriptionAula-text'>{aulas[0].description}</p>
                     </div>
