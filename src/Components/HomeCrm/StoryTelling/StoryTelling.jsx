@@ -1,5 +1,3 @@
-import { FaCirclePlus } from 'react-icons/fa6'
-import ButtonBold from '../../ButtonBold/ButtonBold'
 import InputText from '../../InputText/InputText'
 import './StoryTelling.css'
 import PropTypes from 'prop-types'
@@ -10,7 +8,6 @@ import { FaAngleDown, FaAngleUp } from 'react-icons/fa'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
-import { FaAngleRight } from "react-icons/fa6";
 import { useNavigate } from 'react-router-dom'
 
 function StoryTelling({ userType }) {
@@ -168,12 +165,9 @@ function StoryTelling({ userType }) {
                         </div>
                         {slicedStory.map((a) => {
                             return(
-                                <div key={a.id} className='divConteudos'>
+                                <div key={a.id} className='divConteudos' onClick={() => navigate(`/professor/storytelling/${a.conteudoId}`)}>
                                     <span className='spanBox'>{a.conteudoName ? a.conteudoName : 'Sem nome'}</span>
                                     <span className='spanBox'>{a.storyTellingCount}</span>
-                                    <div className='divIconView' onClick={() => navigate(`/professor/storytelling/${a.conteudoId}`)}>
-                                        <FaAngleRight />
-                                    </div>
                                 </div>
                             )
                         })}

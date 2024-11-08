@@ -32,6 +32,7 @@
 }
 .containerStoryTelling .divConteudos{
     position: relative;
+    cursor: pointer;
 }
 .containerStoryTelling .divHeader,
 .containerStoryTelling .divConteudos {
