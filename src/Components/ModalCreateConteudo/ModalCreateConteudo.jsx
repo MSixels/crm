@@ -28,11 +28,43 @@ function ModalCreateConteudo({title, close, moduloId, updateDocs}) {
                     setLoading(false)
                     return
                 }
-                await addDoc(collection(firestore, 'conteudo'), {
+                const conteudoRef = await addDoc(collection(firestore, 'conteudo'), {
                     name: name,
                     moduloId: moduloId,
                     openDate: liberacao,
                     createdAt: new Date(),
+                });
+                await addDoc(collection(firestore, 'aulas'), {
+                    conteudoId: conteudoRef.id,  
+                    createdAt: new Date(),
+                    description: 'Descrição não configurada',
+                    name: 'Aula não configurada',
+                    type: 'aula',
+                    videoUrl: 'url não configurada',
+                });
+                await addDoc(collection(firestore, 'provas'), {
+                    conteudoId: conteudoRef.id,  
+                    createdAt: new Date(),
+                    description: 'Descrição não configurada',
+                    name: 'Prova não configurada',
+                    quests: [],  
+                    type: 'prova',
+                });
+                await addDoc(collection(firestore, 'aulas'), {
+                    conteudoId: conteudoRef.id,  
+                    createdAt: new Date(),
+                    description: 'Descrição não configurada',
+                    link: 'Link não configurado',
+                    name: 'Gameficação não configurada',
+                    type: 'game',
+                });
+                await addDoc(collection(firestore, 'provas'), {
+                    conteudoId: conteudoRef.id,  
+                    createdAt: new Date(),
+                    description: 'Descrição não configurada',
+                    name: 'StoryTelling não configurada',
+                    pdfUrl: 'Sem arquivo',
+                    type: 'storyTelling',
                 });
                 setLoading(false)
                 close()
@@ -53,7 +85,7 @@ function ModalCreateConteudo({title, close, moduloId, updateDocs}) {
                         <IoClose size={25} onClick={() => close(false)}/>
                     </div>
                 </div>
-                <InputSend title='Nome do conteúdo' placeH='' onSearchChange={getName} type='text' />
+                <InputSend title='Nome do tópico' placeH='' onSearchChange={getName} type='text' />
                 <div className='divFooter'>
                     <InputDate title='Liberação em' onSearchChange={setLiberacao}/>
                 </div>

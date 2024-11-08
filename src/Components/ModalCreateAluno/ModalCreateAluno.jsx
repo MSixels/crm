@@ -82,7 +82,7 @@ function ModalCreateAluno({ title, close }) {
                         const userId = userCredential.user.uid;
     
                         await setDoc(doc(firestore, 'users', userId), {
-                            name: name,
+                            name: '',
                             email: email,
                             type: 3,
                             userId: userId,

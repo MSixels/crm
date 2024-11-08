@@ -33,10 +33,10 @@ function StoryTellingDetails({ conteudoId }) {
             }));
             console.log('progressProvasList: ', progressProvasList)
             setProgressProvas(progressProvasList);
+            
         } catch (error) {
             console.error("Erro ao carregar progressProvas:", error);
-        } finally {
-            setLoading(false);
+            
         }
     };
 
@@ -50,11 +50,11 @@ function StoryTellingDetails({ conteudoId }) {
                 
             } else {
                 console.log("Conteúdo não encontrado!");
+                
             }
         } catch (error) {
             console.error("Erro ao carregar conteúdo:", error);
-        } finally {
-            setLoading(false);
+            setLoading(false)
         }
     };
 
@@ -68,7 +68,6 @@ function StoryTellingDetails({ conteudoId }) {
                 return [];
             }
     
-            // Dividir os userIds em grupos de 30
             const userIdChunks = [];
             for (let i = 0; i < userIds.length; i += 30) {
                 userIdChunks.push(userIds.slice(i, i + 30));
@@ -76,7 +75,6 @@ function StoryTellingDetails({ conteudoId }) {
     
             let usersList = [];
     
-            // Realizar as consultas para cada chunk de userIds
             for (const chunk of userIdChunks) {
                 const q = query(
                     collection(firestore, 'users'),
@@ -94,8 +92,10 @@ function StoryTellingDetails({ conteudoId }) {
     
             setUsers(usersList); 
             console.log('Users: ', usersList);
+            setLoading(false)
         } catch (error) {
             console.error("Erro ao carregar usuários:", error);
+            setLoading(false)
         }
     };
 

@@ -124,3 +124,16 @@
 .containerModuloDetails .divConteudos .divConteudo .divBtnDelete button:hover{
     scale: 1.02;
 }
+.containerModuloDetails .textAlert{
+    font-size: 12px;
+    background-color: var(--error);
+    color: #FFF;
+    padding: 4px 12px;
+    border-radius: 25px;
+}
+.containerModuloDetails .divHeaderConteudo{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}

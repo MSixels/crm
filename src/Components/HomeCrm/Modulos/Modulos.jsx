@@ -176,7 +176,6 @@ function Modulos({ userType }) {
 
     const deleteModulo = async () => {
         try {
-    
             if (!firestore) {
                 throw new Error('Instância Firestore não encontrada');
             }
@@ -191,15 +190,35 @@ function Modulos({ userType }) {
             const querySnapshot = await getDocs(conteudoQuery);
     
             querySnapshot.forEach(async (docSnap) => {
-                const conteudoRef = doc(firestore, 'conteudo', docSnap.id);
+                const conteudoId = docSnap.id;
+                const conteudoRef = doc(firestore, 'conteudo', conteudoId);
                 await deleteDoc(conteudoRef);
+    
+                const aulaQuery = query(
+                    collection(firestore, 'aulas'),
+                    where('conteudoId', '==', conteudoId)
+                );
+                const aulaSnapshot = await getDocs(aulaQuery);
+                aulaSnapshot.forEach(async (aulaSnap) => {
+                    const aulaRef = doc(firestore, 'aulas', aulaSnap.id);
+                    await deleteDoc(aulaRef);
+                });
+    
+                const provaQuery = query(
+                    collection(firestore, 'provas'),
+                    where('conteudoId', '==', conteudoId)
+                );
+                const provaSnapshot = await getDocs(provaQuery);
+                provaSnapshot.forEach(async (provaSnap) => {
+                    const provaRef = doc(firestore, 'provas', provaSnap.id);
+                    await deleteDoc(provaRef);
+                });
             });
     
             setShowDeleteModal(false);
             fetchModulos();
-    
         } catch (error) {
-            console.error("Erro ao deletar conteúdo:", error);
+            console.error("Erro ao deletar módulo e conteúdos:", error);
         }
     };
 
@@ -235,7 +254,7 @@ function Modulos({ userType }) {
                                 const professorName = professor ? professor.name : ''; 
                                 const countAlunos = alunos.length
                                 return (
-                                    <div key={m.id} className='divValues'>
+                                    <div key={m.id} className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}`)}>
                                         <p className='spanBox'>{m.name}</p>
                                         <p className='spanBox'>N / A</p>
                                         <p className='spanBox'>{countAlunos}</p>

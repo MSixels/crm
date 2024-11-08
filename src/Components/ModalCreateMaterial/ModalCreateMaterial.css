@@ -1,0 +1,40 @@
+.containerModalCreateMaterial{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    background-color: var(--blur);
+}
+.containerModalCreateMaterial .modalCreate{
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    background-color: #FFF;
+    border-radius: 4px;
+    gap: 18px;
+    width: 90%;
+    max-width: 600px;
+}
+.containerModalCreateMaterial .modalCreate .divheader{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerModalCreateMaterial .modalCreate .divClose{
+    cursor: pointer;
+}
+.containerModalCreateMaterial .divFooter{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+@media (max-width: 767px){
+    .containerModalCreateMaterial .divFooter{
+        flex-wrap: wrap;
+    }
+}

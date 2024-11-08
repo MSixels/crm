@@ -25,6 +25,9 @@
     display: flex;
     flex-direction: column;
 }
+.containerModulos .divValues{
+    cursor: pointer;
+}
 .containerModulos .divHeader,
 .containerModulos .divValues {
     display: grid;

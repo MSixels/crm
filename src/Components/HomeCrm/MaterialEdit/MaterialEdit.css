@@ -1,0 +1,185 @@
+.containerMaterialEdit{
+    padding: 32px;
+    color: var(--secondary1000);
+}
+.containerMaterialEdit .divHeader{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.containerMaterialEdit .divHeader .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--secondary1000);
+    color: #FFF;
+    padding: 6px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+.containerMaterialEdit .containerItem{
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.containerMaterialEdit .containerItem .contents{
+    background-color: #FFF;
+    border-radius: 8px;
+    padding: 12px;
+}
+.containerMaterialEdit .containerItem .divInput{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+.containerMaterialEdit .containerItem .divInput label{
+    position: absolute;
+    top: 0px;
+    left: 15px;
+    background-color: #FFF;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-inline: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+.containerMaterialEdit .divInput input{
+    border: solid 1px var(--primary-200);
+    padding: 12px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+.containerMaterialEdit .containerItem .divInput input::placeholder{
+    color: var(--color-3);
+}
+.containerMaterialEdit .containerItem .divTextArea{
+    display: 'flex'; 
+    flex-direction: 'column';
+    position: 'relative'; 
+    padding-bottom: 12px;
+    margin-top: 16px;
+}
+.containerMaterialEdit .containerItem .divBtns{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerMaterialEdit .containerItem .end{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
+.containerMaterialEdit .containerItem .divBtns .btnConfirm{
+    border: none;
+    padding: 6px 12px;
+    background-color: var(--primary);
+    color: #FFF;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: .3s;
+    cursor: pointer;
+}
+.containerMaterialEdit .containerItem .divBtns .btnConfirm:hover{
+    scale: 1.02;
+}
+.containerMaterialEdit .containerItem .divBtns .alert{
+    background-color: var(--error);
+}
+.containerMaterialEdit .containerItem .labelFile{
+    display: flex;
+    align-items: center;
+    width: 200px;
+    border: solid 1px var(--secondary500);
+    padding: 8px;
+    border-radius: 4px;
+    justify-content: center;
+    cursor: pointer;
+}
+.containerMaterialEdit .containerItem .active{
+    background-color: var(--success-light);
+    border: solid 1px var(--success-light);
+    color: var(--success);
+}
+.containerMaterialEdit .divHeaderQuests{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.containerMaterialEdit .btnAdd{
+    border: solid 1px var(--secondary800);
+    background-color: transparent;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: .3s;
+    color: var(--secondary800);
+}
+.containerMaterialEdit .btnAdd:hover{
+    scale: 1.02;
+}
+.containerMaterialEdit .divQuests{
+    display: flex;
+    flex-direction: column;
+    border: solid 1px var(--secondary500);
+    padding: 12px;
+    border-radius: 4px;
+    margin-top: 12px;
+}
+.containerMaterialEdit .divQuests .divIcon{
+    border: solid 1px var(--secondary500);
+    padding: 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: .3s;
+}
+.containerMaterialEdit .divQuests .delete:hover{
+    color: var(--error);
+    border: solid 1px var(--error);
+}
+.containerMaterialEdit .divQuests .divCircle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    border: solid 2px var(--primary);
+}
+.containerMaterialEdit .divQuests .divCircle .divBall{
+    width: 12px;
+    height: 12px;
+    border-radius: 12px;
+    background-color: var(--primary);
+    display: none;
+    
+}
+.containerMaterialEdit .divQuests .divCircle .active{
+    display: flex;
+}
+.containerMaterialEdit .divQuests .maxW{
+    width: 100%;
+}
+.containerMaterialEdit .divQuests .divRespostas{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+.containerMaterialEdit .divQuests .divRespostas .divBtnSelectResponse{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.containerMaterialEdit .divQuests .divQuest{
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
