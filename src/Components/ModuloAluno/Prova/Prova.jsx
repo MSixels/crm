@@ -218,7 +218,7 @@ function Prova({ materialId, userId, contentId }) {
           <div className="divIconAula">
             <FaBookOpen />
           </div>
-          <h2 className="testTitle">Nome da Prova</h2>
+          <h2 className="testTitle"></h2>
         </div>
         <div className="resultadoProva__status">
           {aprovado ? (
@@ -256,19 +256,13 @@ function Prova({ materialId, userId, contentId }) {
                   <p className="pergunta_recebida">{quest.quest}</p>
                   {selectedResponse && (
                     <div
-                      className={`resposta_selecionada ${
-                        isCorrect ? 'correta' : isWrong ? 'errada' : ''
-                      }`}
+                      className={`resposta_selecionada`}
                     >
                       <div
-                        className={`circle-checkbox ${
-                          isCorrect ? 'correta' : isWrong ? 'errada' : ''
-                        }`}
+                        className={`circle-checkbox`}
                       >
                         <div
-                          className={`circle-inner ${
-                            isCorrect ? 'correta' : isWrong ? 'errada' : ''
-                          }`}
+                          className={`circle-inner`}
                           >
                           </div>
                       </div>

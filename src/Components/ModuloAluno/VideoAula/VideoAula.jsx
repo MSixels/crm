@@ -72,8 +72,6 @@ function VideoAula({ materialId, userId }) {
     };
     
     const embedUrl = getEmbedUrl(aulas[0]?.videoUrl);
-    // Testando push certo
-
     return (
         <div className='containerVideoAula'>
             {aulas.length > 0 &&
