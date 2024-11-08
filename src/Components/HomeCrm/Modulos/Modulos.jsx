@@ -254,7 +254,7 @@ function Modulos({ userType }) {
                                 const professorName = professor ? professor.name : ''; 
                                 const countAlunos = alunos.length
                                 return (
-                                    <div key={m.id} className='divValues'>
+                                    <div key={m.id} className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}`)}>
                                         <p className='spanBox'>{m.name}</p>
                                         <p className='spanBox'>N / A</p>
                                         <p className='spanBox'>{countAlunos}</p>

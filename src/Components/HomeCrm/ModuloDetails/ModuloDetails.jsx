@@ -14,6 +14,7 @@ import ButtonBold from '../../ButtonBold/ButtonBold';
 import { FaCirclePlus } from "react-icons/fa6";
 import ModalCreateConteudo from '../../ModalCreateConteudo/ModalCreateConteudo';
 import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem';
+import ModalCreateMaterial from '../../ModalCreateMaterial/ModalCreateMaterial'
 
 function ModuloDetails({ moduloId }) {
     const navigate = useNavigate()
@@ -28,6 +29,7 @@ function ModuloDetails({ moduloId }) {
     const [showModalDelete, setShowModalDelete] = useState(false)
     const [showModalDeleteMaterial, setShowModalDeleteMaterial] = useState(false)
     const [materialDelete, setMaterialDelete] = useState({})
+    const [showModalCreateMaterial, setShowModalCreateMaterial] = useState(false)
 
     const optionsHeader = [
         {id: 1, icon: <FaBookOpen />, title: 'Conteúdo'},
@@ -230,6 +232,10 @@ function ModuloDetails({ moduloId }) {
         setShowModalDeleteMaterial(false)
     }
 
+    const closeModalMaterial = () => {
+        setShowModalCreateMaterial(false)
+    }
+
     if (loading) {
         return <Loading />;
     }
@@ -257,6 +263,7 @@ function ModuloDetails({ moduloId }) {
                     cancel={cancelarDeleteMaterial} 
                     text='Tem certeza que deseja excluir esse material?'/>
                 }
+                
                 <div className='header'>
                     <h2>Conteúdo</h2>
                     <ButtonBold 
@@ -268,52 +275,69 @@ function ModuloDetails({ moduloId }) {
                 
                 <div>
                     {conteudos.length < 1 ? <div><p>Este módulo ainda não tem conteúdos! Adicione um conteúdo!</p></div> : 
-                    conteudos.map((c) => {
-                        const itensRelacionados = [
-                            ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'aula').map(item => ({ ...item, type: 'aula' })),
-                            ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'game').map(item => ({ ...item, type: 'game' })),
-                            ...provas.filter((prova) => prova.conteudoId === c.id && prova.type === 'prova').map(item => ({ ...item, type: 'prova' })),
-                            ...provas.filter((prova) => prova.conteudoId === c.id && prova.type === 'storyTelling').map(item => ({ ...item, type: 'storyTelling' }))
-                        ];
-    
-                        const itensOrdenados = itensRelacionados.sort((a, b) => {
-                            return a.createdAt.seconds - b.createdAt.seconds;
-                        });
-    
-                        return (
-                            <div key={c.id} className='divConteudo'>
-                                <div className='divHeaderConteudo'>
-                                    <p style={{ fontSize: 18, fontWeight: 'bold' }}>{c.name}</p>
-                                    <ButtonBold title='Novo conteúdo' icon={<FaCirclePlus size={24}/>}/>
-                                </div>
-                                
-                                {itensOrdenados.length > 0 ? (
-                                    itensRelacionados.map((item) => (
-                                        <div key={item.id} className='divValue'>
-                                            <p>{item.name}</p>
-                                            <div className='divOptionsValue'>
-                                                
-                                                {item.name.includes('não configurada') ? <p className='textAlert'>Não configurado</p> : ''}
-                                                <div className='divIcon delete' onClick={() => itemDeleteMatrial(item.id, item.type)}>
-                                                    <MdDelete size={24}/>
-                                                </div>
-                                                <div className='divIcon edit' onClick={() => navigate(`/professor/modulos/${moduloId}/${item.type}/${item.id}`)}>
-                                                    <MdEdit size={24}/>
+                        conteudos.map((c) => {
+                            const itensRelacionados = [
+                                ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'aula').map(item => ({ ...item, type: 'aula' })),
+                                ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'game').map(item => ({ ...item, type: 'game' })),
+                                ...provas.filter((prova) => prova.conteudoId === c.id && prova.type === 'prova').map(item => ({ ...item, type: 'prova' })),
+                                ...provas.filter((prova) => prova.conteudoId === c.id && prova.type === 'storyTelling').map(item => ({ ...item, type: 'storyTelling' }))
+                            ];
+        
+                            const itensOrdenados = itensRelacionados.sort((a, b) => {
+                                const order = {
+                                    aula: 1,
+                                    game: 2,
+                                    prova: 3,
+                                    storyTelling: 4
+                                };
+                            
+                                if (order[a.type] !== order[b.type]) {
+                                    return order[a.type] - order[b.type];
+                                }
+                            
+                                return a.createdAt.seconds - b.createdAt.seconds;
+                            });
+        
+                            return (
+                                <div key={c.id} className='divConteudo'>
+                                    {showModalCreateMaterial && <ModalCreateMaterial 
+                                        title='Novo conteúdo'
+                                        close={closeModalMaterial} 
+                                        conteudoId={c.id} 
+                                        updateDocs={() => fetchConteudos(moduloId)}/>
+                                    }
+                                    <div className='divHeaderConteudo'>
+                                        <p style={{ fontSize: 18, fontWeight: 'bold' }}>{c.name}</p>
+                                        <ButtonBold title='Novo conteúdo' icon={<FaCirclePlus size={24}/>} action={() => setShowModalCreateMaterial(true)}/>
+                                    </div>
+                                    
+                                    {itensOrdenados.length > 0 ? (
+                                        itensRelacionados.map((item) => (
+                                            <div key={item.id} className='divValue'>
+                                                <p>{item.name}</p>
+                                                <div className='divOptionsValue'>
+                                                    
+                                                    {item.name.includes('não configurada') ? <p className='textAlert'>Não configurado</p> : ''}
+                                                    <div className='divIcon delete' onClick={() => itemDeleteMatrial(item.id, item.type)}>
+                                                        <MdDelete size={24}/>
+                                                    </div>
+                                                    <div className='divIcon edit' onClick={() => navigate(`/professor/modulos/${moduloId}/${item.type}/${item.id}`)}>
+                                                        <MdEdit size={24}/>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p>Conteúdo vazio! Adicione um material!</p>
-                                )}
-                                <div className='divBtnDelete'>
-                                    <button className='btnDelete' onClick={() => itemDelete(c.id)}>
-                                        <p>Excluir conteúdo</p>
-                                    </button>
+                                        ))
+                                    ) : (
+                                        <p>Conteúdo vazio! Adicione um material!</p>
+                                    )}
+                                    <div className='divBtnDelete'>
+                                        <button className='btnDelete' onClick={() => itemDelete(c.id)}>
+                                            <p>Excluir conteúdo</p>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })
+                            );
+                        })
                     }
                     
                 </div>
