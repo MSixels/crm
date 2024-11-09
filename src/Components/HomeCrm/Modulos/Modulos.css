@@ -96,9 +96,27 @@
 .containerModulos .divValuesPai .modalEditUser .alert{
     color: var(--error);
 }
+.containerModulos .divValuesPai .modalEditUser .text{
+    padding: 4px 6px;
+    border-radius: 2px;
+}
 .containerModulos .divValuesPai .modalEditUser .text:hover{
     background-color: var(--primary-200);
 }
 .containerModulos .divValuesPai .modalEditUser .alert:hover{
     background-color: var(--errorHover);
+}
+.containerModulos .divValuesPai .modalEditUser .text .divIcon{
+    background-color: var(--secondary1000);
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFF;
+}
+.containerModulos .divValuesPai .modalEditUser .text .alert{
+    background-color: var(--error);
+    border-radius: 15px;
 }

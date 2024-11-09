@@ -1,4 +1,4 @@
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { firestore, storage } from "../services/firebaseConfig";
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
@@ -192,6 +192,100 @@ export const reactivateUserInFirestore = async (id) => {
         throw new Error('Erro ao reativar o usuário do Firestore');
     }
 };
+
+export const updateModulo = async (id, name, description, professorId, liberacao, validade) => {
+    try {
+        const moduloRef = doc(firestore, 'modulos', id);
+
+        await updateDoc(moduloRef, {
+            name,
+            description,
+            professorId,
+            liberacao,
+            validade
+        });
+
+        console.log("Módulo atualizado com sucesso!");
+        return true;
+    } catch (error) {
+        console.error("Erro ao atualizar o módulo:", error);
+        return false;
+    }
+};
+
+export const deleteModulo = async (id) => {
+    try {
+        const moduloRef = doc(firestore, 'modulos', id);
+        await deleteDoc(moduloRef);
+        console.log("Módulo deletado com sucesso!");
+
+        const conteudoQuery = query(collection(firestore, 'conteudo'), where('moduloId', '==', id));
+        const conteudoSnapshot = await getDocs(conteudoQuery);
+
+        const conteudoIds = [];
+        for (const conteudoDoc of conteudoSnapshot.docs) {
+            conteudoIds.push(conteudoDoc.id);
+            await deleteDoc(conteudoDoc.ref); 
+        }
+        console.log("Conteúdos deletados com sucesso!");
+
+        if (conteudoIds.length > 0) {
+            const aulasQuery = query(collection(firestore, 'aulas'), where('conteudoId', 'in', conteudoIds));
+            const aulasSnapshot = await getDocs(aulasQuery);
+            for (const aulaDoc of aulasSnapshot.docs) {
+                await deleteDoc(aulaDoc.ref);
+            }
+            console.log("Aulas deletadas com sucesso!");
+
+            const provasQuery = query(collection(firestore, 'provas'), where('conteudoId', 'in', conteudoIds));
+            const provasSnapshot = await getDocs(provasQuery);
+            for (const provaDoc of provasSnapshot.docs) {
+                await deleteDoc(provaDoc.ref);
+            }
+            console.log("Provas deletadas com sucesso!");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Erro ao deletar o módulo e os conteúdos associados:", error);
+        return false;
+    }
+};
+
+export const deleteConteudo = async (id) => {
+    try {
+        if (!firestore) {
+            throw new Error('Instância Firestore não encontrada');
+        }
+
+        const conteudoRef = doc(firestore, 'conteudo', id);
+        await deleteDoc(conteudoRef);
+
+        const aulasQuery = query(
+            collection(firestore, 'aulas'),
+            where('conteudoId', '==', id)
+        );
+        const aulasSnapshot = await getDocs(aulasQuery);
+        aulasSnapshot.forEach(async (docSnapshot) => {
+            const aulaRef = doc(firestore, 'aulas', docSnapshot.id);
+            await deleteDoc(aulaRef);
+            console.log(`Aula com id ${docSnapshot.id} deletada.`);
+        });
+
+        const provasQuery = query(
+            collection(firestore, 'provas'),
+            where('conteudoId', '==', id)
+        );
+        const provasSnapshot = await getDocs(provasQuery);
+        provasSnapshot.forEach(async (docSnapshot) => {
+            const provaRef = doc(firestore, 'provas', docSnapshot.id);
+            await deleteDoc(provaRef);
+            console.log(`Prova com id ${docSnapshot.id} deletada.`);
+        });
+    } catch (error) {
+        console.error("Erro ao deletar conteúdo:", error);
+    }
+}
 
 export const updateAula = async (id, name, description, videoUrl, type) => {
     try {

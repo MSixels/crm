@@ -5,24 +5,22 @@ import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'fireb
 import { firestore } from '../../../services/firebaseConfig';
 import Loading from '../../Loading/Loading';
 import { FaBookOpen } from "react-icons/fa";
-import { FaGear } from "react-icons/fa6";
+import { FaGear, FaXmark } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { IoIosArrowDown, IoIosArrowUp, IoMdArrowRoundBack } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import ButtonBold from '../../ButtonBold/ButtonBold';
 import { FaCirclePlus } from "react-icons/fa6";
 import ModalCreateConteudo from '../../ModalCreateConteudo/ModalCreateConteudo';
 import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem';
 import ModalCreateMaterial from '../../ModalCreateMaterial/ModalCreateMaterial'
-import DropDown from '../../DropDown/DropDown';
-import InputDate from '../../InputDate/InputDate';
+import { deleteConteudo, deleteModulo, updateModulo } from '../../../functions/functions';
 
-function ModuloDetails({ moduloId }) {
+function ModuloDetails({ moduloId, pagetype }) {
     const navigate = useNavigate()
     const [modulo, setModulo] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [optionSelected, setOptionSelected] = useState(1)
     const [conteudos, setConteudos] = useState([]);
     const [aulas, setAulas] = useState([]);
     const [provas, setProvas] = useState([]);
@@ -38,10 +36,12 @@ function ModuloDetails({ moduloId }) {
     const [searchDrop, setSearchDrop] = useState('Selecione')
     const [liberacao, setLiberacao] = useState('')
     const [validade, setValidade] = useState('')
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [showModalDeleteModulo, setShowModalDeleteModulo] = useState(false)
 
     const optionsHeader = [
-        {id: 1, icon: <FaBookOpen />, title: 'Conteúdo'},
-        {id: 2, icon: <FaGear />, title: 'Configurações'},
+        {id: 1, icon: <FaBookOpen />, title: 'Conteúdo', route: 'conteudo'},
+        {id: 2, icon: <FaGear />, title: 'Configurações', route: 'configuracoes'},
     ]
 
     const fetchModulo = async (moduloId) => {
@@ -54,8 +54,10 @@ function ModuloDetails({ moduloId }) {
                 setModulo(moduloSnapshot.data());
                 setModuloName(moduloSnapshot.data().name)
                 setModuloDescription(moduloSnapshot.data().description)
-                //setLiberacao(moduloSnapshot.data().liberacao)
-                //setValidade(moduloSnapshot.data().validade)
+                console.log(moduloSnapshot.data().liberacao)
+                console.log(moduloSnapshot.data().validade)
+                setLiberacao(moduloSnapshot.data().liberacao)
+                setValidade(moduloSnapshot.data().validade)
             } else {
                 console.error("Módulo não encontrado!");
             }
@@ -202,46 +204,10 @@ function ModuloDetails({ moduloId }) {
         setShowModalDelete(true)
     }
 
-    const deleteConteudo = async () => {
-        try {
-            console.log(conteudoDelete);
-            
-            if (!firestore) {
-                throw new Error('Instância Firestore não encontrada');
-            }
-    
-            const conteudoRef = doc(firestore, 'conteudo', conteudoDelete);
-            await deleteDoc(conteudoRef);
-    
-            const aulasQuery = query(
-                collection(firestore, 'aulas'),
-                where('conteudoId', '==', conteudoDelete)
-            );
-            const aulasSnapshot = await getDocs(aulasQuery);
-            aulasSnapshot.forEach(async (docSnapshot) => {
-                const aulaRef = doc(firestore, 'aulas', docSnapshot.id);
-                await deleteDoc(aulaRef);
-                console.log(`Aula com id ${docSnapshot.id} deletada.`);
-            });
-    
-            const provasQuery = query(
-                collection(firestore, 'provas'),
-                where('conteudoId', '==', conteudoDelete)
-            );
-            const provasSnapshot = await getDocs(provasQuery);
-            provasSnapshot.forEach(async (docSnapshot) => {
-                const provaRef = doc(firestore, 'provas', docSnapshot.id);
-                await deleteDoc(provaRef);
-                console.log(`Prova com id ${docSnapshot.id} deletada.`);
-            });
-    
-            setShowModalDelete(false);
-            console.log(`Conteúdo com id ${conteudoDelete} deletado com sucesso.`);
-            
-            fetchConteudos(moduloId);
-        } catch (error) {
-            console.error("Erro ao deletar conteúdo:", error);
-        }
+    const handleDeleteConteudo = () => {
+        deleteConteudo(conteudoDelete)
+        setShowModalDelete(false)
+        fetchConteudos(moduloId)
     };
 
     const cancelarDelete = () => {
@@ -311,7 +277,7 @@ function ModuloDetails({ moduloId }) {
                     updateDocs={() => fetchConteudos(moduloId)}/>
                 }
                 {showModalDelete && <ModalDeleteItem 
-                    confirm={deleteConteudo} 
+                    confirm={handleDeleteConteudo} 
                     cancel={cancelarDelete} 
                     text='Tem certeza que deseja excluir esse conteúdo?'/>
                 }
@@ -416,16 +382,53 @@ function ModuloDetails({ moduloId }) {
             setModuloDescription(event.target.value);
         };
 
-        const handleDropChange = (newDrop) => {
-            console.log(newDrop)
+        const handleSelectItem = (newDrop) => {
             setSearchDrop(newDrop);
+            setIsDropdownOpen(false)
         };
+
+        const handleSearchLiberacao = (e, type) => {
+            if (type === 'select') {
+                const newSearchTerm = e.target.value;
+                setLiberacao(newSearchTerm);
+            } else if (type === 'clean') {
+                setLiberacao(''); 
+            }
+        };
+
+        const handleSearchValidade = (e, type) => {
+            if (type === 'select') {
+                const newSearchTerm = e.target.value;
+                setValidade(newSearchTerm);
+            } else if (type === 'clean') {
+                setValidade(''); 
+            }
+        };
+
+        const options = professores.map(professor => ({
+            id: professor.id,
+            name: professor.name
+        })); 
+
+        const handleUpdateModulo = () => {
+            updateModulo(moduloId, moduloName, moduloDescription, searchDrop.id, liberacao, validade)
+        }
+
+        const openModalDelete = () => {
+            setShowModalDeleteModulo(true)
+        }
+
+        const handleDeleteModulo = () => {
+            deleteModulo(moduloId)
+            navigate('/professor/modulos')
+        }
 
         return(
             <div className='containerConfig'>
+                {showModalDeleteModulo && <ModalDeleteItem confirm={handleDeleteModulo} cancel={() => setShowModalDeleteModulo(false)} text='Tem certeza que deseja excluir esse módulo?'/>}
                 <div className='divHeaderConfig'>
                     <h2>Configuração</h2>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm' onClick={handleUpdateModulo}>Salvar alterações</button>
                 </div>
                 <div className='contents'>
                     <p style={{ fontWeight: 500}}>Informações</p>
@@ -476,16 +479,59 @@ function ModuloDetails({ moduloId }) {
                         <p style={{marginLeft: 8, fontSize: 12}}>{moduloDescription.length}/500</p>
                     </div>
                     <p style={{ fontWeight: 500, marginBottom: 24}}>Professor vinculado</p>
-                    <DropDown title='Professor' type='Selecione' options={professores} onTurmaChange={handleDropChange} />
+                    <div className='containerDropDown'>
+                        <div className='dropdownInput' onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                            <span className='label'>Professor</span>
+                            <span>{typeof searchDrop === 'string' ? searchDrop : searchDrop.name}</span>
+                            <span>
+                                {searchDrop !== 'Selecione' ? (
+                                    <span onClick={() => handleSelectItem('Selecione')}><FaXmark /></span>
+                                ) : (
+                                    isDropdownOpen ? <IoIosArrowUp size={20} /> : <IoIosArrowDown size={20} />
+                                )}
+                            </span>
+                        </div>
+                        {isDropdownOpen && (
+                            <div className='dropdownList'>
+                                {options.map((o) => (
+                                    <span key={o.id} onClick={() => handleSelectItem(o)} className='optionDrop'>
+                                        {o.name}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                     <p style={{ fontWeight: 500, marginTop: 24}}>Validade módulo</p>
                     <div style={{ display: 'flex', gap: 24}}>
-                        <InputDate title='Liberação em' onSearchChange={setLiberacao}/>
-                        <InputDate title='Válido até' onSearchChange={setValidade}/>
+                        <div className='divInput inputDate'>
+                            <label htmlFor="busca">Liberação</label>
+                            <input 
+                                type="date" 
+                                name='busca' 
+                                id='busca' 
+                                className='input' 
+                                value={liberacao}
+                                onChange={(e) => handleSearchLiberacao(e, 'select')} 
+                            />
+                            {liberacao != '' && <span onClick={() => handleSearchLiberacao(null, 'clean')}><FaXmark /></span> }
+                        </div>
+                        <div className='divInput inputDate'>
+                            <label htmlFor="busca">Validade</label>
+                            <input 
+                                type="date" 
+                                name='busca' 
+                                id='busca' 
+                                className='input' 
+                                value={validade}
+                                onChange={(e) => handleSearchValidade(e, 'select')} 
+                            />
+                            {validade != '' && <span onClick={() => handleSearchValidade(null, 'clean')}><FaXmark /></span> }
+                        </div>
                     </div>
                 </div>
                 <div className='divHeaderConfig mt24'>
-                    <button className='btnConfirm alert' >Excluir módulo</button>
-                    <button className='btnConfirm' >Salvar alterações</button>
+                    <button className='btnConfirm alert' onClick={openModalDelete}>Excluir módulo</button>
+                    <button className='btnConfirm' onClick={handleUpdateModulo}>Salvar alterações</button>
                 </div>
             </div>
         )
@@ -502,14 +548,14 @@ function ModuloDetails({ moduloId }) {
             
             <div className='divOptions'>
                 {optionsHeader.map((o) => (
-                    <div key={o.id} className={`divTitle ${optionSelected === o.id && 'active'}`} onClick={() => setOptionSelected(o.id)}>
+                    <div key={o.id} className={`divTitle ${pagetype === o.route && 'active'}`} onClick={() => navigate(`/professor/modulos/${moduloId}/${o.route}`)}>
                         {o.icon}
                         <p>{o.title}</p>
                     </div>
                 ))}
             </div>
             <div className='divValues'>
-                {optionSelected === 1 ? renderConteudo() : optionSelected === 2 ? renderModuloConfig() : ''}
+                {pagetype === 'conteudo' ? renderConteudo() : pagetype === 'configuracoes' ? renderModuloConfig() : ''}
             </div>
         </div>
     )
@@ -517,6 +563,7 @@ function ModuloDetails({ moduloId }) {
 ModuloDetails.propTypes = {
     userType: PropTypes.number.isRequired,
     moduloId: PropTypes.string.isRequired,
+    pagetype: PropTypes.string.isRequired,
 };
 
 export default ModuloDetails

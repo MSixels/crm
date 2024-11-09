@@ -4,13 +4,16 @@ import InputText from '../../InputText/InputText'
 import './Modulos.css'
 import { useEffect, useState } from 'react'
 import ModalCreateModulo from '../../ModalCreateModulo/ModalCreateModulo'
-import { collection, deleteDoc, doc, getDocs, query, where } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../../services/firebaseConfig'
 import Loading from '../../Loading/Loading'
 import PropTypes from 'prop-types'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 import { useNavigate } from 'react-router-dom'
 import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem'
+import { MdEdit } from "react-icons/md";
+import { FaXmark } from "react-icons/fa6";
+import { deleteModulo } from '../../../functions/functions'
 
 function Modulos({ userType }) {
     const navigate = useNavigate()
@@ -22,6 +25,7 @@ function Modulos({ userType }) {
     const [activeModalId, setActiveModalId] = useState(null)
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [moduloDelete, setModuloDelete] = useState('')
+    const [searchTerm, setSearchTerm] = useState('');
 
     const clickBtn = (openModal) => {
         setShowModal(openModal)
@@ -174,68 +178,38 @@ function Modulos({ userType }) {
         setShowDeleteModal(true)
     }
 
-    const deleteModulo = async () => {
-        try {
-            if (!firestore) {
-                throw new Error('Instância Firestore não encontrada');
-            }
-    
-            const moduloRef = doc(firestore, 'modulos', moduloDelete);
-            await deleteDoc(moduloRef);
-    
-            const conteudoQuery = query(
-                collection(firestore, 'conteudo'),
-                where('moduloId', '==', moduloDelete)
-            );
-            const querySnapshot = await getDocs(conteudoQuery);
-    
-            querySnapshot.forEach(async (docSnap) => {
-                const conteudoId = docSnap.id;
-                const conteudoRef = doc(firestore, 'conteudo', conteudoId);
-                await deleteDoc(conteudoRef);
-    
-                const aulaQuery = query(
-                    collection(firestore, 'aulas'),
-                    where('conteudoId', '==', conteudoId)
-                );
-                const aulaSnapshot = await getDocs(aulaQuery);
-                aulaSnapshot.forEach(async (aulaSnap) => {
-                    const aulaRef = doc(firestore, 'aulas', aulaSnap.id);
-                    await deleteDoc(aulaRef);
-                });
-    
-                const provaQuery = query(
-                    collection(firestore, 'provas'),
-                    where('conteudoId', '==', conteudoId)
-                );
-                const provaSnapshot = await getDocs(provaQuery);
-                provaSnapshot.forEach(async (provaSnap) => {
-                    const provaRef = doc(firestore, 'provas', provaSnap.id);
-                    await deleteDoc(provaRef);
-                });
-            });
-    
-            setShowDeleteModal(false);
-            fetchModulos();
-        } catch (error) {
-            console.error("Erro ao deletar módulo e conteúdos:", error);
-        }
-    };
+    const handleDeleteModulo = () => {
+        deleteModulo(moduloDelete)
+        setShowDeleteModal(false);
+        fetchModulos();
+    }
 
     const cancelarDelete = () => {
         setShowDeleteModal(false)
         setModuloDelete('')
     }  
 
+    const sortedModulos = modulos
+    .filter(m => m.liberacao) 
+    .sort((a, b) => new Date(a.liberacao) - new Date(b.liberacao)); 
+
+    const filtered = sortedModulos.filter(m => 
+        m.name.toLowerCase().replace(/\s/g, '').includes(searchTerm.toLowerCase().replace(/\s/g, ''))
+    );
+
+    const handleSearchChange = (newSearchTerm) => {
+        setSearchTerm(newSearchTerm);
+    };
+
     return(
         <div className='containerModulos'>
             {showModal && <ModalCreateModulo title='Novo Módulo' close={closeBtn} updateDocs={updateElemnts}/> }
-            {showDeleteModal && <ModalDeleteItem confirm={deleteModulo} cancel={cancelarDelete} text='Tem certeza que deseja excluir esse módulo?'/>}
+            {showDeleteModal && <ModalDeleteItem confirm={handleDeleteModulo} cancel={cancelarDelete} text='Tem certeza que deseja excluir esse módulo?'/>}
             <h1>Módulos</h1>
             <div className='divContent'>
                 <div className='header'>
                     <div className='divInputs'>
-                        <InputText title='Pesquisa pora' placeH='Nome do módulo'/>
+                        <InputText title='Pesquisa pora' placeH='Nome do módulo' onSearchChange={handleSearchChange}/>
                     </div>
                     <ButtonBold title='Novo módulo' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>
                 </div>
@@ -248,14 +222,14 @@ function Modulos({ userType }) {
                         ))}
                     </div>
                     <div>
-                        {modulos.map((m) => {
+                        {filtered.map((m) => {
                             if(professores.length > 0){
                                 const professor = professores.find(p => p.id === m.professorId);
                                 const professorName = professor ? professor.name : ''; 
                                 const countAlunos = alunos.length
                                 return (
                                     <div key={m.id} className='divValuesPai'>
-                                        <div className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}`)}>
+                                        <div className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}/conteudo`)}>
                                             <p className='spanBox'>{m.name}</p>
                                             <p className='spanBox'>N / A</p>
                                             <p className='spanBox'>{countAlunos}</p>
@@ -271,7 +245,18 @@ function Modulos({ userType }) {
                                         }
                                         {activeModalId === m.id && 
                                             <div className='modalEditUser'>
-                                                <p className='text alert' onClick={() => itemDelete(m.id)}>Excluir módulo</p>
+                                                <div className='text' style={{display: 'flex', alignItems: 'center'}}>
+                                                    <div className='divIcon'>
+                                                        <MdEdit size={8}/>
+                                                    </div>
+                                                    <p onClick={() => navigate(`/professor/modulos/${m.id}/configuracoes`)}>Editar módulo</p>
+                                                </div>
+                                                <div className='text alert' style={{display: 'flex', alignItems: 'center'}}>
+                                                    <div className='divIcon alert'>
+                                                        <FaXmark size={8}/>
+                                                    </div>
+                                                    <p onClick={() => itemDelete(m.id)}>Excluir módulo</p>
+                                                </div>
                                             </div>
                                         }
                                     </div>

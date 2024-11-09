@@ -194,3 +194,9 @@
 .containerModuloDetails .mt24{
     margin-top: 24px;
 }
+.containerModuloDetails .containerConfig .inputDate{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}

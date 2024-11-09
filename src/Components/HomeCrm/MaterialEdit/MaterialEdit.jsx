@@ -640,7 +640,7 @@ function MaterialEdit() {
     return (
         <div className='containerMaterialEdit'>
             <div className='divHeader'>
-                <div className='divIcon' onClick={() => navigate(`/professor/modulos/${moduloId}`)}>
+                <div className='divIcon' onClick={() => navigate(`/professor/modulos/${moduloId}/conteudo`)}>
                     <IoMdArrowRoundBack />
                 </div>
                 <h2>Editar {type === 'aula' ? 'aula' : type === 'game' ? 'gameficação' : type === 'prova' ? 'prova' : type === 'storyTelling' ? 'storytelling' : ''}</h2>

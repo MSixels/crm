@@ -22,6 +22,7 @@ function HomeCrm() {
     const { page } = useParams()
     const { conteudoId } = useParams()
     const { moduloId } = useParams()
+    const { pagetype } = useParams()
     const { type } = useParams()
     const { materialId } = useParams()
     const location = useLocation();
@@ -93,7 +94,7 @@ function HomeCrm() {
                     {page === 'usuarios' && <Usuarios userType={userType}/>}
                     {page === 'storytelling' && <StoryTelling userType={userType} />}
                     {location.pathname === `/professor/storytelling/${conteudoId}` && <StoryTellingDetails conteudoId={conteudoId}/>}
-                    {location.pathname === `/professor/modulos/${moduloId}` && <ModuloDetails userType={userType} moduloId={moduloId}/>}
+                    {location.pathname === `/professor/modulos/${moduloId}/${pagetype}` && <ModuloDetails userType={userType} moduloId={moduloId} pagetype={pagetype}/>}
                     {location.pathname === `/professor/modulos/${moduloId}/${type}/${materialId}` && <MaterialEdit />}
                 </div>
             </div>
