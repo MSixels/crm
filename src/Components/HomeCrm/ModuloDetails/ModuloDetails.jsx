@@ -332,7 +332,7 @@ function ModuloDetails({ moduloId }) {
                                     )}
                                     <div className='divBtnDelete'>
                                         <button className='btnDelete' onClick={() => itemDelete(c.id)}>
-                                            <p>Excluir conteúdo</p>
+                                            <p>Excluir tópico</p>
                                         </button>
                                     </div>
                                 </div>

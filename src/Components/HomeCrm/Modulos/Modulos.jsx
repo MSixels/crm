@@ -254,14 +254,16 @@ function Modulos({ userType }) {
                                 const professorName = professor ? professor.name : ''; 
                                 const countAlunos = alunos.length
                                 return (
-                                    <div key={m.id} className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}`)}>
-                                        <p className='spanBox'>{m.name}</p>
-                                        <p className='spanBox'>N / A</p>
-                                        <p className='spanBox'>{countAlunos}</p>
-                                        <p className='spanBox'>{professorName}</p>
-                                        <p className={`spanBox ${m.liberacao ? checkDates(m.liberacao, m.validade).liberacaoClass : 'active'}`}>
-                                            {m.liberacao ? formatDate(m.liberacao) : 'N / A'}
-                                        </p>
+                                    <div key={m.id} className='divValuesPai'>
+                                        <div className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}`)}>
+                                            <p className='spanBox'>{m.name}</p>
+                                            <p className='spanBox'>N / A</p>
+                                            <p className='spanBox'>{countAlunos}</p>
+                                            <p className='spanBox'>{professorName}</p>
+                                            <p className={`spanBox ${m.liberacao ? checkDates(m.liberacao, m.validade).liberacaoClass : 'active'}`}>
+                                                {m.liberacao ? formatDate(m.liberacao) : 'N / A'}
+                                            </p>
+                                        </div>
                                         {userType === 1 && 
                                             <div className='btnEdit' onClick={() => openEditModal(m.id)}>
                                                 <BsThreeDotsVertical />

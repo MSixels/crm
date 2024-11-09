@@ -60,9 +60,13 @@
 .containerModulos .divValues .end{
     color: var(--error);
 }
-.containerModulos .divValues .btnEdit{
+.containerModulos .divValuesPai{
+    position: relative;
+}
+.containerModulos .divValuesPai .btnEdit{
     position: absolute;
     right: 16px;
+    top: 8px;
     border: solid 1px var(--secondary200);
     display: flex;
     align-items: center;
@@ -70,29 +74,31 @@
     padding-block: 8px;
     border-radius: 4px;
     cursor: pointer;
+    z-index: 2000;
 }
-.containerModulos .divValues .modalEditUser{
+.containerModulos .divValuesPai .modalEditUser{
     position: absolute;
-    right: 36px;
+    right: 38px;
+    top: 8px;
     padding: 3px;
     border: solid 1px var(--primary-200);
     border-radius: 4px;
     background-color: #FFF;
     z-index: 2000;
 }
-.containerModulos .divValues .modalEditUser p{
+.containerModulos .divValuesPai .modalEditUser p{
     font-size: 12px;
     cursor: pointer;
     padding: 5px;
     border-radius: 3px;
     transition: .3s;
 }
-.containerModulos .divValues .modalEditUser .alert{
+.containerModulos .divValuesPai .modalEditUser .alert{
     color: var(--error);
 }
-.containerModulos .divValues .modalEditUser .text:hover{
+.containerModulos .divValuesPai .modalEditUser .text:hover{
     background-color: var(--primary-200);
 }
-.containerModulos .divValues .modalEditUser .alert:hover{
+.containerModulos .divValuesPai .modalEditUser .alert:hover{
     background-color: var(--errorHover);
 }

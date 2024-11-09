@@ -6,6 +6,16 @@ import { firestore } from '../../../services/firebaseConfig';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import Loading from '../../Loading/Loading'
 import { MdDelete } from 'react-icons/md';
+import { 
+    updateAula, 
+    updateGame, 
+    updateProva, 
+    deleteAula, 
+    deleteGame, 
+    deleteProva, 
+    deleteStoryTelling, 
+    updateStoryTelling
+} from '../../../functions/functions';
 
 
 function MaterialEdit() {
@@ -43,12 +53,14 @@ function MaterialEdit() {
             
             if (aulaSnap.exists()) {
                 if(aulaSnap.data().type === 'aula'){
+                    console.log('Aula', aulaSnap.data())
                     setAulaData(aulaSnap.data())
                     setAulaName(aulaSnap.data().name)
                     setAulaDescription(aulaSnap.data().description)
                     setAulaUrl(aulaSnap.data().videoUrl)
                     setLoading(false)
                 } else if(aulaSnap.data().type === 'game'){
+                    console.log('Gameficação', aulaSnap.data())
                     setGameData(aulaSnap.data())
                     setGameName(aulaSnap.data().name)
                     setGameDescription(aulaSnap.data().description)
@@ -117,9 +129,19 @@ function MaterialEdit() {
         
     }, [materialId, type]);
 
-    
-
     const renderAula = () => {
+
+        const handleUpdate = () => {
+            updateAula(materialId, aulaName, aulaDescription, aulaUrl, type)
+        }
+
+        const handleDelete = async () => {
+            const deleted = await deleteAula(materialId);
+            if (deleted) {
+                navigate(`/professor/modulos/${moduloId}`);
+            }
+        };
+
         const handleInputChangeName = (event) => {
             setAulaName(event.target.value);
         };
@@ -135,7 +157,7 @@ function MaterialEdit() {
         return(
             <div className='containerItem'>
                 <div className='divBtns end'>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
                 <div className='contents'>
                     <div className='divInput'>
@@ -196,14 +218,26 @@ function MaterialEdit() {
                     </div>
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert'>Excluir {type}</button>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
         )
     }
 
     const renderGame = () => {
+
+        const handleUpdate = () => {
+            updateGame(materialId, gameName, gameDescription, gameLink, type)
+        }
+
+        const handleDelete = async () => {
+            const deleted = await deleteGame(materialId);
+            if (deleted) {
+                navigate(`/professor/modulos/${moduloId}`);
+            }
+        };
+
         const handleInputChangeName = (event) => {
             setGameName(event.target.value);
         };
@@ -219,7 +253,7 @@ function MaterialEdit() {
         return(
             <div className='containerItem'>
                 <div className='divBtns end'>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
                 <div className='contents'>
                     <div className='divInput'>
@@ -280,14 +314,26 @@ function MaterialEdit() {
                     </div>
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert'>Excluir {type}</button>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
         )
     }
 
     const renderProva = () => {
+
+        const handleUpdate = () => {
+            updateProva(materialId, provaName, provaDescription, quests, type)
+        }
+
+        const handleDelete = async () => {
+            const deleted = await deleteProva(materialId);
+            if (deleted) {
+                navigate(`/professor/modulos/${moduloId}`);
+            }
+        };
+
         const handleInputChangeName = (event) => {
             setProvaName(event.target.value);
         };
@@ -358,7 +404,7 @@ function MaterialEdit() {
         return (
             <div className='containerItem'>
                 <div className='divBtns end'>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
                 <div className='contents'>
                     <div className='divInput'>
@@ -460,10 +506,15 @@ function MaterialEdit() {
                             </div>
                         ))}
                     </div>
+                    {quests.length > 1 && <div className='divHeaderQuests'>
+                        <p style={{ fontSize: 16, fontWeight: 500, marginTop: 24, marginBottom: 12}}>Questões da prova (Max 30)</p>
+                        <button onClick={addQuestion} className='btnAdd' style={{ marginTop: 16 }}>Adicionar pergunta</button>
+                    </div>}
+                    
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert'>Excluir {type}</button>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
         );
@@ -477,6 +528,18 @@ function MaterialEdit() {
     }, [storyPdf.name])
 
     const renderStoryTelling = () => {
+
+        const handleUpdate = () => {
+            updateStoryTelling(materialId, storyName, storyDescription, storyPdf, type)
+        }
+
+        const handleDelete = async () => {
+            const deleted = await deleteStoryTelling(materialId);
+            if (deleted) {
+                navigate(`/professor/modulos/${moduloId}`);
+            }
+        };
+
         const handleInputChangeName = (event) => {
             setStoryName(event.target.value);
         };
@@ -497,7 +560,7 @@ function MaterialEdit() {
         return(
             <div className='containerItem'>
                 <div className='divBtns end'>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
                 <div className='contents'>
                     <div className='divInput'>
@@ -554,8 +617,8 @@ function MaterialEdit() {
                     </div>
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert'>Excluir {type}</button>
-                    <button className='btnConfirm'>Salvar alterações</button>
+                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
         )

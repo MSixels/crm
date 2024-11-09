@@ -1,5 +1,6 @@
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { auth, firestore } from "../services/firebaseConfig";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { firestore, storage } from "../services/firebaseConfig";
+import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 export const evaluateTDAHPotential = (responses) => {
     let tdahScores = { never: 0, sometimes: 0, always: 0 };
@@ -189,5 +190,171 @@ export const reactivateUserInFirestore = async (id) => {
     } catch (error) {
         console.error('Erro ao reativar o usuário do Firestore:', error.message);
         throw new Error('Erro ao reativar o usuário do Firestore');
+    }
+};
+
+export const updateAula = async (id, name, description, videoUrl, type) => {
+    try {
+        const aulaRef = doc(firestore, 'aulas', id);
+
+        const updatedData = {
+            name,
+            description,
+            videoUrl,
+            type
+        };
+
+        await updateDoc(aulaRef, updatedData);
+
+        console.log('Aula atualizada com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao atualizar a aula:', error);
+        return false;
+    }
+};
+
+export const updateGame = async (id, name, description, link, type) => {
+    try {
+        const aulaRef = doc(firestore, 'aulas', id);
+
+        const updatedData = {
+            name,
+            description,
+            link,
+            type
+        };
+
+        await updateDoc(aulaRef, updatedData);
+
+        console.log('Aula atualizada com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao atualizar a aula:', error);
+        return false;
+    }
+}
+
+export const updateProva = async (id, name, description, quests, type) => {
+    try {
+        const aulaRef = doc(firestore, 'provas', id);
+
+        const updatedData = {
+            name,
+            description,
+            quests,
+            type
+        };
+
+        await updateDoc(aulaRef, updatedData);
+
+        console.log('Aula atualizada com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao atualizar a aula:', error);
+        return false;
+    }
+}
+
+export const updateStoryTelling = async (id, name, description, pdf, type) => {
+    try {
+        const storyRef = doc(firestore, 'provas', id);
+
+        const updatedData = { name, description, type };
+
+        if (pdf) {
+            const storageRef = ref(storage, `pdfs/${pdf.name}`);
+            const uploadTask = uploadBytesResumable(storageRef, pdf);
+
+            await new Promise((resolve, reject) => {
+                uploadTask.on(
+                    'state_changed',
+                    null, 
+                    (error) => reject(error),
+                    async () => {
+                        const pdfUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                        updatedData.pdfUrl = pdfUrl; 
+                        resolve();
+                    }
+                );
+            });
+        }
+
+        await updateDoc(storyRef, updatedData);
+
+        console.log('StoryTelling atualizada com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao atualizar StoryTelling:', error);
+        return false;
+    }
+}
+
+export const deleteAula = async (id) => {
+    try {
+        const aulaRef = doc(firestore, 'aulas', id);
+
+        await deleteDoc(aulaRef);
+
+        console.log('Aula deletada com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao deletar a aula:', error);
+        return false;
+    }
+}
+
+export const deleteGame = async (id) => {
+    try {
+        const aulaRef = doc(firestore, 'aulas', id);
+
+        await deleteDoc(aulaRef);
+
+        console.log('Game deletado com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao deletar a game:', error);
+        return false;
+    }
+}
+
+export const deleteProva = async (id) => {
+    try {
+        const provaRef = doc(firestore, 'provas', id);
+
+        await deleteDoc(provaRef);
+
+        console.log('Prova deletada com sucesso!');
+        return true;
+    } catch (error) {
+        console.error('Erro ao deletar a prova:', error);
+        return false;
+    }
+}
+
+export const deleteStoryTelling = async (id) => {
+    try {
+        const provaRef = doc(firestore, 'provas', id);
+        
+        const provaSnap = await getDoc(provaRef);
+        
+        if (provaSnap.exists()) {
+            const pdfUrl = provaSnap.data().pdfUrl;
+            
+            if (pdfUrl) {
+                const storageRef = ref(storage, pdfUrl);
+
+                await deleteObject(storageRef);
+                console.log('PDF deletado com sucesso do Storage!');
+            }
+        }
+
+        await deleteDoc(provaRef);
+        console.log('StoryTelling deletado com sucesso do Firestore!');
+
+        return true;
+    } catch (error) {
+        console.error('Erro ao deletar a StoryTelling:', error);
+        return false;
     }
 };
