@@ -271,7 +271,6 @@ function Modulos({ userType }) {
                                         }
                                         {activeModalId === m.id && 
                                             <div className='modalEditUser'>
-                                                <p className='text' onClick={() => navigate(`/professor/modulos/${m.id}`)}>Ver detalhes</p>
                                                 <p className='text alert' onClick={() => itemDelete(m.id)}>Excluir módulo</p>
                                             </div>
                                         }

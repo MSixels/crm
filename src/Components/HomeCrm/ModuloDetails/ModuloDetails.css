@@ -137,3 +137,60 @@
     justify-content: space-between;
     margin-bottom: 12px;
 }
+.containerModuloDetails .divHeaderConfig{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.containerModuloDetails .btnConfirm{
+    border: none;
+    padding: 6px 12px;
+    color: #FFF;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: .3s;
+    cursor: pointer;
+    background-color: var(--primary);
+}
+.containerModuloDetails .btnConfirm:hover{
+    scale: 1.02;
+}
+.containerModuloDetails .alert{
+    background-color: var(--error);
+}
+.containerModuloDetails .containerConfig .contents{
+    background-color: #FFF;
+    border-radius: 8px;
+    padding: 12px;
+}
+.containerModuloDetails .containerConfig .divInput{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-top: 24px;
+}
+.containerModuloDetails .containerConfig .divInput label{
+    position: absolute;
+    top: 0px;
+    left: 15px;
+    background-color: #FFF;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding-inline: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+.containerModuloDetails .containerConfig .divInput input{
+    border: solid 1px var(--primary-200);
+    padding: 12px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+.containerModuloDetails .mt24{
+    margin-top: 24px;
+}

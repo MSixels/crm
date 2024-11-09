@@ -74,17 +74,17 @@
     align-items: center;
     justify-content: end;
 }
-.containerMaterialEdit .containerItem .divBtns .btnConfirm{
+.containerMaterialEdit .containerItem .btnConfirm{
     border: none;
     padding: 6px 12px;
-    background-color: var(--primary);
     color: #FFF;
     font-weight: 500;
     border-radius: 4px;
     transition: .3s;
     cursor: pointer;
+    background-color: var(--primary);
 }
-.containerMaterialEdit .containerItem .divBtns .btnConfirm:hover{
+.containerMaterialEdit .containerItem .btnConfirm:hover{
     scale: 1.02;
 }
 .containerMaterialEdit .containerItem .divBtns .alert{

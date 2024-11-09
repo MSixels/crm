@@ -15,6 +15,8 @@ import { FaCirclePlus } from "react-icons/fa6";
 import ModalCreateConteudo from '../../ModalCreateConteudo/ModalCreateConteudo';
 import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem';
 import ModalCreateMaterial from '../../ModalCreateMaterial/ModalCreateMaterial'
+import DropDown from '../../DropDown/DropDown';
+import InputDate from '../../InputDate/InputDate';
 
 function ModuloDetails({ moduloId }) {
     const navigate = useNavigate()
@@ -30,6 +32,12 @@ function ModuloDetails({ moduloId }) {
     const [showModalDeleteMaterial, setShowModalDeleteMaterial] = useState(false)
     const [materialDelete, setMaterialDelete] = useState({})
     const [showModalCreateMaterial, setShowModalCreateMaterial] = useState(false)
+    const [moduloName, setModuloName] = useState('')
+    const [moduloDescription, setModuloDescription] = useState('')
+    const [professores, setProfessores] = useState([])
+    const [searchDrop, setSearchDrop] = useState('Selecione')
+    const [liberacao, setLiberacao] = useState('')
+    const [validade, setValidade] = useState('')
 
     const optionsHeader = [
         {id: 1, icon: <FaBookOpen />, title: 'Conteúdo'},
@@ -42,8 +50,12 @@ function ModuloDetails({ moduloId }) {
             const moduloSnapshot = await getDoc(moduloRef);
             if (moduloSnapshot.exists()) {
                 setLoading(false)
-                setModulo(moduloSnapshot.data());
                 console.log(moduloSnapshot.data())
+                setModulo(moduloSnapshot.data());
+                setModuloName(moduloSnapshot.data().name)
+                setModuloDescription(moduloSnapshot.data().description)
+                //setLiberacao(moduloSnapshot.data().liberacao)
+                //setValidade(moduloSnapshot.data().validade)
             } else {
                 console.error("Módulo não encontrado!");
             }
@@ -52,6 +64,48 @@ function ModuloDetails({ moduloId }) {
             console.error("Erro ao carregar o módulo:", error);
         }
     };
+
+    const fetchProfessores = async () => {
+        try {
+            const q = query(
+                collection(firestore, 'users'),
+                where('type', 'in', [1, 2]) 
+            );
+
+            const querySnapshot = await getDocs(q);
+
+            const professoresList = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                name: doc.data().name 
+            }));
+
+            setProfessores(professoresList);
+        } catch (error) {
+            console.error("Erro ao carregar os professores:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchProfessores()
+    }, [])
+
+    useEffect(() => {
+        if (modulo) {
+            const professorId = modulo.professorId;
+    
+            if (professores && professorId) {
+                const professorEncontrado = professores.find(prof => prof.id === professorId);
+    
+                if (professorEncontrado) {
+                    setSearchDrop({ id: professorId, name: professorEncontrado.name });
+                } else {
+                    setSearchDrop('Professor não encontrado');
+                }
+            } else {
+                setSearchDrop('Selecione');
+            }
+        }
+    }, [modulo, professores]);
 
 
     const fetchConteudos = async (moduloId) => {
@@ -236,6 +290,9 @@ function ModuloDetails({ moduloId }) {
         setShowModalCreateMaterial(false)
     }
 
+
+    
+
     if (loading) {
         return <Loading />;
     }
@@ -274,7 +331,7 @@ function ModuloDetails({ moduloId }) {
                 </div>
                 
                 <div>
-                    {conteudos.length < 1 ? <div><p>Este módulo ainda não tem conteúdos! Adicione um conteúdo!</p></div> : 
+                    {conteudos.length < 1 ? <div><p>Este módulo não tem tópicos! Adicione um tópico!</p></div> : 
                         conteudos.map((c) => {
                             const itensRelacionados = [
                                 ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'aula').map(item => ({ ...item, type: 'aula' })),
@@ -344,13 +401,92 @@ function ModuloDetails({ moduloId }) {
             </div>
         );
     };
+
+    
     
     
 
     const renderModuloConfig = () => {
+
+        const handleInputChangeName = (event) => {
+            setModuloName(event.target.value);
+        };
+
+        const handleInputChangeDescription = (event) => {
+            setModuloDescription(event.target.value);
+        };
+
+        const handleDropChange = (newDrop) => {
+            console.log(newDrop)
+            setSearchDrop(newDrop);
+        };
+
         return(
-            <div>
-                <h2>Configuração</h2>
+            <div className='containerConfig'>
+                <div className='divHeaderConfig'>
+                    <h2>Configuração</h2>
+                    <button className='btnConfirm'>Salvar alterações</button>
+                </div>
+                <div className='contents'>
+                    <p style={{ fontWeight: 500}}>Informações</p>
+                    <div className='divInput'>
+                        <label htmlFor="name">Nome</label>
+                        <input
+                            id='name'
+                            type="text"
+                            value={moduloName}            
+                            onChange={handleInputChangeName}
+                        />
+                    </div>
+                    <div 
+                        style={{
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            position: 'relative', 
+                            paddingBottom: 12, 
+                            marginTop: 16
+                        }}>
+                        <label htmlFor="coment" 
+                        style={{
+                            position: 'absolute', 
+                            top: -10, 
+                            fontSize: 12, 
+                            left: 12, 
+                            backgroundColor: '#FFF', 
+                            paddingInline: 4
+                        }}>Descrição</label>
+                        <textarea
+                            name="coment"
+                            id="coment"
+                            maxLength="500"
+                            style={{ 
+                                height: 150, 
+                                outline: 'none', 
+                                padding: 8, 
+                                border: 'solid 1px #ccc', 
+                                borderRadius: 4, 
+                                maxWidth: '100%', 
+                                minWidth: 200, 
+                                maxHeight: 200, 
+                                minHeight: 100 
+                            }}
+                            value={moduloDescription}
+                            onChange={handleInputChangeDescription}
+                        ></textarea>
+                        <p style={{marginLeft: 8, fontSize: 12}}>{moduloDescription.length}/500</p>
+                    </div>
+                    <p style={{ fontWeight: 500, marginBottom: 24}}>Professor vinculado</p>
+                    <DropDown title='Professor' type='Selecione' options={professores} onTurmaChange={handleDropChange} />
+                    <p style={{ fontWeight: 500, marginTop: 24}}>Validade módulo</p>
+                    <div style={{ display: 'flex', gap: 24}}>
+                        <InputDate title='Liberação em' onSearchChange={setLiberacao}/>
+                        <InputDate title='Válido até' onSearchChange={setValidade}/>
+                    </div>
+                </div>
+                <div className='divHeaderConfig mt24'>
+                    <button className='btnConfirm alert' >Excluir módulo</button>
+                    <button className='btnConfirm' >Salvar alterações</button>
+                </div>
             </div>
         )
     }

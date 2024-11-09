@@ -6,7 +6,7 @@ function ModalDeleteItem({ confirm, cancel, text}) {
         <div className='containerModalDeleteItem'>
             <div className='modalConfirmDelete'>
                 <p className='titleAlert'>{text}</p>
-                <div className='divBtns'>
+                <div className='divBtnsDelete'>
                     <button onClick={confirm} className='delete'>Confirmar</button>
                     <button onClick={cancel} className='close'>Cancelar</button>
                 </div>

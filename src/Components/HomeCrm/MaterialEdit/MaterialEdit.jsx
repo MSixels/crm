@@ -16,6 +16,7 @@ import {
     deleteStoryTelling, 
     updateStoryTelling
 } from '../../../functions/functions';
+import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem';
 
 
 function MaterialEdit() {
@@ -24,6 +25,7 @@ function MaterialEdit() {
     const { type } = useParams()
     const { materialId } = useParams()
     const [loading, setLoading] = useState(true)
+    const [aulaFetch, setAulaFetch] = useState(null)
     const [aulaData, setAulaData] = useState(null);
     const [gameData, setGameData] = useState(null)
     const [provaData, setProvaData] = useState(null);
@@ -46,6 +48,8 @@ function MaterialEdit() {
     const [storyPdf, setStoryPdf] = useState({})
     const [labelConfirm, setLabelConfirm] = useState(false)
 
+    const [showModalDelete, setShowModalDelete] = useState(false)
+
     const fetchAulas = async (materialId) => {
         try {
             const aulaRef = doc(firestore, 'aulas', materialId);
@@ -54,6 +58,7 @@ function MaterialEdit() {
             if (aulaSnap.exists()) {
                 if(aulaSnap.data().type === 'aula'){
                     console.log('Aula', aulaSnap.data())
+                    setAulaFetch(aulaSnap.data())
                     setAulaData(aulaSnap.data())
                     setAulaName(aulaSnap.data().name)
                     setAulaDescription(aulaSnap.data().description)
@@ -156,6 +161,7 @@ function MaterialEdit() {
 
         return(
             <div className='containerItem'>
+                {showModalDelete && <ModalDeleteItem confirm={handleDelete} cancel={() => setShowModalDelete(false)} text={`Tem certeza que deseja excluir esse conteúdo?`}/>}
                 <div className='divBtns end'>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
@@ -218,7 +224,7 @@ function MaterialEdit() {
                     </div>
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm alert' onClick={() => setShowModalDelete(true)}>Excluir {type}</button>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
@@ -252,6 +258,7 @@ function MaterialEdit() {
 
         return(
             <div className='containerItem'>
+                {showModalDelete && <ModalDeleteItem confirm={handleDelete} cancel={() => setShowModalDelete(false)} text={`Tem certeza que deseja excluir esse conteúdo?`}/>}
                 <div className='divBtns end'>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
@@ -314,7 +321,7 @@ function MaterialEdit() {
                     </div>
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm alert' onClick={() => setShowModalDelete(true)}>Excluir {type}</button>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
@@ -403,6 +410,7 @@ function MaterialEdit() {
         
         return (
             <div className='containerItem'>
+                {showModalDelete && <ModalDeleteItem confirm={handleDelete} cancel={() => setShowModalDelete(false)} text={`Tem certeza que deseja excluir esse conteúdo?`}/>}
                 <div className='divBtns end'>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
@@ -513,7 +521,7 @@ function MaterialEdit() {
                     
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm alert' onClick={() => setShowModalDelete(true)}>Excluir {type}</button>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>
@@ -559,6 +567,7 @@ function MaterialEdit() {
 
         return(
             <div className='containerItem'>
+                {showModalDelete && <ModalDeleteItem confirm={handleDelete} cancel={() => setShowModalDelete(false)} text={`Tem certeza que deseja excluir esse conteúdo?`}/>}
                 <div className='divBtns end'>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
@@ -617,7 +626,7 @@ function MaterialEdit() {
                     </div>
                 </div>
                 <div className='divBtns'>
-                    <button className='btnConfirm alert' onClick={handleDelete}>Excluir {type}</button>
+                    <button className='btnConfirm alert' onClick={() => setShowModalDelete(true)}>Excluir {type}</button>
                     <button className='btnConfirm' onClick={handleUpdate}>Salvar alterações</button>
                 </div>
             </div>

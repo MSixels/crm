@@ -335,17 +335,20 @@ export const deleteProva = async (id) => {
 export const deleteStoryTelling = async (id) => {
     try {
         const provaRef = doc(firestore, 'provas', id);
-        
         const provaSnap = await getDoc(provaRef);
-        
+
         if (provaSnap.exists()) {
             const pdfUrl = provaSnap.data().pdfUrl;
-            
+
             if (pdfUrl) {
                 const storageRef = ref(storage, pdfUrl);
-
-                await deleteObject(storageRef);
-                console.log('PDF deletado com sucesso do Storage!');
+                
+                try {
+                    await deleteObject(storageRef);
+                    console.log('PDF deletado com sucesso do Storage!');
+                } catch (error) {
+                    console.warn('PDF não encontrado ou erro ao deletar do Storage:', error);
+                }
             }
         }
 
