@@ -58,11 +58,17 @@ function Login() {
             const decodedToken = jwtDecode(accessToken);
             console.log(decodedToken.user_id)
             setUserId(decodedToken.user_id)
-            insertAccess(decodedToken.user_id)
+            
         } else {
             console.log("Nenhum token encontrado nos cookies.");
         }
     }, []);
+
+    useEffect(() => {
+        if(userId){
+            insertAccess(userId)
+        }
+    }, [userId])
 
     const insertAccess = async (userId) => {
         if(userId !== ''){
@@ -156,8 +162,8 @@ function Login() {
                 Cookies.remove('accessToken');
             }
         } else if(disable){
-                    setAlertAccountDisabled(true);
-                    Cookies.remove('accessToken');
+            setAlertAccountDisabled(true);
+            Cookies.remove('accessToken');
         } else {
             console.log('')
         }
