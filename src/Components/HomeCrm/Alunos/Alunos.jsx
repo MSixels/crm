@@ -252,7 +252,7 @@ function Alunos({ userType }) {
                                     {activeModalId === a.id && 
                                         <div className='modalEditUser'>
                                             {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
-                                            <p className='alert' onClick={() => handleDeleteUser(a.id)}>Excluir usuário</p>
+                                            {/*<p className='alert' onClick={() => handleDeleteUser(a.id)}>Excluir usuário</p>*/}
                                         </div>
                                     }
                                     {confirmId === a.id && (
