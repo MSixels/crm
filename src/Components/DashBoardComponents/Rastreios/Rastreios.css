@@ -1,0 +1,58 @@
+.containerRastreios{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 24px;
+}
+.containerRastreios .divBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFF;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: .8px 5px 8px .8px #ccc;
+    width: 100%;
+}
+.containerRastreios .divBox .divCircle{
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.containerRastreios .divBox .divCircle .divCount{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+}
+.containerRastreios .divBox .divCircle .value{
+    font-size: 32px;
+    font-weight: bold;
+}
+.containerRastreios .divBox .divCircle .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background-color: var(--secondary1000);
+    color: #FFF;
+}
+.containerRastreios .divBox .sparkline{
+    width: 100px;
+    height: 30px;
+    transform: rotate(-16deg);
+}
+.containerRastreios .divBox .values{
+    display: flex;
+    gap: 24px;
+    width: 100%;
+}

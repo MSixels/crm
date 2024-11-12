@@ -455,3 +455,86 @@ export const deleteStoryTelling = async (id) => {
         return false;
     }
 };
+
+export const fetchModulos = async (setModulos) => {
+    try {
+        const modulosCollectionRef = collection(firestore, "modulos");
+
+        const modulosSnapshot = await getDocs(modulosCollectionRef);
+
+        const modulosList = modulosSnapshot.docs.map(doc => ({
+            id: doc.id,  
+            ...doc.data() 
+        }));
+
+        setModulos(modulosList)
+    } catch (error) {
+        console.error("Erro ao buscar módulos: ", error);
+        setModulos([])
+    }
+}
+
+export const fetchConteudos = async (setConteudos) => {
+    try {
+        const conteudosCollectionRef = collection(firestore, "conteudo");
+
+        const conteudosSnapshot = await getDocs(conteudosCollectionRef);
+
+        const conteudosList = conteudosSnapshot.docs.map(doc => ({
+            id: doc.id,  
+            ...doc.data() 
+        }));
+
+        setConteudos(conteudosList)
+    } catch (error) {
+        console.error("Erro ao buscar conteudos: ", error);
+        setConteudos([])
+    }
+}
+
+export const fetchProvasCriadas = async (setProvasCriadas) => {
+    try {
+        const provasCollectionRef = collection(firestore, "provas");
+
+        const q = query(provasCollectionRef, where("type", "==", "prova"));
+
+        const provasSnapshot = await getDocs(q);
+
+        const provasList = provasSnapshot.docs.map(doc => ({
+            id: doc.id,  
+            ...doc.data() 
+        }));
+
+        setProvasCriadas(provasList);
+    } catch (error) {
+        console.error("Erro ao buscar provas: ", error);
+        setProvasCriadas([]);  
+    }
+};
+
+export const fetchRastreios = async (setRastreios, setLoadingRastreios) => {
+    try {
+        const rastreiosCollectionRef = collection(firestore, "rastreios");
+
+        // Criando a consulta para pegar apenas os campos específicos
+        const rastreiosQuery = query(rastreiosCollectionRef);
+
+        const rastreiosSnapshot = await getDocs(rastreiosQuery);
+
+        const rastreiosList = rastreiosSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                createdAt: data.createdAt,
+                userId: data.userId
+            };
+        });
+
+        setRastreios(rastreiosList);
+        setLoadingRastreios(false)
+    } catch (error) {
+        console.error("Erro ao buscar rastreios: ", error);
+        setRastreios([]);
+        setLoadingRastreios(false)
+    }
+};

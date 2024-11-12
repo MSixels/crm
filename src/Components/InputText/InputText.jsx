@@ -31,8 +31,8 @@ function InputText({title, placeH, onSearchChange, mt }) {
 InputText.propTypes = {
     title: PropTypes.string.isRequired,
     placeH: PropTypes.string.isRequired,
-    onSearchChange: PropTypes.func.isRequired,
-    mt: PropTypes.string.isRequired,
+    onSearchChange: PropTypes.func,
+    mt: PropTypes.string,
 };
 
 export default InputText

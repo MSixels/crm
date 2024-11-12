@@ -1,0 +1,42 @@
+.containerNotas{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #FFF;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: .8px 5px 8px .8px #ccc;
+    width: 100%;
+}
+.containerNotas .divLine{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 32px;
+}
+.containerNotas .divCircle {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.containerNotas .divCircle .divMedia{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+}
+.containerNotas .divCircle .divMedia .valueMedia{
+    font-size: 32px;
+    font-weight: bold;
+}
+.containerNotas .divCircle .divMedia .textSmall{
+    font-size: 14px;
+}
+
+

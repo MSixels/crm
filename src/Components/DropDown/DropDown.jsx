@@ -52,9 +52,9 @@ DropDown.propTypes = {
     title: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     options: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.number.isRequired,
+        id: PropTypes.any.isRequired,
         name: PropTypes.string.isRequired,
-    })).isRequired,
+    })),
     onTurmaChange: PropTypes.func.isRequired,
 };
 
