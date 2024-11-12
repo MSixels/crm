@@ -58,7 +58,7 @@ function Login() {
             const decodedToken = jwtDecode(accessToken);
             console.log(decodedToken.user_id)
             setUserId(decodedToken.user_id)
-
+            insertAccess(decodedToken.user_id)
         } else {
             console.log("Nenhum token encontrado nos cookies.");
         }
