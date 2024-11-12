@@ -313,7 +313,7 @@ function ModuloConteudo() {
                 {modulo && conteudo.length > 0  && <MenuConteudo modulo={modulo} conteudo={conteudo} aulas={aulas} provas={provas} progressAulas={progressAulas} progressProvas={progressProvas} userId={userId}/>}
                 <div className='divMaterial'>
                     {type === 'aula' && <VideoAula materialId={materialId} userId={userId} />}
-                    {type === 'prova' && <Prova materialId={materialId} userId={userId}/>}
+                    {type === 'prova' && <Prova materialId={materialId} userId={userId} conteudoId={conteudoId} />}
                     {type === 'storyTelling' && <StoryTelling materialId={materialId} userId={userId}/>}
                     {type === 'game' && <Game materialId={materialId} userId={userId}/>}
                 </div>

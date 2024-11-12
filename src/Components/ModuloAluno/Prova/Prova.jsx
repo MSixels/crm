@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './Prova.css';
 import PropTypes from 'prop-types';
 import { firestore } from '../../../services/firebaseConfig';
-import { collection, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { FaBookOpen, FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6';
 import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,15 +10,15 @@ import { TbRuler3 } from 'react-icons/tb';
 import Loading from '../../Loading/Loading';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa'
 
-function Prova({ materialId, userId, contentId }) {
+function Prova({ materialId, userId, conteudoId }) {
   const [provas, setProvas] = useState([]);
   const [selectedResponses, setSelectedResponses] = useState({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const { moduloId } = useParams();
   const navigate = useNavigate();
   const [timeLeft, setTimeLeft] = useState(30 * 60);
-  const [provaFinish, setProvaFinish] = useState([])
-  const [loading, setLoading] = useState(TbRuler3)
+  const [provaFinish, setProvaFinish] = useState([]);
+  const [loading, setLoading] = useState(TbRuler3);
 
   useEffect(() => {
     const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
@@ -157,34 +157,43 @@ function Prova({ materialId, userId, contentId }) {
     });
   };
 
-  const provaConfirm = async () => {
-    try {
-      const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
-      let score = 0;
-      const randomizedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
+const provaConfirm = async () => {
+  try {
+    const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
+    let score = 0;
+    const randomizedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
 
-      randomizedQuestions.forEach((quest, index) => {
-        const selectedResponseIndex = selectedResponses[index];
-        if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
-          score += 20;
-        }
-      });
+    randomizedQuestions.forEach((quest, index) => {
+      const selectedResponseIndex = selectedResponses[index];
+      if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
+        score += 20;
+      }
+    });
+    score = Math.min(score, 100);
 
-      score = Math.min(score, 100);
-      const progressData = {
-        userId,
-        provaId: materialId,
-        type: 'prova',
-        status: 'end',
-        score,
-        responses: selectedResponses,
-      };
+    const progressData = {
+      userId,
+      provaId: materialId,
+      type: 'prova',
+      status: 'end',
+      score,
+      responses: selectedResponses,
+    };
+    const docSnapshot = await getDoc(progressRef);
 
+    if (docSnapshot.exists()) {
+      await updateDoc(progressRef, progressData);
+      console.log('Progresso da prova atualizado com sucesso.');
+    } else {
       await setDoc(progressRef, progressData);
-    } catch (error) {
-      console.error('Erro ao salvar o progresso da prova:', error);
+      console.log('Progresso da prova criado com sucesso.');
     }
-  };
+
+  } catch (error) {
+    console.error('Erro ao salvar o progresso da prova:', error);
+  }
+};
+
 
   const confirmMaterial = async (confirm) => {
     if (confirm) {
@@ -208,17 +217,57 @@ function Prova({ materialId, userId, contentId }) {
     }
   };
 
+  const provaChance = async () => {
+    try {
+      const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
+      const progressSnapshot = await getDoc(progressRef);
+      if (progressSnapshot.data().chance === 'true'){
+        console.log("CHANCEEEEE", progressSnapshot.data().chance)
+        return
+      }
+      if (progressSnapshot.exists() && !progressSnapshot.data().chance) {
+        const progressData = {
+          status: 'start',
+          chance: true,
+        };
+        
+        await updateDoc(progressRef, progressData);
+        console.log('Progresso da prova atualizado com sucesso.');
+      } else {
+        console.log('O campo `chance` já existe. Nenhuma atualização foi feita.');
+      }
+  
+    } catch (error) {
+      console.error('Erro ao atualizar o progresso da prova:', error);
+    }
+  };
+  
+
+
   const resultadoProva = () => {
     const score = provaFinish[0]?.score || 0;
     const aprovado = score >= 50;
-  
+    const chance = provaFinish[0]?.chance || false;
+    const provaDone = () => {
+      if(aprovado) {
+        navigate(`/aluno/modulo/${moduloId}/aulas`) 
+      }else if(chance) {
+        console.log("chanceee", chance)
+        navigate(`/aluno/modulo/${moduloId}/aulas`)
+      }else {
+        provaChance()
+        navigate(`/aluno/modulo/${moduloId}/aulas`)
+      }
+    }
+
+
     return (
       <div className="resultadoProva">
         <div className="titleIcon">
           <div className="divIconAula">
             <FaBookOpen />
           </div>
-          <h2 className="testTitle"></h2>
+          {provas[0].name && <h2 className="testTitle">{provas[0].name}</h2>}
         </div>
         <div className="resultadoProva__status">
           {aprovado ? (
@@ -229,14 +278,14 @@ function Prova({ materialId, userId, contentId }) {
           <p className="text-aviso">
             {aprovado
               ? 'Parabéns, você foi aprovado(a). Continue seus estudos na próxima aula.'
-              : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova mais uma vez!'}
+              : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova mais uma única vez!'}
           </p>
           <p className="resultadoProva__score" style={{ backgroundColor: score < 50 ? '#D32F2F' : '#1BA284' }}>
           {score} PTS
         </p>
           <button
             className="resultadoProva__button"
-            onClick={() => navigate(`/aluno/modulo/${moduloId}/aulas`)}
+            onClick={() => provaDone()}
           >
             {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
           </button>
@@ -249,8 +298,6 @@ function Prova({ materialId, userId, contentId }) {
                 selectedResponseIndex !== undefined
                   ? quest.responses[selectedResponseIndex]
                   : null;
-              const isCorrect = selectedResponse?.value === true;
-              const isWrong = selectedResponse?.value === false;
               return (
                 <li key={index}>
                   <p className="pergunta_recebida">{quest.quest}</p>
@@ -378,7 +425,7 @@ function Prova({ materialId, userId, contentId }) {
 
   return (
     <div className='containerProva'>
-      {provaFinish.length > 0 ? resultadoProva() : renderProvas()}
+      {provaFinish.length > 0 && provaFinish[0].status === 'end' ? resultadoProva() : renderProvas()}
     </div>
   );
 }
@@ -386,7 +433,8 @@ function Prova({ materialId, userId, contentId }) {
 Prova.propTypes = {
   materialId: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
-  contentId: PropTypes.string.isRequired,
+  conteudoId: PropTypes.string.isRequired,
+
 };
 
 export default Prova;
