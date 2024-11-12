@@ -5,6 +5,7 @@
     border: solid 1px var(--secondary200);
     border-radius: 4px;
     margin-bottom: 64px;
+    width: 100%;
 }
 .containerRastreios .divConcluidosRastreio header{
     padding: 16px;

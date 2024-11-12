@@ -9,7 +9,7 @@ import { TfiReload } from "react-icons/tfi";
 import { useEffect, useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
-import { doc, getDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc } from 'firebase/firestore';
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode';
 
@@ -64,6 +64,22 @@ function Login() {
         }
     }, []);
 
+    const insertAccess = async (userId) => {
+        if(userId !== ''){
+            try{
+                await addDoc(collection(firestore, 'access'), {
+                    userId: userId,
+                    createdAt: new Date(),
+                });
+                console.log('Acesso registrado com sucesso');
+            } catch (error) {
+                console.log('Erro ao registrar o acesso:', error)
+            }
+        } else {
+            console.log('UserId não encontrado')
+        }
+    }
+
     useEffect(() => {
         const fetchUserData = async (userId) => {
             try {
@@ -75,8 +91,9 @@ function Login() {
                     const disable = docSnap.data().disable
                     console.log('disable: ', disable)
                     const sessao = Cookies.get('accessToken')
+
                     if (
-                        sessao && userType === 3 && 
+                        sessao && userType === 3 &&
                         location.pathname === '/login/aluno' && !disable
                     ) {
                         navigate('/aluno/home');
@@ -98,7 +115,7 @@ function Login() {
             }
         };
         if (userId) {
-        fetchUserData(userId);
+            fetchUserData(userId);
         }
 
     }, [userId, navigate, location]);
@@ -111,6 +128,7 @@ function Login() {
         if (user) {
             fetchUserType(user.user.uid);
             const accessToken = user.user.accessToken;
+            insertAccess(user.user.uid)
     
             if (checkConect) {
                 Cookies.set('accessToken', accessToken, { expires: 7 });

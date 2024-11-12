@@ -52,7 +52,6 @@ function RastreioSpark({ weeklyData, weeklyLabels }) {
 }
 
 RastreioSpark.propTypes = {
-    weekFilter: PropTypes.any.isRequired,
     weeklyData: PropTypes.array.isRequired,
     weeklyLabels: PropTypes.any.isRequired,
 };

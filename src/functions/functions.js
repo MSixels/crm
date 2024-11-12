@@ -538,3 +538,24 @@ export const fetchRastreios = async (setRastreios, setLoadingRastreios) => {
         setLoadingRastreios(false)
     }
 };
+
+
+export async function deleteUserFromFireBaseAuth(uid) {
+    try {
+      const response = await fetch(`http://localhost:3000/delete-user/${uid}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Erro ao deletar usuário: ${response.statusText}`);
+      }
+  
+      const data = await response.text(); 
+      console.log(data);
+    } catch (error) {
+      console.error("Erro ao deletar usuário:", error);
+    }
+}

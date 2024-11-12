@@ -6,7 +6,7 @@ import './Home.css'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
-import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import { auth, firestore } from '../../services/firebaseConfig'
 import Rastreios from '../../Components/HomeAluno/Rastreios/Rastreios'
 import RastreiosSmall from '../../Components/HomeAluno/RastreiosSmall/RastreiosSmall'
@@ -48,6 +48,28 @@ function Home() {
     const [aulas, setAulas] = useState([]);
     const [provas, setProvas] = useState([]);
     const [professores, setProfessores] = useState([]);
+
+    /*
+    const insertAccess = async (userId) => {
+        if(userId !== ''){
+            try{
+                await addDoc(collection(firestore, 'access'), {
+                    userId: userId,
+                    createdAt: new Date(),
+                });
+                console.log('Acesso registrado com sucesso');
+            } catch (error) {
+                console.log('Erro ao registrar o acesso:', error)
+            }
+        } else {
+            console.log('UserId não encontrado')
+        }
+    }
+
+    useEffect(() => {
+        insertAccess(userId)
+    }, [userId])
+    */
 
     onAuthStateChanged(auth, async (user) => {
         if (user) {

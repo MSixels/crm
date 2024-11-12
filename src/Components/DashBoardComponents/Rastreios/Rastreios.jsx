@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { GrEdit } from "react-icons/gr";
 import RastreioDonut from '../Graficos/RastreioDonut/RastreioDonut';
 import RastreioSpark from '../Graficos/RastreioSpark/RastreioSpark';
+import { IoMdArrowRoundUp } from "react-icons/io";
 
 function Rastreios({ rastreios, weekFilter }) {
     const [total, setTotal] = useState(0);
@@ -68,11 +69,9 @@ function Rastreios({ rastreios, weekFilter }) {
             <div className='divBox'>
                 <h3 style={{ marginBottom: 24, width: '100%' }}>Novos rastreios</h3>
                 <div className='values'>
-                    <div className='sparkline'>
                     
-                    </div>
                     <div>
-                        <h3>{weeklyData ? weeklyData.reduce((acc, curr) => acc + curr, 0) : 0}</h3>
+                        <h3>{weeklyData ? weeklyData.reduce((acc, curr) => acc + curr, 0) : 0} <IoMdArrowRoundUp color='#1BA284'/></h3>
                         <p>Rastreios dos últimos 7 dias</p>
                     </div>
                 </div>
@@ -92,6 +91,8 @@ export default Rastreios;
 
 /*
 
-{weeklyData && weeklyLabels && <RastreioSpark weeklyData={weeklyData} weeklyLabels={weeklyLabels}/>}
+<div className='sparkline'>
+                    {weeklyData && weeklyLabels && <RastreioSpark weeklyData={weeklyData} weeklyLabels={weeklyLabels}/>}
+                    </div>
 
 */

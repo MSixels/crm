@@ -253,8 +253,7 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
 
     return (
         <>
-            <h3 style={{fontSize: 20, marginTop: 64}}>Rastreios concluídos</h3>
-            
+            <h3 style={{fontSize: 20, marginTop: 64, width: '100%'}}>Rastreios concluídos</h3>
             <div className='divConcluidosRastreio'>
                 <div className='divContent'>
                     <header>

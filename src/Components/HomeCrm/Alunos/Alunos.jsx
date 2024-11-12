@@ -11,7 +11,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import Loading from '../../Loading/Loading';
 import PropTypes from 'prop-types'
 import { BsThreeDotsVertical } from 'react-icons/bs';
-import { disableUserInFirestore, reactivateUserInFirestore } from '../../../functions/functions';
+import { disableUserInFirestore, reactivateUserInFirestore, deleteUserFromFireBaseAuth } from '../../../functions/functions';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { GrNext } from 'react-icons/gr';
 
@@ -201,6 +201,14 @@ function Alunos({ userType }) {
         }
     };
 
+    const handleDeleteUser = async (id) => {
+        try {
+          await deleteUserFromFireBaseAuth(id);
+        } catch (error) {
+          console.error("Erro ao deletar o usuário:", error);
+        }
+    };
+
     if (loading) {
         return <Loading />
     }
@@ -244,6 +252,7 @@ function Alunos({ userType }) {
                                     {activeModalId === a.id && 
                                         <div className='modalEditUser'>
                                             {a.disable ? <p className='text' onClick={() => openConfirmModal(a.id, 'active')}>Reativar Usuário</p> : <p className='alert' onClick={() => openConfirmModal(a.id, 'disable')}>Desativar Usuário</p>}
+                                            <p className='alert' onClick={() => handleDeleteUser(a.id)}>Excluir usuário</p>
                                         </div>
                                     }
                                     {confirmId === a.id && (
