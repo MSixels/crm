@@ -27,12 +27,24 @@ function RastreioSpark({ weeklyData, weeklyLabels }) {
             },
         },
         tooltip: {
-            enabled: true,
+            enabled: false,
             x: {
-                formatter: ({ dataPointIndex }) => weeklyLabels[dataPointIndex],
+                show: false, // Oculta o valor do eixo X no tooltip
             },
             y: {
-                formatter: (value) => `${value} rastreios`, 
+                formatter: (value) => `${value}`, 
+                title: {
+                    formatter: () => '' 
+                }
+            },
+            marker: {
+                show: true, // Mostra apenas o número no ponto
+            },
+            style: {
+                fontSize: '12px',
+            },
+            fixed: {
+                enabled: false,
             },
         },
         colors: ['#1BA284'],

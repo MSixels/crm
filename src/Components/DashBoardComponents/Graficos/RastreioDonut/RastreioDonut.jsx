@@ -25,17 +25,12 @@ function RastreioDonut({ total }) {
                 startAngle: -120,
             }
         },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                chart: {
-                    width: 200
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }]
+        stroke: {
+            show: true,
+            colors: '#FFF', 
+            width: 2, 
+        },
+        
     };
 
     const chartData = [total, 5000 - total];

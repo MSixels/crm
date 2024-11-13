@@ -13,4 +13,5 @@
     display: flex;
     justify-content: space-between;
     padding-block: 12px;
+    gap: 24px;
 }

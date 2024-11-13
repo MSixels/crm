@@ -7,7 +7,7 @@ function ProvaDonut({ maioresQue60, entre40e60, menoresOuIguaisA40}) {
         chart: {
             type: 'donut',
         },
-        labels: ['Notas > 60', 'Notas = 60', 'Notas < ou igual 40'],
+        labels: ['Notas > 60', 'Notas > 40', 'Notas < ou igual 40'],
         colors: ['#1BA284', '#EDA145', '#D32F2F'],
         dataLabels: {
             enabled: false, 
@@ -26,17 +26,12 @@ function ProvaDonut({ maioresQue60, entre40e60, menoresOuIguaisA40}) {
             }
             
         },
-        responsive: [{
-            breakpoint: 480,
-            options: {
-                chart: {
-                    width: 200
-                },
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }]
+        stroke: {
+            show: true,
+            colors: '#FFF', 
+            width: 2, 
+        },
+        
     };
 
     const chartSeries = [maioresQue60, entre40e60, menoresOuIguaisA40];

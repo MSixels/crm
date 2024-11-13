@@ -31,9 +31,10 @@ function DashProf() {
                 const querySnapshot = await getDocs(q);
                 const provasList = querySnapshot.docs.map(doc => ({
                     id: doc.id,
-                    ...doc.data()
+                    userId: doc.data().userId,
+                    provaId: doc.data().provaId,
+                    score: doc.data().score
                 }));
-
                 setProvas(provasList); 
                 setLoadingProvas(false)
             } catch (error) {
@@ -47,24 +48,25 @@ function DashProf() {
         fetchProvasCriadas(setProvasCriadas)
         fetchProvas();
         fetchRastreios(setRastreios, setLoadingRastreios)
+        
     }, []);
 
     useEffect(() => {
         if (searchDrop !== 'Selecione') {
-            console.log('searchDrop: ', searchDrop);
+            //console.log('searchDrop: ', searchDrop);
 
             const filteredConteudos = conteudos.filter(conteudo => conteudo.moduloId === searchDrop);
-            console.log('filteredConteudos: ', filteredConteudos);
+            //console.log('filteredConteudos: ', filteredConteudos);
 
             const filteredProvasCriadas = provasCriadas.filter(provaCriada =>
                 filteredConteudos.some(conteudo => conteudo.id === provaCriada.conteudoId)
             );
-            console.log('filteredProvasCriadas: ', filteredProvasCriadas);
+            //console.log('filteredProvasCriadas: ', filteredProvasCriadas);
 
             const filteredProvas = provas.filter(prova =>
                 filteredProvasCriadas.some(provaCriada => provaCriada.id === prova.provaId)
             );
-            console.log('filteredProvas: ', filteredProvas);
+            //console.log('filteredProvas: ', filteredProvas);
 
             setFilteredProvas(filteredProvas);
             setLoadingFiltered(false)
@@ -81,6 +83,11 @@ function DashProf() {
             setSearchDrop('Selecione');
         }
     };
+
+    useEffect(() => {
+        //console.log('provas: ', provas),
+        //console.log('rastreios: ', rastreios)
+    }, [provas, rastreios])
 
     if(loadingFiltered || loadingProvas || loadingRastreios){
         return <Loading />
@@ -99,10 +106,9 @@ function DashProf() {
                 <Access />
                 {filteredProvas && <Notas provas={filteredProvas} /> }
                 {rastreios && <Rastreios rastreios={rastreios} weekFilter={new Date()}/>}
-                
             </div>
             <div className='divBoxItens'>
-                <Destaques />
+                <Destaques provas={provas} rastreios={rastreios}/>
             </div>
         </div>
     );

@@ -1,0 +1,75 @@
+.containerDestaques{
+    display: flex;
+    flex-direction: column;
+}
+.containerDestaques .divUsers{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 24px;
+    justify-content: center;
+}
+.containerDestaques .divItem{
+    display: flex;
+    flex-direction: column;
+    width: 480px;
+    background-color: #FFF;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: .8px 5px 8px .8px #ccc;
+}
+.containerDestaques .divItem .divUser{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+}
+.containerDestaques .divItem .divUser .divAvatar{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+}
+.containerDestaques .divItem .divUser .divAvatar img{
+    width: 100%;
+}
+.containerDestaques .divItem .divUser .divInitial{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 40px;
+    background-color: var(--secondary500);
+    font-size: 18px;
+    font-weight: bold;
+}
+.containerDestaques .divItem .divInfos{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 12px;
+    padding: 8px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.containerDestaques .divItem .mt{
+    margin-top: 6px;
+}
+.containerDestaques .divItem .bb{
+    border-bottom: solid 1px var(--secondary500);
+}
+.containerDestaques .divItem .divInfos .divIcon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 24px;
+    background-color: var(--secondary1000);
+    color: #FFF;
+    
+}

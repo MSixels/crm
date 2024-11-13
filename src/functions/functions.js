@@ -539,6 +539,32 @@ export const fetchRastreios = async (setRastreios, setLoadingRastreios) => {
     }
 };
 
+export const fetchAccess = async (setAccess, setLoadingAccess) => {
+    try {
+        const accessCollectionRef = collection(firestore, "access");
+
+        const accessQuery = query(accessCollectionRef);
+
+        const accessSnapshot = await getDocs(accessQuery);
+
+        const accessList = accessSnapshot.docs.map(doc => {
+            const data = doc.data();
+            return {
+                id: doc.id,
+                createdAt: data.createdAt,
+                userId: data.userId
+            };
+        });
+
+        setAccess(accessList);
+        setLoadingAccess(false)
+    } catch (error) {
+        console.error("Erro ao buscar acessos: ", error);
+        setAccess([]);
+        setLoadingAccess(false)
+    }
+};
+
 
 export async function deleteUserFromFireBaseAuth(uid) {
     try {

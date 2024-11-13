@@ -40,7 +40,7 @@ function MenuDash({page, conteudoId, moduloId}) {
             id: 1,
             icon: <GoHomeFill size={20}/>, 
             name: 'Dashboard',
-            status: 'block'
+            status: 'active'
         },
         {
             id: 2,

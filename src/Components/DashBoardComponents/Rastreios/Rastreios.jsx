@@ -22,8 +22,8 @@ function Rastreios({ rastreios, weekFilter }) {
         setWeeklyData(groupedByWeek.counts);
         setWeeklyLabels(groupedByWeek.labels);
         
-        console.log('rastreios: ', rastreios);
-        console.log('weeklyData: ', groupedByWeek.counts);
+        //console.log('rastreios: ', rastreios);
+        //console.log('weeklyData: ', groupedByWeek.counts);
     }, [rastreios, weekFilter]);
 
     const groupRastreiosByWeek = (rastreios, startDate) => {
@@ -69,10 +69,12 @@ function Rastreios({ rastreios, weekFilter }) {
             <div className='divBox'>
                 <h3 style={{ marginBottom: 24, width: '100%' }}>Novos rastreios</h3>
                 <div className='values'>
-                    
+                    <div className='sparkline'>
+                        {weeklyData && weeklyLabels && <RastreioSpark weeklyData={weeklyData} weeklyLabels={weeklyLabels}/>}
+                    </div>
                     <div>
                         <h3>{weeklyData ? weeklyData.reduce((acc, curr) => acc + curr, 0) : 0} <IoMdArrowRoundUp color='#1BA284'/></h3>
-                        <p>Rastreios dos últimos 7 dias</p>
+                        <p>Últimos 7 dias</p>
                     </div>
                 </div>
                 
@@ -91,8 +93,6 @@ export default Rastreios;
 
 /*
 
-<div className='sparkline'>
-                    {weeklyData && weeklyLabels && <RastreioSpark weeklyData={weeklyData} weeklyLabels={weeklyLabels}/>}
-                    </div>
+
 
 */

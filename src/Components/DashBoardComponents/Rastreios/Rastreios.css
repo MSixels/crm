@@ -4,6 +4,7 @@
     align-items: center;
     width: 100%;
     gap: 24px;
+    padding: 0;
 }
 .containerRastreios .divBox{
     display: flex;
@@ -49,7 +50,6 @@
 .containerRastreios .divBox .sparkline{
     width: 100px;
     height: 30px;
-    transform: rotate(-16deg);
 }
 .containerRastreios .divBox .values{
     display: flex;
