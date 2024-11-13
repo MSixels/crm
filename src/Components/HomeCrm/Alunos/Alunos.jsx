@@ -203,7 +203,8 @@ function Alunos({ userType }) {
 
     const handleDeleteUser = async (id) => {
         try {
-          await deleteUserFromFireBaseAuth(id);
+          await deleteUserFromFireBaseAuth(id, fetchAlunosFromFirestore);
+          
         } catch (error) {
           console.error("Erro ao deletar o usuário:", error);
         }

@@ -1,9 +1,10 @@
 import ReactApexChart from 'react-apexcharts';
 import PropTypes from 'prop-types';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
+import LoadingItem from '../../../LoadingItem/LoadingItem';
 
 
-function AccessGrafico({ access, loading, dayAgo, day }) {
+function AccessGrafico({ access, loading, dayAgo, day, acessosTotal }) {
     const chartData = useMemo(() => {
         //console.log('ACCESS: ', access);
         //console.log('dayAgo: ', dayAgo);
@@ -63,7 +64,10 @@ function AccessGrafico({ access, loading, dayAgo, day }) {
                     axisBorder: { show: false },
                     axisTicks: { show: false }
                 },
-                grid: { show: false },
+                grid: {
+                    show: false,
+                   
+                },
                 tooltip: {
                     x: {
                         show: false  
@@ -84,12 +88,24 @@ function AccessGrafico({ access, loading, dayAgo, day }) {
                         stops: [0, 100]
                     }
                 },
+                annotations: {
+                    xaxis: seriesData.map(dataPoint => ({
+                        x: dataPoint[0], // Pega o timestamp do ponto de dados
+                        borderColor: '#E0E0E0',
+                        strokeDashArray: 2,
+                    }))
+                }
             }
         };
     }, [access, dayAgo, day]);
 
+    useEffect(() => {
+        const sum = chartData.series[0].data.map((d) => d[1]).reduce((acc, curr) => acc + curr, 0);
+        acessosTotal(sum)
+    }, [chartData.series]);
+
     if (loading) {
-        return <p>Carregando...</p>;
+        return ''
     }
 
     return (
@@ -109,6 +125,7 @@ AccessGrafico.propTypes = {
     loading: PropTypes.bool,
     dayAgo: PropTypes.any,
     day: PropTypes.any,
+    acessosTotal: PropTypes.number
 };
 
 export default AccessGrafico

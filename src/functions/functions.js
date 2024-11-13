@@ -566,7 +566,7 @@ export const fetchAccess = async (setAccess, setLoadingAccess) => {
 };
 
 
-export async function deleteUserFromFireBaseAuth(uid) {
+export async function deleteUserFromFireBaseAuth(uid, update) {
     try {
       const response = await fetch(`http://localhost:3000/delete-user/${uid}`, {
         method: "DELETE",
@@ -581,6 +581,7 @@ export async function deleteUserFromFireBaseAuth(uid) {
   
       const data = await response.text(); 
       console.log(data);
+      update();
     } catch (error) {
       console.error("Erro ao deletar usuário:", error);
     }

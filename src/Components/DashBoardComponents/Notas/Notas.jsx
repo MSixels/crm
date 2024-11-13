@@ -3,6 +3,7 @@ import './Notas.css';
 import { GoDotFill } from "react-icons/go";
 import PropTypes from 'prop-types'
 import ProvaDonut from '../Graficos/ProvaDonut/ProvaDonut';
+import LoadingItem from '../../LoadingItem/LoadingItem';
 
 function Notas({ provas }) {
     const [media, setMedia] = useState(0);
@@ -40,7 +41,7 @@ function Notas({ provas }) {
     };
 
     if(loading){
-        return <div className='containerNotas'><p>Carregando...</p></div>
+        return <div className='containerNotas'><LoadingItem /></div>
     }
 
     return (

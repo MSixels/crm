@@ -27,7 +27,7 @@ function RastreioSpark({ weeklyData, weeklyLabels }) {
             },
         },
         tooltip: {
-            enabled: false,
+            enabled: true,
             x: {
                 show: false, // Oculta o valor do eixo X no tooltip
             },
