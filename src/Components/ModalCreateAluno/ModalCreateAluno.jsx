@@ -20,6 +20,7 @@ function ModalCreateAluno({ title, close }) {
         createUserWithEmailAndPassword,
         loading,
     ] = useCreateUserWithEmailAndPassword(auth);
+    const [loadingEmail, setLoadingEmail] = useState(false)
 
     const getName = (newName) => {
         setName(newName);
@@ -63,6 +64,7 @@ function ModalCreateAluno({ title, close }) {
             setEmailError(false);
     
             try {
+                setLoadingEmail(true)
                 const usersRef = collection(firestore, 'users');
                 const emailQuery = query(usersRef, where('email', '==', email));
                 const querySnapshot = await getDocs(emailQuery);
@@ -89,7 +91,7 @@ function ModalCreateAluno({ title, close }) {
                             isActive: false
                         });
                         alert("Aluno cadastrado com sucesso!");
-    
+                        setLoadingEmail(false)
                         close(false);
                     })
                     .catch((error) => {
@@ -129,6 +131,7 @@ function ModalCreateAluno({ title, close }) {
             emailjs.send(serviceID, templateID, templateParams, userID)
             .then((response) => {
                 console.log('E-mail enviado com sucesso!', response.status, response.text);
+                
                 resolve(); 
             })
             .catch((error) => {
@@ -151,7 +154,7 @@ function ModalCreateAluno({ title, close }) {
                 </div>
                 {/*<InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />*/}
                 <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
-                <ButtonSend title={loading ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailToSignUp} />
+                <ButtonSend title={loading || loadingEmail ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailToSignUp} />
             </div>
         </div>
     );

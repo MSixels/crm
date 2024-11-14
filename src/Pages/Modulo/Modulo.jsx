@@ -8,6 +8,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore'
 import { firestore } from '../../services/firebaseConfig'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
+import { chunk } from 'lodash';
 
 function Modulo() {
     const { moduloId } = useParams()
@@ -60,30 +61,37 @@ function Modulo() {
     
             try {
                 const aulaIds = aulas.map(aula => aula.id);
+                const progressRef = collection(firestore, 'progressAulas');
+                const progressData = [];
     
-                if (aulaIds.length <= 10) {
-                    const progressRef = collection(firestore, 'progressAulas');
-                    const q = query(progressRef,
+                // Divide os IDs de aulas em blocos de até 10
+                const chunks = chunk(aulaIds, 10);
+    
+                for (const aulaChunk of chunks) {
+                    const q = query(
+                        progressRef,
                         where('userId', '==', userId),
-                        where('aulaId', 'in', aulaIds)
+                        where('aulaId', 'in', aulaChunk)
                     );
     
                     const querySnapshot = await getDocs(q);
     
                     if (!querySnapshot.empty) {
-                        const progressData = querySnapshot.docs.map(doc => ({
+                        const chunkData = querySnapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data()
                         }));
-    
-                        console.log('Dados de progresso das aulas encontrados:', progressData);
-                        setProgressAulas(progressData);
-                    } else {
-                        console.log('Nenhum dado de progresso das aulas encontrado.');
+                        progressData.push(...chunkData);
                     }
-                } else {
-                    console.log('O número de aulas excede o limite de 10 para a consulta "in".');
                 }
+    
+                if (progressData.length > 0) {
+                    console.log('Dados de progresso das aulas encontrados:', progressData);
+                    setProgressAulas(progressData);
+                } else {
+                    console.log('Nenhum dado de progresso das aulas encontrado.');
+                }
+                
             } catch (error) {
                 console.error('Erro ao buscar status do progresso das aulas:', error);
             }
@@ -100,29 +108,37 @@ function Modulo() {
     
             try {
                 const provaIds = provas.map(prova => prova.id);
+                const progressProvasRef = collection(firestore, 'progressProvas');
+                const progressProvasData = [];
     
-                if (provaIds.length <= 10) {
-                    const progressProvasRef = collection(firestore, 'progressProvas');
-                    const qProvas = query(progressProvasRef,
+                // Divide os IDs de provas em blocos de até 10
+                const chunks = chunk(provaIds, 10);
+    
+                for (const provaChunk of chunks) {
+                    const q = query(
+                        progressProvasRef,
                         where('userId', '==', userId),
-                        where('provaId', 'in', provaIds)
+                        where('provaId', 'in', provaChunk)
                     );
     
-                    const querySnapshotProvas = await getDocs(qProvas);
+                    const querySnapshot = await getDocs(q);
     
-                    if (!querySnapshotProvas.empty) {
-                        const progressProvasData = querySnapshotProvas.docs.map(doc => ({
+                    if (!querySnapshot.empty) {
+                        const chunkData = querySnapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data()
                         }));
-    
-                        console.log('Dados de progresso das provas encontrados:', progressProvasData);
-                        setProgressProvas(progressProvasData);
-                        console.log('Nenhum dado de progresso das provas encontrado.');
+                        progressProvasData.push(...chunkData);
                     }
-                } else {
-                    console.log('O número de provas excede o limite de 10 para a consulta "in".');
                 }
+    
+                if (progressProvasData.length > 0) {
+                    console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                    setProgressProvas(progressProvasData);
+                } else {
+                    console.log('Nenhum dado de progresso das provas encontrado.');
+                }
+                
             } catch (error) {
                 console.error('Erro ao buscar status do progresso das provas:', error);
             }

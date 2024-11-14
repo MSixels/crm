@@ -1,7 +1,6 @@
 import './MenuDash.css'
 import PropTypes from 'prop-types'
 import { GoHomeFill } from "react-icons/go";
-import { FaUsers } from "react-icons/fa";
 import { FaBookOpen } from "react-icons/fa6";
 import { FaUserAlt } from "react-icons/fa";
 import { useEffect, useState } from 'react';
@@ -47,12 +46,6 @@ function MenuDash({page, conteudoId, moduloId}) {
             icon: <PiStudentBold size={20}/>, 
             name: 'Alunos',
             status: 'active'
-        },
-        {
-            id: 3,
-            icon: <FaUsers size={20}/>, 
-            name: 'Turmas',
-            status: 'block'
         },
         {
             id: 4,

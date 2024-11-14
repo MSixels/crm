@@ -15,6 +15,7 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
     const [selectOption, setSelectOption] = useState(1)
     const { moduloId } = useParams()
     const { type } = useParams()
+    const [provasQtd, setProvasQtd] = useState(0)
 
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
         console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
@@ -25,6 +26,13 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
         const totalProgress = (percentAulas + percentProvas) / 2;
         return totalProgress.toFixed(0);
     };
+
+    
+    
+    useEffect(() => {
+        const provaTypeProva = provas.filter(prova => prova.type === 'prova').length;
+        setProvasQtd(provaTypeProva)
+    }, [provas]);
 
     const options = [
         {
@@ -74,6 +82,11 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
         return progressoProva && progressoProva.status === 'end';
     }).length;
 
+    const totalScoreCompletadas = provas.reduce((acc, prova) => {
+        const progressoProva = progressProvas?.find(progress => progress.userId === userId && progress.provaId === prova.id);
+        return progressoProva && progressoProva.status === 'end' ? acc + progressoProva.score : acc;
+    }, 0);
+
     return (
         <div className='containerMenu'>
             <div className='divBtnBack'>
@@ -97,11 +110,7 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
                     </div>
                     <div className='infos'>
                         <span>Prontos</span>
-                        <span>130/600</span>
-                    </div>
-                    <div className='infos'>
-                        <span>Trabalho de campo</span>
-                        <span>{modulo.workCampoFeitas}/{modulo.workCampoTotal}</span>
+                        <span>{totalScoreCompletadas}/{provasQtd * 100}</span>
                     </div>
                 </div>
             )}

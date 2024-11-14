@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../../../services/firebaseConfig';
 import ProgressBar from '../../ProgressBar/ProgressBar';
+import LoadingItem from '../../LoadingItem/LoadingItem';
+import { chunk } from 'lodash';
 
 function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -15,6 +17,8 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     const [progressAulas, setProgressAulas] = useState([])
     const [progressProvas, setProgressProvas] = useState([])
     const [modulosUpdate, setModulosUpdate] = useState([])
+    const [loadingAulas, setLoadingAulas] = useState(true)
+    const [loadingProvas, setLoadingProvas] = useState(true)
 
     useEffect(() => {
         try {
@@ -98,32 +102,41 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     
             try {
                 const aulaIds = aulas.map(aula => aula.id);
+                const progressRef = collection(firestore, 'progressAulas');
+                const progressData = [];
     
-                if (aulaIds.length <= 10) {
-                    const progressRef = collection(firestore, 'progressAulas');
-                    const q = query(progressRef,
+                // Divide os IDs de aulas em blocos de até 10
+                const chunks = chunk(aulaIds, 10);
+    
+                for (const aulaChunk of chunks) {
+                    const q = query(
+                        progressRef,
                         where('userId', '==', userId),
-                        where('aulaId', 'in', aulaIds)
+                        where('aulaId', 'in', aulaChunk)
                     );
     
                     const querySnapshot = await getDocs(q);
     
                     if (!querySnapshot.empty) {
-                        const progressData = querySnapshot.docs.map(doc => ({
+                        const chunkData = querySnapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data()
                         }));
-    
-                        console.log('Dados de progresso das aulas encontrados:', progressData);
-                        setProgressAulas(progressData);
-                    } else {
-                        console.log('Nenhum dado de progresso das aulas encontrado.');
+                        progressData.push(...chunkData);
                     }
-                } else {
-                    console.log('O número de aulas excede o limite de 10 para a consulta "in".');
                 }
+    
+                if (progressData.length > 0) {
+                    console.log('Dados de progresso das aulas encontrados:', progressData);
+                    setProgressAulas(progressData);
+                } else {
+                    console.log('Nenhum dado de progresso das aulas encontrado.');
+                }
+                setLoadingAulas(false);
+                
             } catch (error) {
                 console.error('Erro ao buscar status do progresso das aulas:', error);
+                setLoadingAulas(false);
             }
         };
     
@@ -131,6 +144,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
             fetchAulaProgress(userId, aulas);
         }
     }, [userId, aulas]);
+    
 
     useEffect(() => {
         const fetchProvaProgress = async (userId, provas) => {
@@ -138,31 +152,41 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
     
             try {
                 const provaIds = provas.map(prova => prova.id);
+                const progressProvasRef = collection(firestore, 'progressProvas');
+                const progressProvasData = [];
     
-                if (provaIds.length <= 10) {
-                    const progressProvasRef = collection(firestore, 'progressProvas');
-                    const qProvas = query(progressProvasRef,
+                // Divide os IDs de provas em blocos de até 10
+                const chunks = chunk(provaIds, 10);
+    
+                for (const provaChunk of chunks) {
+                    const q = query(
+                        progressProvasRef,
                         where('userId', '==', userId),
-                        where('provaId', 'in', provaIds)
+                        where('provaId', 'in', provaChunk)
                     );
     
-                    const querySnapshotProvas = await getDocs(qProvas);
+                    const querySnapshot = await getDocs(q);
     
-                    if (!querySnapshotProvas.empty) {
-                        const progressProvasData = querySnapshotProvas.docs.map(doc => ({
+                    if (!querySnapshot.empty) {
+                        const chunkData = querySnapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data()
                         }));
-    
-                        console.log('Dados de progresso das provas encontrados:', progressProvasData);
-                        setProgressProvas(progressProvasData);
-                        console.log('Nenhum dado de progresso das provas encontrado.');
+                        progressProvasData.push(...chunkData);
                     }
-                } else {
-                    console.log('O número de provas excede o limite de 10 para a consulta "in".');
                 }
+    
+                if (progressProvasData.length > 0) {
+                    console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                    setProgressProvas(progressProvasData);
+                } else {
+                    console.log('Nenhum dado de progresso das provas encontrado.');
+                }
+                setLoadingProvas(false);
+                
             } catch (error) {
                 console.error('Erro ao buscar status do progresso das provas:', error);
+                setLoadingProvas(false);
             }
         };
     
@@ -170,6 +194,11 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
             fetchProvaProgress(userId, provas);
         }
     }, [userId, provas]);
+    
+
+    if(loadingAulas || loadingProvas){
+        return <div className='containerCursos'><LoadingItem /></div>
+    }
 
     return (
         <div className='containerCursos'>
@@ -199,6 +228,8 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                         progressAulas?.some(progress => progress.userId === userId && progress.aulaId === aula.id && progress.status === 'end')
                     ).length;
 
+                    console.log('aulasCompletadas', aulasCompletadas)
+
                     const totalAulasModulo = aulas.filter(a =>
                         conteudosDoModulo.some(c => c.id === a.conteudoId)
                     ).length;
@@ -207,6 +238,8 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                         conteudosDoModulo.some(c => c.id === prova.conteudoId) &&
                         progressProvas?.some(progress => progress.userId === userId && progress.provaId === prova.id && progress.status === 'end')
                     ).length;
+
+                    console.log('provasCompletadas', provasCompletadas)
 
                     const totalProvasModulo = provas.filter(p =>
                         conteudosDoModulo.some(c => c.id === p.conteudoId)

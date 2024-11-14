@@ -36,7 +36,6 @@ function Modulos({ userType }) {
     }
     const header = [
         { title: 'Nome' },
-        { title: 'Turmas' },
         { title: 'Alunos' },
         { title: 'Professor' },
         { title: 'Data liberação' },
@@ -231,7 +230,6 @@ function Modulos({ userType }) {
                                     <div key={m.id} className='divValuesPai'>
                                         <div className='divValues' onClick={() => navigate(`/professor/modulos/${m.id}/conteudo`)}>
                                             <p className='spanBox'>{m.name}</p>
-                                            <p className='spanBox'>N / A</p>
                                             <p className='spanBox'>{countAlunos}</p>
                                             <p className='spanBox'>{professorName}</p>
                                             <p className={`spanBox ${m.liberacao ? checkDates(m.liberacao, m.validade).liberacaoClass : 'active'}`}>

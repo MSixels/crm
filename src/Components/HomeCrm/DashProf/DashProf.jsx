@@ -1,6 +1,6 @@
 import './DashProf.css'
 import DropDown from '../../DropDown/DropDown';
-import InputText from '../../InputText/InputText';
+//import InputText from '../../InputText/InputText';
 import Access from '../../DashBoardComponents/Access/Access';
 import Notas from '../../DashBoardComponents/Notas/Notas';
 import Rastreios from '../../DashBoardComponents/Rastreios/Rastreios';
@@ -97,9 +97,7 @@ function DashProf() {
         <div className='containerDashProf'>
             <h1>Dashboard</h1>
             <div className='divInputs'>
-                <div style={{ marginTop: -10 }}>
-                    <InputText title='Buscar' placeH='Nome, data, informação...' />
-                </div>
+                
                 <DropDown title='Módulo' type='Todos' options={modulos} onTurmaChange={handleDropChange} />
             </div>
             <div className='divBoxItens'>
@@ -115,3 +113,10 @@ function DashProf() {
 }
 
 export default DashProf
+
+/*
+<div style={{ marginTop: -10 }}>
+                    <InputText title='Buscar' placeH='Nome, data, informação...' />
+                </div>
+
+*/

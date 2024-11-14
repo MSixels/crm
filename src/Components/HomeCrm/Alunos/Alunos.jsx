@@ -2,7 +2,6 @@ import InputText from '../../InputText/InputText'
 import './Alunos.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
 import { FaAngleDown, FaAngleUp, FaCirclePlus } from "react-icons/fa6";
-import { turmas } from '../../../database'
 import { GoDotFill } from "react-icons/go";
 import { useEffect, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
@@ -14,10 +13,11 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { disableUserInFirestore, reactivateUserInFirestore, deleteUserFromFireBaseAuth } from '../../../functions/functions';
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { GrNext } from 'react-icons/gr';
+import DropDown from '../../DropDown/DropDown'
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
-    
+    const [searchDrop, setSearchDrop] = useState('Selecione');
     const [showModal, setShowModal] = useState(false)
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,7 +33,6 @@ function Alunos({ userType }) {
         { title: 'E-mail' },
         { title: 'Status' },
         { title: 'Média' },
-        { title: 'Turma' },
     ]
 
     const removeAccents = (text) => {
@@ -124,9 +123,20 @@ function Alunos({ userType }) {
     const filtered = alunos
     .filter(a => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
+
+        // Filtragem pelo termo de pesquisa
         const matchesSearchTerm = removeAccents(a.name).toLowerCase().includes(lowerCaseSearchTerm) ||
         (a.email && removeAccents(a.email).toLowerCase().includes(lowerCaseSearchTerm));
+
+        // Verificação de searchDrop
+        if (searchDrop === null || searchDrop === 'Selecione') {
+            return matchesSearchTerm; // Exibe todos os alunos correspondentes ao searchTerm
+        }
         
+        // Filtragem adicional com base no valor de searchDrop e considerando a.disable
+        if (searchDrop === 1 && (!a.isActive || a.disable)) return false; // Aluno ativo sem a.disable
+        if (searchDrop === 2 && (a.isActive || a.disable)) return false;  // Aluno pendente sem a.disable
+        if (searchDrop === 3 && !a.disable) return false;                  // Aluno desativado
 
         return matchesSearchTerm;
     })
@@ -210,6 +220,20 @@ function Alunos({ userType }) {
         }
     };
 
+    const stausType = [
+        {id: 1, name: 'Ativo'},
+        {id: 2, name: 'Pendente'},
+        {id: 3, name: 'Inativo'},
+    ]
+
+    const handleDropChange = (option) => {
+        if (option.id) {
+            setSearchDrop(option.id);
+        } else {
+            setSearchDrop('Selecione');
+        }
+    };
+
     if (loading) {
         return <Loading />
     }
@@ -222,7 +246,10 @@ function Alunos({ userType }) {
                 <div className='header'>
                     <div className='divInputs'>
                         <InputText title='Pesquisa na lista' placeH='Nome ou email' onSearchChange={handleSearchChange}/>
-                        {/*<DropDown title='Turma(s)' type='Selecione' options={turmas} onTurmaChange={handleDropChange} />*/}
+                        <div style={{marginTop: 10}}>
+                            <DropDown title='Turma(s)' type='Selecione' options={stausType} onTurmaChange={handleDropChange}/>
+                        </div>
+                        
                     </div>
                     {userType === 1 && <ButtonBold title='Novo aluno' icon={<FaCirclePlus size={20}/>} action={clickBtn}/>}
                 </div>
@@ -236,14 +263,13 @@ function Alunos({ userType }) {
                     </div>
                     <div className='divValues'>
                         {slicedAlunos.map((a) => {
-                            const turma = turmas.find(t => t.id === a.turma)
                             return(
                                 <div key={a.id} className='divAlunos'>
                                     <span className='spanBox'>{a.name ? a.name : 'Sem nome'}</span>
                                     <span className='spanBox'>{a.email}</span>
                                     <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
                                     <span className='spanBox'><span className={`${a.averageScore < 50 ? 'ruim' : a.averageScore >= 50 ? 'boa' : ''}`}>{a.averageScore ? a.averageScore : 'N'}</span> / {a.averageScore ? '100' : 'A'}</span>
-                                    <span className='spanBox'>{turma ? turma.name : 'N / A'}</span>
+                                    
                                     {userType === 1 && 
                                     <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
                                         <BsThreeDotsVertical />
