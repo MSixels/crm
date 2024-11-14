@@ -57,7 +57,7 @@ function MaterialEdit() {
             
             if (aulaSnap.exists()) {
                 if(aulaSnap.data().type === 'aula'){
-                    console.log('Aula', aulaSnap.data())
+                    //console.log('Aula', aulaSnap.data())
                     setAulaFetch(aulaSnap.data())
                     setAulaData(aulaSnap.data())
                     setAulaName(aulaSnap.data().name)
@@ -65,22 +65,22 @@ function MaterialEdit() {
                     setAulaUrl(aulaSnap.data().videoUrl)
                     setLoading(false)
                 } else if(aulaSnap.data().type === 'game'){
-                    console.log('Gameficação', aulaSnap.data())
+                    //console.log('Gameficação', aulaSnap.data())
                     setGameData(aulaSnap.data())
                     setGameName(aulaSnap.data().name)
                     setGameDescription(aulaSnap.data().description)
                     setGameLink(aulaSnap.data().link)
                     setLoading(false)
                 } else {
-                    console.log('Type não encontrado')
+                    //console.log('Type não encontrado')
                     setLoading(false)
                 }
             } else {
-                console.log("Aula não encontrada");
+                //console.log("Aula não encontrada");
                 setLoading(false)
             }
         } catch (error) {
-            console.error("Erro ao carregar a aula:", error);
+            //console.error("Erro ao carregar a aula:", error);
             setLoading(false)
         }
     };
@@ -97,22 +97,22 @@ function MaterialEdit() {
                     setQuests(provaSnap.data().quests)
                     setLoading(false)
                 } else if(provaSnap.data().type === 'storyTelling'){
-                    console.log('storyTelling: ', provaSnap.data())
+                    //console.log('storyTelling: ', provaSnap.data())
                     setStoryData(provaSnap.data())
                     setStoryName(provaSnap.data().name)
                     setStoryDescription(provaSnap.data().description)
                     setStoryPdf(provaSnap.data().pdfUrl)
                     setLoading(false)
                 } else {
-                    console.log('Type não encontrado')
+                    //console.log('Type não encontrado')
                     setLoading(false)
                 }
             } else {
-                console.log("Prova não encontrada");
+                //console.log("Prova não encontrada");
                 setLoading(false)
             }
         } catch (error) {
-            console.error("Erro ao carregar a prova:", error);
+            //console.error("Erro ao carregar a prova:", error);
             setLoading(false)
         }
     };
@@ -124,11 +124,11 @@ function MaterialEdit() {
             } else if(type === 'prova' || type === 'storyTelling'){
                 fetchProvas(materialId)
             } else {
-                console.log('Type não encontrado')
+                //console.log('Type não encontrado')
                 setLoading(false)
             }
         } catch (error) {
-            console.log('Erro ao executar fetchAulas ou fetchProvas: ', error)
+            //console.log('Erro ao executar fetchAulas ou fetchProvas: ', error)
             setLoading(false)
         }
         

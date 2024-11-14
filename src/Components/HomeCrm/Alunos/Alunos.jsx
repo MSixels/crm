@@ -63,10 +63,10 @@ function Alunos({ userType }) {
                 score: doc.data().score,
                 userId: doc.data().userId
             }));
-            console.log('progressProvasList: ', progressProvasList);
+            //console.log('progressProvasList: ', progressProvasList);
             setUsersScore(progressProvasList);
         } catch (error) {
-            console.error("Erro ao carregar progressProvas:", error);
+            //console.error("Erro ao carregar progressProvas:", error);
         } finally {
             setLoading(false);
         }
@@ -107,10 +107,10 @@ function Alunos({ userType }) {
             const querySnapshot = await getDocs(q);
             const alunosList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })); // Mapear os dados
             setAlunos(alunosList);
-            console.log(alunosList)
+            //console.log(alunosList)
             setLoading(false);
         } catch (error) {
-            console.error("Erro ao buscar alunos:", error);
+            //console.error("Erro ao buscar alunos:", error);
             setLoading(false);
         }
     };
@@ -181,32 +181,32 @@ function Alunos({ userType }) {
 
     const handleDisable = async (id) => {
         try {
-            console.log('Iniciando desativação do usuário com ID:', id);
+            //console.log('Iniciando desativação do usuário com ID:', id);
             
             await disableUserInFirestore(id); 
-            console.log('Usuário desativado do Firestore com sucesso');
+            //console.log('Usuário desativado do Firestore com sucesso');
             
             await fetchAlunosFromFirestore(); 
             setActiveModalId(null);
             setConfirmId(null);
         } catch (error) {
-            console.error('Erro ao desativar o usuário:', error);
+            //console.error('Erro ao desativar o usuário:', error);
             alert('Erro ao desativar o usuário.');
         }
     };
 
     const handleReactivate = async (id) => {
         try {
-            console.log('Iniciando reativação do usuário com ID:', id);
+            //console.log('Iniciando reativação do usuário com ID:', id);
             
             await reactivateUserInFirestore(id); 
-            console.log('Usuário reativado do Firestore com sucesso');
+            //console.log('Usuário reativado do Firestore com sucesso');
             
             await fetchAlunosFromFirestore(); 
             setActiveModalId(null);
             setConfirmId(null);
         } catch (error) {
-            console.error('Erro ao reativar o usuário:', error);
+            //console.error('Erro ao reativar o usuário:', error);
             alert('Erro ao reativar o usuário.');
         }
     };
@@ -216,7 +216,7 @@ function Alunos({ userType }) {
           await deleteUserFromFireBaseAuth(id, fetchAlunosFromFirestore);
           
         } catch (error) {
-          console.error("Erro ao deletar o usuário:", error);
+          //console.error("Erro ao deletar o usuário:", error);
         }
     };
 

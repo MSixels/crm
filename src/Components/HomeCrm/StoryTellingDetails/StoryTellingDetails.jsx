@@ -31,11 +31,11 @@ function StoryTellingDetails({ conteudoId }) {
                 id: doc.id,
                 ...doc.data()
             }));
-            console.log('progressProvasList: ', progressProvasList)
+            //console.log('progressProvasList: ', progressProvasList)
             setProgressProvas(progressProvasList);
             
         } catch (error) {
-            console.error("Erro ao carregar progressProvas:", error);
+            //console.error("Erro ao carregar progressProvas:", error);
             
         }
     };
@@ -49,11 +49,11 @@ function StoryTellingDetails({ conteudoId }) {
                 setConteudo(docSnap.data());
                 
             } else {
-                console.log("Conteúdo não encontrado!");
+                //console.log("Conteúdo não encontrado!");
                 
             }
         } catch (error) {
-            console.error("Erro ao carregar conteúdo:", error);
+            //console.error("Erro ao carregar conteúdo:", error);
             setLoading(false)
         }
     };
@@ -61,10 +61,10 @@ function StoryTellingDetails({ conteudoId }) {
     const fetchUsersForStoryTellings = async (progressProvas) => {
         try {
             const userIds = [...new Set(progressProvas.map(item => item.userId))];
-            console.log("User IDs:", userIds);  
+            //console.log("User IDs:", userIds);  
     
             if (userIds.length === 0) {
-                console.log('Nenhum userId encontrado nos progressProvas.');
+                //console.log('Nenhum userId encontrado nos progressProvas.');
                 return [];
             }
     
@@ -91,10 +91,10 @@ function StoryTellingDetails({ conteudoId }) {
             }
     
             setUsers(usersList); 
-            console.log('Users: ', usersList);
+            //console.log('Users: ', usersList);
             setLoading(false)
         } catch (error) {
-            console.error("Erro ao carregar usuários:", error);
+            //console.error("Erro ao carregar usuários:", error);
             setLoading(false)
         }
     };

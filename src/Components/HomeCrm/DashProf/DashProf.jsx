@@ -38,7 +38,7 @@ function DashProf() {
                 setProvas(provasList); 
                 setLoadingProvas(false)
             } catch (error) {
-                console.error('Erro ao buscar dados do Firestore:', error);
+                //console.error('Erro ao buscar dados do Firestore:', error);
                 setLoadingProvas(false)
             }
         };

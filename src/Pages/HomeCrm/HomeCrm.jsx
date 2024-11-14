@@ -38,7 +38,7 @@ function HomeCrm() {
     });
 
     useEffect(() => {
-        console.log(location)
+        //console.log(location)
     }, [location])
 
     useEffect(() => {
@@ -54,7 +54,7 @@ function HomeCrm() {
             const decodedToken = jwtDecode(accessToken);
             setUserId(decodedToken.user_id)
         } else {
-            console.log("Nenhum token encontrado nos cookies.");
+            //console.log("Nenhum token encontrado nos cookies.");
             navigate('/login/professor');
         }
     }, [navigate]);
@@ -68,10 +68,10 @@ function HomeCrm() {
                 if (docSnap.exists()) {
                     setUserType(docSnap.data().type)
                 } else {
-                    console.log("Nenhum usuário encontrado!");
+                    //console.log("Nenhum usuário encontrado!");
                 }
             } catch (error) {
-                console.error("Erro ao buscar usuário:", error);
+                //console.error("Erro ao buscar usuário:", error);
             }
         };
     

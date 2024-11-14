@@ -59,10 +59,10 @@ function StoryTelling({ userType }) {
             }));
             
             setStoryTellings(storyTellingList);
-            console.log('storyTellingList', storyTellingList);
+            //console.log('storyTellingList', storyTellingList);
             setLoading(false);
         } catch (error) {
-            console.error("Erro ao buscar storyTellings:", error);
+            //console.error("Erro ao buscar storyTellings:", error);
             setLoading(false);
         }
     };
@@ -70,7 +70,7 @@ function StoryTelling({ userType }) {
     const fetchConteudoFromFirestore = async (storyTellings) => {
         try {
             const conteudoIds = [...new Set(storyTellings.map(story => story.conteudoId))];
-            console.log('conteudoIds:', conteudoIds);
+            //console.log('conteudoIds:', conteudoIds);
             const conteudosList = [];
 
             for (const id of conteudoIds) {
@@ -80,14 +80,14 @@ function StoryTelling({ userType }) {
                 if (docSnap.exists()) {
                     conteudosList.push({ id: docSnap.id, ...docSnap.data() });
                 } else {
-                    console.warn(`Documento com ID ${id} não encontrado na coleção 'conteudo'.`);
+                    //console.warn(`Documento com ID ${id} não encontrado na coleção 'conteudo'.`);
                 }
             }
     
             setConteudos(conteudosList);
-            console.log('conteudosList', conteudosList);
+            //console.log('conteudosList', conteudosList);
         } catch (error) {
-            console.error("Erro ao buscar conteúdos:", error);
+            //console.error("Erro ao buscar conteúdos:", error);
         }
     };
 
@@ -140,7 +140,7 @@ function StoryTelling({ userType }) {
     const slicedStory = filtered.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
     useEffect(() => {
-        console.log('slicedStory: ', slicedStory)
+        //console.log('slicedStory: ', slicedStory)
     }, [slicedStory])
 
     const renderStoryTelling = () => {

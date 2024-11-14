@@ -63,7 +63,7 @@ function Destaques({ provas, rastreios }) {
       const usuarios = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setDetalhesAlunos(usuarios);
     } catch (error) {
-      console.error("Erro ao buscar detalhes dos usuários:", error);
+      //console.error("Erro ao buscar detalhes dos usuários:", error);
     }
   }
 

@@ -50,7 +50,7 @@ function Modulos({ userType }) {
             }));
             setModulos(modulosList);
         } catch (error) {
-            console.error("Erro ao carregar os módulos:", error);
+            //console.error("Erro ao carregar os módulos:", error);
         }
     };
 
@@ -77,7 +77,7 @@ function Modulos({ userType }) {
 
             setProfessores(professoresList); 
         } catch (error) {
-            console.error("Erro ao carregar os professores:", error);
+            //console.error("Erro ao carregar os professores:", error);
         }
     };
 
@@ -97,7 +97,7 @@ function Modulos({ userType }) {
 
             setAlunos(usersType3List);
         } catch (error) {
-            console.error("Erro ao carregar os usuários do tipo 3:", error);
+            //console.error("Erro ao carregar os usuários do tipo 3:", error);
         }
     };
 
@@ -112,7 +112,7 @@ function Modulos({ userType }) {
                 fetchUsersType3()
             }
         } catch(error){
-            console.log(error)
+            //console.log(error)
         }
         
     }, [modulos])
@@ -125,7 +125,7 @@ function Modulos({ userType }) {
                 await fetchUsersType3();
             }
         } catch (error) {
-            console.log('Error no update', error);
+            //console.log('Error no update', error);
         }
     };
 

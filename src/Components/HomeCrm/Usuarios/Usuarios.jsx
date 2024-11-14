@@ -60,7 +60,7 @@ function Usuarios({ userType }) {
             setUsers(usersList);
             setLoading(false);
         } catch (error) {
-            console.error("Erro ao buscar usuários:", error);
+            //console.error("Erro ao buscar usuários:", error);
             setLoading(false);
         }
     };
@@ -100,32 +100,32 @@ function Usuarios({ userType }) {
 
     const handleDisable = async (id) => {
         try {
-            console.log('Iniciando desativação do usuário com ID:', id);
+            //console.log('Iniciando desativação do usuário com ID:', id);
             
             await disableUserInFirestore(id); 
-            console.log('Usuário desativado do Firestore com sucesso');
+            //console.log('Usuário desativado do Firestore com sucesso');
             
             await fetchUsersFromFirestore(); 
             setActiveModalId(null);
             setConfirmId(null);
         } catch (error) {
-            console.error('Erro ao desativar o usuário:', error);
+            //console.error('Erro ao desativar o usuário:', error);
             alert('Erro ao desativar o usuário.');
         }
     };
     
     const handleReactivate = async (id) => {
         try {
-            console.log('Iniciando reativação do usuário com ID:', id);
+            //console.log('Iniciando reativação do usuário com ID:', id);
             
             await reactivateUserInFirestore(id); 
-            console.log('Usuário reativado do Firestore com sucesso');
+            //console.log('Usuário reativado do Firestore com sucesso');
             
             await fetchUsersFromFirestore(); 
             setActiveModalId(null);
             setConfirmId(null);
         } catch (error) {
-            console.error('Erro ao reativar o usuário:', error);
+            //console.error('Erro ao reativar o usuário:', error);
             alert('Erro ao reativar o usuário.');
         }
     };

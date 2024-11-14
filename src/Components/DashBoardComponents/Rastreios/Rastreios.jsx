@@ -52,7 +52,7 @@ function Rastreios({ rastreios, weekFilter }) {
     };
 
     return (
-        <div className='containerRastreios'>
+        <div className='containerRastreiosDash'>
             <div className='divBox'>
                 <h3 style={{ marginBottom: 24 }}>Rastreios</h3>
                 <div className='divCircle'>

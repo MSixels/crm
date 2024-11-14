@@ -50,12 +50,12 @@ function ModuloDetails({ moduloId, pagetype }) {
             const moduloSnapshot = await getDoc(moduloRef);
             if (moduloSnapshot.exists()) {
                 setLoading(false)
-                console.log(moduloSnapshot.data())
+                //console.log(moduloSnapshot.data())
                 setModulo(moduloSnapshot.data());
                 setModuloName(moduloSnapshot.data().name)
                 setModuloDescription(moduloSnapshot.data().description)
-                console.log(moduloSnapshot.data().liberacao)
-                console.log(moduloSnapshot.data().validade)
+                //console.log(moduloSnapshot.data().liberacao)
+                //console.log(moduloSnapshot.data().validade)
                 setLiberacao(moduloSnapshot.data().liberacao)
                 setValidade(moduloSnapshot.data().validade)
             } else {
@@ -63,7 +63,7 @@ function ModuloDetails({ moduloId, pagetype }) {
             }
         } catch (error) {
             setLoading(false)
-            console.error("Erro ao carregar o módulo:", error);
+            //console.error("Erro ao carregar o módulo:", error);
         }
     };
 
@@ -83,7 +83,7 @@ function ModuloDetails({ moduloId, pagetype }) {
 
             setProfessores(professoresList);
         } catch (error) {
-            console.error("Erro ao carregar os professores:", error);
+            //console.error("Erro ao carregar os professores:", error);
         }
     };
 
@@ -112,7 +112,7 @@ function ModuloDetails({ moduloId, pagetype }) {
 
     const fetchConteudos = async (moduloId) => {
         if (!moduloId) {
-            console.error("moduloId não foi fornecido!");
+            //console.error("moduloId não foi fornecido!");
             return [];
         }
         try {
@@ -124,9 +124,9 @@ function ModuloDetails({ moduloId, pagetype }) {
                 ...doc.data()
             }));
             setConteudos(conteudos)
-            console.log(conteudos)
+            //console.log(conteudos)
         } catch (error) {
-            console.error("Erro ao carregar conteúdos:", error);
+            //console.error("Erro ao carregar conteúdos:", error);
             return [];
         }
     };
@@ -135,7 +135,7 @@ function ModuloDetails({ moduloId, pagetype }) {
         try {
             const conteudoIds = conteudos.map(conteudo => conteudo.id);
             if (conteudoIds.length === 0) {
-                console.log("Nenhum conteúdo encontrado para buscar aulas.");
+                //console.log("Nenhum conteúdo encontrado para buscar aulas.");
                 return;
             }
             const q = query(
@@ -148,10 +148,10 @@ function ModuloDetails({ moduloId, pagetype }) {
                 ...doc.data()
             }));
             setAulas(aulasList);
-            console.log('aulasList: ', aulasList)
+            //console.log('aulasList: ', aulasList)
             setLoading(false)
         } catch (error) {
-            console.error("Erro ao carregar as aulas:", error);
+            //console.error("Erro ao carregar as aulas:", error);
             setLoading(false)
         }
     };
@@ -160,7 +160,7 @@ function ModuloDetails({ moduloId, pagetype }) {
         try {
             const conteudoIds = conteudos.map(conteudo => conteudo.id);
             if (conteudoIds.length === 0) {
-                console.log("Nenhum conteúdo encontrado para buscar aulas.");
+                //console.log("Nenhum conteúdo encontrado para buscar aulas.");
                 return;
             }
             const q = query(
@@ -173,9 +173,9 @@ function ModuloDetails({ moduloId, pagetype }) {
                 ...doc.data()
             }));
             setProvas(provasList);
-            console.log('provasList: ', provasList)
+            //console.log('provasList: ', provasList)
         } catch (error) {
-            console.error("Erro ao carregar as aulas:", error);
+            //console.error("Erro ao carregar as aulas:", error);
         }
     };
 
@@ -229,21 +229,21 @@ function ModuloDetails({ moduloId, pagetype }) {
             if (materialDelete.type === 'aula' || materialDelete.type === 'game') {
                 const aulaRef = doc(firestore, 'aulas', materialDelete.id);
                 await deleteDoc(aulaRef);
-                console.log(`Item da tabela 'aulas' com id ${materialDelete.id} deletado com sucesso.`);
+                //console.log(`Item da tabela 'aulas' com id ${materialDelete.id} deletado com sucesso.`);
                 fetchConteudos(moduloId);
                 setShowModalDeleteMaterial(false)
             }
             else if (materialDelete.type === 'prova' || materialDelete.type === 'storyTelling') {
                 const provaRef = doc(firestore, 'provas', materialDelete.id);
                 await deleteDoc(provaRef);
-                console.log(`Item da tabela 'provas' com id ${materialDelete.id} deletado com sucesso.`);
+                //console.log(`Item da tabela 'provas' com id ${materialDelete.id} deletado com sucesso.`);
                 fetchConteudos(moduloId);
                 setShowModalDeleteMaterial(false)
             } else {
                 alert('Item não encontrado');
             }
         } catch (error) {
-            console.error('Erro ao deletar material:', error);
+            //console.error('Erro ao deletar material:', error);
         }
     };
 
