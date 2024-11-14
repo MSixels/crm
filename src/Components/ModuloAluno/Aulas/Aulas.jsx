@@ -1,11 +1,10 @@
 import './Aulas.css';
 import PropTypes from 'prop-types';
-import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle, FaTimesCircle } from "react-icons/fa";
+import { FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle, FaTimesCircle } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { MdEdit } from "react-icons/md";
 import { FaGamepad } from "react-icons/fa6";
-import ResultadoProva from '../Prova/Prova';
 
 
 function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
@@ -151,7 +150,6 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                             <h2 className='moduleName'>{modulo.name}</h2>
                             <span className='moduleDescription'>{modulo.description}</span>
                         </div>
-                        <button className='btn-continue' onClick={continuarDeOndeParou}>Continuar de onde parou <FaPlay /></button>
                     </div>
 
                     {conteudo
@@ -324,12 +322,6 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                         )
                         
                     })}
-                    <button
-                        className={`nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}`}
-                        disabled={!todosConcluidos}
-                    >
-                        Próximo Módulo &gt;
-                    </button>
                 </div>
             )}
         </div>
