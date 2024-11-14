@@ -31,7 +31,7 @@ function ModuloConteudo() {
     const location = useLocation();
 
     useEffect(() => {
-        console.log('Rota atual:', location.pathname);
+        //console.log('Rota atual:', location.pathname);
     }, [location]);
 
     const options = [
@@ -56,7 +56,7 @@ function ModuloConteudo() {
     ]
 
     useEffect(() => {
-        console.log('conteudoId: ', conteudoId)
+        //console.log('conteudoId: ', conteudoId)
     }, [conteudoId])
 
     useEffect(() => {
@@ -72,13 +72,13 @@ function ModuloConteudo() {
 
                 if (selectedModulo) {
                     setModulo(selectedModulo);
-                    console.log("selectedModulo ModuloConteduo: ", selectedModulo); 
+                    //console.log("selectedModulo ModuloConteduo: ", selectedModulo); 
                 } else {
-                    console.log("Módulo não encontrado.");
+                    //console.log("Módulo não encontrado.");
                 }
 
             } catch (error) {
-                console.error('Erro ao carregar modulos:', error);
+                //console.error('Erro ao carregar modulos:', error);
             }
         };
     
@@ -99,9 +99,9 @@ function ModuloConteudo() {
                 const filteredConteudo = conteudoData.filter((c) => c.id === conteudoId);
 
                 setConteudo(filteredConteudo);
-                console.log('Conteúdo ModuloConteduo: ', filteredConteudo);
+                //console.log('Conteúdo ModuloConteduo: ', filteredConteudo);
             } catch (error) {
-                console.error('Erro ao carregar conteúdo:', error);
+                //console.error('Erro ao carregar conteúdo:', error);
             }
         };
 
@@ -125,9 +125,9 @@ function ModuloConteudo() {
                 );
 
                 setAulas(aulasFiltradas);  
-                console.log('Aulas ModuloConteduo: ', aulasFiltradas);
+                //console.log('Aulas ModuloConteduo: ', aulasFiltradas);
             } catch (error) {
-                console.error('Erro ao carregar aulas:', error);
+                //console.error('Erro ao carregar aulas:', error);
             }
         };
 
@@ -154,9 +154,9 @@ function ModuloConteudo() {
                 );
 
                 setProvas(provasFiltradas);  
-                console.log('Provas ModuloConteduo: ', provasFiltradas);
+                //console.log('Provas ModuloConteduo: ', provasFiltradas);
             } catch (error) {
-                console.error('Erro ao carregar provas:', error);
+                //console.error('Erro ao carregar provas:', error);
             }
         };
 
@@ -202,7 +202,7 @@ function ModuloConteudo() {
 
                 setItemType('não encontrado');
             } catch (error) {
-                console.error('Erro ao buscar o material:', error);
+                //console.error('Erro ao buscar o material:', error);
             }
         };
 
@@ -212,7 +212,7 @@ function ModuloConteudo() {
     }, [materialId]);
 
     useEffect(() => {
-        console.log('materialId: ', materialId)
+        //console.log('materialId: ', materialId)
     }, [materialId])
 
     useEffect(() => {
@@ -222,7 +222,7 @@ function ModuloConteudo() {
             const decodedToken = jwtDecode(accessToken);
             setUserId(decodedToken.user_id)
         } else {
-            console.log("Nenhum token encontrado nos cookies.");
+            //console.log("Nenhum token encontrado nos cookies.");
             navigate('/login/aluno');
         }
     }, [navigate]);
@@ -249,16 +249,16 @@ function ModuloConteudo() {
                             ...doc.data()
                         }));
     
-                        console.log('Dados de progresso das aulas encontrados:', progressData);
+                        //console.log('Dados de progresso das aulas encontrados:', progressData);
                         setProgressAulas(progressData);
                     } else {
-                        console.log('Nenhum dado de progresso das aulas encontrado.');
+                        //console.log('Nenhum dado de progresso das aulas encontrado.');
                     }
                 } else {
-                    console.log('O número de aulas excede o limite de 10 para a consulta "in".');
+                    //console.log('O número de aulas excede o limite de 10 para a consulta "in".');
                 }
             } catch (error) {
-                console.error('Erro ao buscar status do progresso das aulas:', error);
+                //console.error('Erro ao buscar status do progresso das aulas:', error);
             }
         };
     
@@ -289,15 +289,15 @@ function ModuloConteudo() {
                             ...doc.data()
                         }));
     
-                        console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                        //console.log('Dados de progresso das provas encontrados:', progressProvasData);
                         setProgressProvas(progressProvasData);
-                        console.log('Nenhum dado de progresso das provas encontrado.');
+                        //console.log('Nenhum dado de progresso das provas encontrado.');
                     }
                 } else {
-                    console.log('O número de provas excede o limite de 10 para a consulta "in".');
+                    //console.log('O número de provas excede o limite de 10 para a consulta "in".');
                 }
             } catch (error) {
-                console.error('Erro ao buscar status do progresso das provas:', error);
+                //console.error('Erro ao buscar status do progresso das provas:', error);
             }
         };
     

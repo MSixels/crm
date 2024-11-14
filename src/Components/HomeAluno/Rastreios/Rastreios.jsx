@@ -72,10 +72,10 @@ function Rastreios({ data, userName, fetchRestreios }) {
     useEffect(() => {
         if (data) {
             try{
-                //console.log('Data useEffect: ', data[0])
+                ////console.log('Data useEffect: ', data[0])
                 const rastreiosArray = data[0];
                 const total = rastreiosArray.length;
-                //console.log(total)
+                ////console.log(total)
                 const typeQuest1 = rastreiosArray.filter(rastreio => rastreio.typeQuest === 1).length;
                 const typeQuest2 = rastreiosArray.filter(rastreio => rastreio.typeQuest === 2).length;
                 const typeQuest3 = rastreiosArray.filter(rastreio => rastreio.typeQuest === 3).length;
@@ -88,11 +88,11 @@ function Rastreios({ data, userName, fetchRestreios }) {
                 });
                 
             }catch{
-                console.log('deu erro')
+                //console.log('deu erro')
             }
             
         } else {
-            console.error('Expected data to be an array or an object, but got:', data);
+            //console.error('Expected data to be an array or an object, but got:', data);
             setRastreioCounts({
                 total: 0,
                 typeQuest1: 0,
@@ -120,11 +120,11 @@ function Rastreios({ data, userName, fetchRestreios }) {
     const [updatedCards, setUpdatedCards] = useState(cards);
 
     useEffect(() => {
-        console.log('rastreioCounts:', rastreioCounts); // Verifique se 'rastreioCounts' está recebendo os valores corretamente
+        //console.log('rastreioCounts:', rastreioCounts); // Verifique se 'rastreioCounts' está recebendo os valores corretamente
     }, [rastreioCounts]);
 
     useEffect(() => {
-        console.log('cards:', cards); 
+        //console.log('cards:', cards); 
         setUpdatedCards(cards);
     }, [cards]);
 
@@ -132,7 +132,7 @@ function Rastreios({ data, userName, fetchRestreios }) {
         if(confirm){
             setIsGeneratingPDF(true)
             /*
-            console.log('Iniciando PDF')
+            //console.log('Iniciando PDF')
             
             const element = componentRef.current;
 
@@ -170,7 +170,7 @@ function Rastreios({ data, userName, fetchRestreios }) {
 
     const valoresPDF = (newValuesPDF) => {
         if (newValuesPDF && JSON.stringify(newValuesPDF) !== JSON.stringify(dataPDF)) {
-            console.log(dataPDF)
+            //console.log(dataPDF)
             setDataPDF(newValuesPDF);
         }
     };

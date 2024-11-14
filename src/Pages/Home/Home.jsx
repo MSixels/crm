@@ -57,12 +57,12 @@ function Home() {
                     userId: userId,
                     createdAt: new Date(),
                 });
-                console.log('Acesso registrado com sucesso');
+                //console.log('Acesso registrado com sucesso');
             } catch (error) {
-                console.log('Erro ao registrar o acesso:', error)
+                //console.log('Erro ao registrar o acesso:', error)
             }
         } else {
-            console.log('UserId não encontrado')
+            //console.log('UserId não encontrado')
         }
     }
 
@@ -91,20 +91,20 @@ function Home() {
         if (accessToken) {
             const decodedToken = jwtDecode(accessToken);
             setUserId(decodedToken.user_id)
-            console.log('decodedToken.user_id: ', decodedToken.user_id)
+            //console.log('decodedToken.user_id: ', decodedToken.user_id)
         } else {
-            console.log("Nenhum token encontrado nos cookies.");
+            //console.log("Nenhum token encontrado nos cookies.");
             navigate('/login/aluno');
         }
     }, [navigate]);
 
     useEffect(() => {
         getRastreios(userId)
-        console.log(userId)
+        //console.log(userId)
     }, [userId])
 
     useEffect(() => {
-        console.log(rastreios)
+        //console.log(rastreios)
     }, [rastreios])
 
     const getRastreios = async (userId) => {
@@ -121,11 +121,11 @@ function Home() {
                 
                 setRastreios(allRastreios);
             } else {
-                console.log("Nenhum rastreio encontrado para este usuário!");
+                //console.log("Nenhum rastreio encontrado para este usuário!");
                 setRastreios([]); 
             }
         } catch (error) {
-            console.error("Erro ao buscar rastreios:", error);
+            //console.error("Erro ao buscar rastreios:", error);
         }
     }
     
@@ -140,10 +140,10 @@ function Home() {
                     setNome(docSnap.data().name)
                     setUserType(docSnap.data().type)
                 } else {
-                    console.log("Nenhum usuário encontrado!");
+                    //console.log("Nenhum usuário encontrado!");
                 }
             } catch (error) {
-                console.error("Erro ao buscar usuário:", error);
+                //console.error("Erro ao buscar usuário:", error);
             }
         };
     
@@ -164,9 +164,9 @@ function Home() {
                 });
 
                 setProfessores(professorArray); 
-                console.log('professorArray: ', professorArray)
+                //console.log('professorArray: ', professorArray)
             } catch (error) {
-                console.error("Erro ao buscar dados:", error);
+                //console.error("Erro ao buscar dados:", error);
             }
         };
 
@@ -182,9 +182,9 @@ function Home() {
                     ...doc.data()
                 }));
                 setModulos(modulosData);
-                console.log('modulosData: ', modulosData)
+                //console.log('modulosData: ', modulosData)
             } catch (error) {
-                console.error('Erro ao carregar modulos:', error);
+                //console.error('Erro ao carregar modulos:', error);
             }
         };
     
@@ -199,9 +199,9 @@ function Home() {
                     ...doc.data(),
                 }));
                 setConteudo(conteudoData);
-                console.log('conteudoData: ', conteudoData);
+                //console.log('conteudoData: ', conteudoData);
             } catch (error) {
-                console.error('Erro ao carregar conteudo:', error);
+                //console.error('Erro ao carregar conteudo:', error);
             }
         };
     
@@ -217,9 +217,9 @@ function Home() {
                     conteudoId: doc.data().conteudoId,
                 }));
                 setAulas(aulasData);  // Define o estado com os dados das aulas
-                console.log('aulasData: ', aulasData);  // Verifica o array no console
+                //console.log('aulasData: ', aulasData);  // Verifica o array no //console
             } catch (error) {
-                console.error('Erro ao carregar aulas:', error);
+                //console.error('Erro ao carregar aulas:', error);
             }
         };
 
@@ -235,9 +235,9 @@ function Home() {
                     conteudoId: doc.data().conteudoId,
                 }));
                 setProvas(provasData);  
-                console.log('provasData: ', provasData);  
+                //console.log('provasData: ', provasData);  
             } catch (error) {
-                console.error('Erro ao carregar provas:', error);
+                //console.error('Erro ao carregar provas:', error);
             }
         };
 

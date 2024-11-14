@@ -24,7 +24,7 @@ function VideoAula({ materialId, userId }) {
                 const aulaFiltrada = aulasArray.filter(aula => aula.id === materialId);
                 setAulas(aulaFiltrada);
             } catch (error) {
-                console.error("Erro ao buscar dados:", error);
+                //console.error("Erro ao buscar dados:", error);
             }
         };
 
@@ -39,7 +39,7 @@ function VideoAula({ materialId, userId }) {
             const progressDoc = await getDoc(progressRef);
             if (progressDoc.exists()) {
                 await setDoc(progressRef, { status: 'end' }, { merge: true });
-                console.log('Progresso atualizado com sucesso!');
+                //console.log('Progresso atualizado com sucesso!');
             } else {
                 const progressData = {
                     userId: userId,
@@ -47,10 +47,10 @@ function VideoAula({ materialId, userId }) {
                     status: 'end',
                 };
                 await setDoc(progressRef, progressData);
-                console.log('Progresso criado e atualizado com sucesso!');
+                //console.log('Progresso criado e atualizado com sucesso!');
             }
         } catch (error) {
-            console.error('Erro ao criar ou atualizar o progresso:', error);
+            //console.error('Erro ao criar ou atualizar o progresso:', error);
         }
     };
 

@@ -27,11 +27,11 @@ function LastRastreio({ data, close, alunoName, comentarioAtt }) {
                 const rastreiosArray = data[0];
                 setPatients(rastreiosArray)
             }catch{
-                console.log('deu erro')
+                //console.log('deu erro')
             }
             
         } else {
-            console.error('Expected data to be an array or an object, but got:', data);
+            //console.error('Expected data to be an array or an object, but got:', data);
         }
     }, [data]);
 
@@ -109,13 +109,13 @@ function LastRastreio({ data, close, alunoName, comentarioAtt }) {
                 await updateDoc(comentarioRef, {
                     comentario: comentario 
                 });
-                console.log("Comentário atualizado com sucesso!");
+                //console.log("Comentário atualizado com sucesso!");
                 comentarioAtt(true)
             } catch (error) {
-                console.error("Erro ao atualizar o comentário:", error);
+                //console.error("Erro ao atualizar o comentário:", error);
             }
         } else {
-            console.log("Comentário Vazio");
+            //console.log("Comentário Vazio");
         }
     };
 

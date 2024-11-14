@@ -8,7 +8,6 @@ function HeadLine({userName}) {
   return (
     <div className='containerHeadLine'>
       <h1>Olá, {userName}</h1>
-      {/*<button>Continuar de onde parou <FaPlay /></button>*/}
     </div>
   )
 }

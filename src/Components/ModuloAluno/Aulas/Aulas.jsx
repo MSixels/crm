@@ -1,11 +1,10 @@
 import './Aulas.css';
 import PropTypes from 'prop-types';
-import { FaPlay, FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle, FaTimesCircle } from "react-icons/fa";
+import { FaLock, FaVideo, FaBookOpen, FaCheckCircle, FaCircle, FaTimesCircle } from "react-icons/fa";
 import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { MdEdit } from "react-icons/md";
 import { FaGamepad } from "react-icons/fa6";
-import ResultadoProva from '../Prova/Prova';
 
 
 function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
@@ -20,12 +19,12 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
     };
 
     useEffect(() => {
-        console.log('Dados de progressProvas:', progressProvas);
+        //console.log('Dados de progressProvas:', progressProvas);
     }, [progressProvas]);
     
 
     const renderButton = (status, moduloId, conteudoId, materialId, type, score) => {
-        console.log(`${type}: ${status}, Score: ${score}`);
+        //console.log(`${type}: ${status}, Score: ${score}`);
         if (status === "end") {
             if (type === "aula" || type === "aovivo") {
                 return (
@@ -121,14 +120,14 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
         const novasProvasBloqueadas = {};
         conteudo.forEach((conteudoItem) => {
             const aulasDoConteudo = aulas.filter(aula => aula.conteudoId === conteudoItem.id && aula.type === 'aula');
-            console.log('aulasDoConteudo: ', aulasDoConteudo)
+            //console.log('aulasDoConteudo: ', aulasDoConteudo)
             const progressosCorrespondentes = progressAulas.filter(progress => 
                 progress.userId === userId && 
                 aulasDoConteudo.some(aula => aula.id === progress.aulaId)
             );
 
             progressosCorrespondentes.forEach(progress => {
-                console.log('Progresso encontrado:', { aulaId: progress.aulaId, status: progress.status });
+                //console.log('Progresso encontrado:', { aulaId: progress.aulaId, status: progress.status });
             });
 
             const todasAulasConcluidas = aulasDoConteudo.every(aula => 
@@ -151,7 +150,6 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                             <h2 className='moduleName'>{modulo.name}</h2>
                             <span className='moduleDescription'>{modulo.description}</span>
                         </div>
-                        <button className='btn-continue' onClick={continuarDeOndeParou}>Continuar de onde parou <FaPlay /></button>
                     </div>
 
                     {conteudo
@@ -324,12 +322,6 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
                         )
                         
                     })}
-                    <button
-                        className={`nextModuleButton ${todosConcluidos ? 'enabled' : 'disabled'}`}
-                        disabled={!todosConcluidos}
-                    >
-                        Próximo Módulo &gt;
-                    </button>
                 </div>
             )}
         </div>

@@ -95,7 +95,7 @@ export default function PerfilAluno() {
       setEditMode(false);
       setTimeout(() => setSaveSuccess(false), 2000);
     } catch (error) {
-      console.error("Erro ao salvar dados:", error);
+      //console.error("Erro ao salvar dados:", error);
     }
   };
 
@@ -134,7 +134,7 @@ export default function PerfilAluno() {
         setAlertPasswordSuccess(true);
       }
     } catch (error) {
-      console.error("Erro ao alterar senha:", error);
+      //console.error("Erro ao alterar senha:", error);
       setAlertPasswordInvalid(true);
     }
   };
@@ -160,10 +160,10 @@ export default function PerfilAluno() {
         if (docSnap.exists()) {
           setUserData(docSnap.data());
         } else {
-          console.log('Nenhum usuário encontrado!');
+          //console.log('Nenhum usuário encontrado!');
         }
       } catch (error) {
-        console.error('Erro ao buscar usuário:', error);
+        //console.error('Erro ao buscar usuário:', error);
       } finally {
         setLoading(false);
       }
@@ -188,10 +188,10 @@ export default function PerfilAluno() {
             setSelectedImage(data.avatar);
           }
         } else {
-          console.log('Nenhum usuário encontrado!');
+          //console.log('Nenhum usuário encontrado!');
         }
       } catch (error) {
-        console.error("Erro ao buscar usuário:", error);
+        //console.error("Erro ao buscar usuário:", error);
       } finally {
         setLoading(false);
       }

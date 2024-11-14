@@ -41,21 +41,21 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
             });
         
             setModulosUpdate(updatedModulos); 
-            console.log("Modulos com status:", updatedModulos);
+            //console.log("Modulos com status:", updatedModulos);
         } catch (error) {
-            console.error("Erro ao atualizar modulos:", error);
+            //console.error("Erro ao atualizar modulos:", error);
             setModulosUpdate(modulos); 
         }
     }, [modulos]);
 
     useEffect(() => {
-        console.log('modulosUpdate: ', modulosUpdate)
+        //console.log('modulosUpdate: ', modulosUpdate)
     }, [modulosUpdate])
     
     
 
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
-        console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
+        //console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
         const percentAulas = (aulasCompletadas / aulasTotal) * 100;
         const percentProvas = (provasCompletadas / provasTotal) * 100;
         const totalProgress = (percentAulas + percentProvas) / 2;
@@ -127,15 +127,15 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                 }
     
                 if (progressData.length > 0) {
-                    console.log('Dados de progresso das aulas encontrados:', progressData);
+                    //console.log('Dados de progresso das aulas encontrados:', progressData);
                     setProgressAulas(progressData);
                 } else {
-                    console.log('Nenhum dado de progresso das aulas encontrado.');
+                    //console.log('Nenhum dado de progresso das aulas encontrado.');
                 }
                 setLoadingAulas(false);
                 
             } catch (error) {
-                console.error('Erro ao buscar status do progresso das aulas:', error);
+                //console.error('Erro ao buscar status do progresso das aulas:', error);
                 setLoadingAulas(false);
             }
         };
@@ -177,15 +177,15 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                 }
     
                 if (progressProvasData.length > 0) {
-                    console.log('Dados de progresso das provas encontrados:', progressProvasData);
+                    //console.log('Dados de progresso das provas encontrados:', progressProvasData);
                     setProgressProvas(progressProvasData);
                 } else {
-                    console.log('Nenhum dado de progresso das provas encontrado.');
+                    //console.log('Nenhum dado de progresso das provas encontrado.');
                 }
                 setLoadingProvas(false);
                 
             } catch (error) {
-                console.error('Erro ao buscar status do progresso das provas:', error);
+                //console.error('Erro ao buscar status do progresso das provas:', error);
                 setLoadingProvas(false);
             }
         };
@@ -228,7 +228,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                         progressAulas?.some(progress => progress.userId === userId && progress.aulaId === aula.id && progress.status === 'end')
                     ).length;
 
-                    console.log('aulasCompletadas', aulasCompletadas)
+                    //console.log('aulasCompletadas', aulasCompletadas)
 
                     const totalAulasModulo = aulas.filter(a =>
                         conteudosDoModulo.some(c => c.id === a.conteudoId)
@@ -239,7 +239,7 @@ function Cursos({ modulos, conteudo, aulas, provas, professores, userId }) {
                         progressProvas?.some(progress => progress.userId === userId && progress.provaId === prova.id && progress.status === 'end')
                     ).length;
 
-                    console.log('provasCompletadas', provasCompletadas)
+                    //console.log('provasCompletadas', provasCompletadas)
 
                     const totalProvasModulo = provas.filter(p =>
                         conteudosDoModulo.some(c => c.id === p.conteudoId)

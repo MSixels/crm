@@ -18,7 +18,7 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
     const [provasQtd, setProvasQtd] = useState(0)
 
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
-        console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
+        //console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
         const percentAulas = (aulasCompletadas / aulasTotal) * 100;
         const percentProvas = (provasCompletadas / provasTotal) * 100;
 
