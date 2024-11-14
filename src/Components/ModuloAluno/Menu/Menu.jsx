@@ -83,8 +83,11 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
     }).length;
 
     const totalScoreCompletadas = provas.reduce((acc, prova) => {
-        const progressoProva = progressProvas?.find(progress => progress.userId === userId && progress.provaId === prova.id);
-        return progressoProva && progressoProva.status === 'end' ? acc + progressoProva.score : acc;
+        if (prova.type === 'prova') {
+            const progressoProva = progressProvas?.find(progress => progress.userId === userId && progress.provaId === prova.id);
+            return progressoProva && progressoProva.status === 'end' ? acc + progressoProva.score : acc;
+        }
+        return acc;
     }, 0);
 
     return (
