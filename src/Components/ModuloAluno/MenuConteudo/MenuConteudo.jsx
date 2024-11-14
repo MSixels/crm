@@ -15,7 +15,7 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
     
     const navigate = useNavigate()
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
-        console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
+        //console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
         const percentAulas = (aulasCompletadas / aulasTotal) * 100;
         const percentProvas = (provasCompletadas / provasTotal) * 100;
 
@@ -37,8 +37,8 @@ function MenuConteudo({ modulo, conteudo, aulas, provas, progressAulas, progress
     };
 
     const navigateMaterial = (id, type) => {
-        console.log('dados nome menu: ', aulas)
-        console.log('dados nome menu: ',provas)
+        //console.log('dados nome menu: ', aulas)
+        //console.log('dados nome menu: ',provas)
         navigate(`/aluno/modulo/${moduloId}/${conteudoId}/${type}/${id}`)
     }
 

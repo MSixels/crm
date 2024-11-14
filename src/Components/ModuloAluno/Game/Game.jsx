@@ -26,9 +26,9 @@ function Game({ materialId, userId }) {
                 );
     
                 setGameData(gameFiltrado);
-                console.log("Dados de game recuperados:", gameFiltrado);
+                //console.log("Dados de game recuperados:", gameFiltrado);
             } catch (error) {
-                console.error('Erro ao buscar dados de Game:', error);
+                //console.error('Erro ao buscar dados de Game:', error);
             }
         };
     
@@ -44,7 +44,7 @@ function Game({ materialId, userId }) {
             const progressDoc = await getDoc(progressRef);
             if (progressDoc.exists()) {
                 await setDoc(progressRef, { status: 'end' }, { merge: true });
-                console.log('Progresso atualizado com sucesso!');
+                //console.log('Progresso atualizado com sucesso!');
             } else {
                 const progressData = {
                     userId: userId,
@@ -52,10 +52,10 @@ function Game({ materialId, userId }) {
                     status: 'end',
                 };
                 await setDoc(progressRef, progressData);
-                console.log('Progresso criado e atualizado com sucesso!');
+                //console.log('Progresso criado e atualizado com sucesso!');
             }
         } catch (error) {
-            console.error('Erro ao criar ou atualizar o progresso:', error);
+            //console.error('Erro ao criar ou atualizar o progresso:', error);
         }
     };
 
@@ -72,10 +72,10 @@ function Game({ materialId, userId }) {
 
     const handlePlayNow = () => {
         if (gameData?.link) {
-            console.log("Abrindo link:", gameData.link);
+            //console.log("Abrindo link:", gameData.link);
             window.open(gameData.link, '_blank');
         } else {
-            console.warn("Link indisponível.");
+            //console.warn("Link indisponível.");
         }
     };
     

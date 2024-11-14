@@ -41,9 +41,9 @@ function StoryTelling({ materialId }) {
                 );
 
                 setStoryData(storyFiltrada);
-                console.log("Dados filtrados de storyTelling: ", storyFiltrada);
+                //console.log("Dados filtrados de storyTelling: ", storyFiltrada);
             } catch (error) {
-                console.error('Erro ao buscar dados de StoryTelling:', error);
+                //console.error('Erro ao buscar dados de StoryTelling:', error);
             }
         };
 
@@ -72,15 +72,15 @@ function StoryTelling({ materialId }) {
                 status: 'end',
                 response: resposta
             }, { merge: true });
-            console.log("Progresso do StoryTelling atualizado para 'end' com a resposta do usuário");
+            //console.log("Progresso do StoryTelling atualizado para 'end' com a resposta do usuário");
         } catch (error) {
-            console.error("Erro ao atualizar progresso do StoryTelling:", error);
+            //console.error("Erro ao atualizar progresso do StoryTelling:", error);
         }
     }
 
     const handleNextActivity = async () => {
         if (!userId) {
-            console.error('Usuário não autenticado');
+            //console.error('Usuário não autenticado');
             return;
         }
 

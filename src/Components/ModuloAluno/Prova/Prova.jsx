@@ -52,13 +52,13 @@ function Prova({ materialId, userId, conteudoId }) {
             ...doc.data()
         }));
 
-        console.log("Progress provas encontrados NEW:", progressProvasList);
+        //console.log("Progress provas encontrados NEW:", progressProvasList);
         setProvaFinish(progressProvasList)
-        console.log(progressProvasList[0].responses)
+        //console.log(progressProvasList[0].responses)
         setSelectedResponses(progressProvasList[0].responses || [])
         setLoading(false)
     } catch (error) {
-        console.error("Erro ao buscar progressProvas:", error);
+        //console.error("Erro ao buscar progressProvas:", error);
         setLoading(false)
     }
 };
@@ -89,10 +89,10 @@ function Prova({ materialId, userId, conteudoId }) {
             localStorage.setItem(`randomQuestions_${materialId}`, JSON.stringify(randomQuestions));
             setProvas([{ ...provaData, quests: randomQuestions }]);
         } else {
-            console.error('Prova não encontrada');
+            //console.error('Prova não encontrada');
         }
     } catch (error) {
-        console.error('Erro ao buscar dados:', error);
+        //console.error('Erro ao buscar dados:', error);
     }
 };
 
@@ -136,7 +136,7 @@ function Prova({ materialId, userId, conteudoId }) {
 
   useEffect(() => {
     const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
-    console.log('Respostas salvas recuperadas:', savedResponses);
+    //console.log('Respostas salvas recuperadas:', savedResponses);
   }, []);
 
   const handleNextQuestion = () => {
@@ -181,14 +181,14 @@ const provaConfirm = async () => {
 
     if (docSnapshot.exists()) {
       await updateDoc(progressRef, progressData);
-      console.log('Progresso da prova atualizado com sucesso.');
+      //console.log('Progresso da prova atualizado com sucesso.');
     } else {
       await setDoc(progressRef, progressData);
-      console.log('Progresso da prova criado com sucesso.');
+      //console.log('Progresso da prova criado com sucesso.');
     }
 
   } catch (error) {
-    console.error('Erro ao salvar o progresso da prova:', error);
+    //console.error('Erro ao salvar o progresso da prova:', error);
   }
 };
 
@@ -219,7 +219,7 @@ const provaConfirm = async () => {
       const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
       const progressSnapshot = await getDoc(progressRef);
       if (progressSnapshot.data().chance === 'true'){
-        console.log("CHANCEEEEE", progressSnapshot.data().chance)
+        //console.log("CHANCEEEEE", progressSnapshot.data().chance)
         return
       }
       if (progressSnapshot.exists() && !progressSnapshot.data().chance) {
@@ -229,14 +229,14 @@ const provaConfirm = async () => {
         };
         
         await updateDoc(progressRef, progressData);
-        console.log('Progresso da prova atualizado com sucesso.');
+        //console.log('Progresso da prova atualizado com sucesso.');
         localStorage.removeItem(`randomQuestions_${materialId}`);
       } else {
-        console.log('O campo `chance` já existe. Nenhuma atualização foi feita.');
+        //console.log('O campo `chance` já existe. Nenhuma atualização foi feita.');
       }
   
     } catch (error) {
-      console.error('Erro ao atualizar o progresso da prova:', error);
+      //console.error('Erro ao atualizar o progresso da prova:', error);
     }
   };
   
@@ -406,7 +406,7 @@ const provaConfirm = async () => {
   }
 
   useEffect(() => {
-    console.log('provaFinish: ', provaFinish)
+    //console.log('provaFinish: ', provaFinish)
   }, [provaFinish])
 
   if(loading){

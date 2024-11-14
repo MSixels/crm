@@ -34,7 +34,7 @@ function RastreiosSmall({ data }) {
                 typeQuest3,
             });
         } else {
-            console.error('Expected data to be an array or an object, but got:', data);
+            //console.error('Expected data to be an array or an object, but got:', data);
             setRastreioCounts({
                 total: 0,
                 typeQuest1: 0,

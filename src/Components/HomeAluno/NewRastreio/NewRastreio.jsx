@@ -56,7 +56,7 @@ function NewRastreio() {
             const decodedToken = jwtDecode(accessToken);
             setUserId(decodedToken.user_id)
         } else {
-            console.log("Nenhum token encontrado nos cookies.");
+            //console.log("Nenhum token encontrado nos cookies.");
             navigate('/login/aluno');
         }
     }, [navigate]);
@@ -136,14 +136,14 @@ function NewRastreio() {
                         id: documentId 
                     });
     
-                    console.log("Documento adicionado com ID: ", documentId);
+                    //console.log("Documento adicionado com ID: ", documentId);
     
                     navigate(`/aluno/rastreio?success=true&name=${patient}&idade=${typeQuestSelected}`);
                 } else {
-                    console.log('Verifique se você marcou todas as questões!');
+                    //console.log('Verifique se você marcou todas as questões!');
                 }
             } catch (e) {
-                console.error("Erro ao adicionar documento: ", e);
+                //console.error("Erro ao adicionar documento: ", e);
             }
         }
     };

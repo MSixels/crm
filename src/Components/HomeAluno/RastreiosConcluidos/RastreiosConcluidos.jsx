@@ -38,15 +38,15 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     useEffect(() => {
         if (data) {
             try{
-                //console.log('Data useEffect: ', data[0])
+                ////console.log('Data useEffect: ', data[0])
                 const rastreiosArray = data[0];
                 setPatients(rastreiosArray)
             }catch{
-                console.log('deu erro')
+                //console.log('deu erro')
             }
             
         } else {
-            console.error('Expected data to be an array or an object, but got:', data);
+            //console.error('Expected data to be an array or an object, but got:', data);
         }
     }, [data]);
 
@@ -105,16 +105,16 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     useEffect(() => {
         if (filteredPatients.length > 0 && !isBtnPDFUnicoCalled) {
             valuesPDF(filteredPatients);  
-            //console.log(filteredPatients);
+            ////console.log(filteredPatients);
         }
     }, [filteredPatients, valuesPDF, isBtnPDFUnicoCalled]);
 
     const btnPDFUnico = (index) => {
         setIsBtnPDFUnicoCalled(true); 
-        //console.log(index);
-        //console.log(patient);
+        ////console.log(index);
+        ////console.log(patient);
 
-        //console.log('Valor função: ', [sortedPatients[index]])
+        ////console.log('Valor função: ', [sortedPatients[index]])
         
         valuesPDF([sortedPatients[index]]);
         btnGerarPDFUnico()
@@ -187,7 +187,7 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
             setConfirmDeleteIndex(null);
             setActiveModalIndex(null)
         } catch (error) {
-            console.error("Erro ao excluir o paciente:", error);
+            //console.error("Erro ao excluir o paciente:", error);
         }
     };
 
@@ -239,7 +239,7 @@ function RastreiosConcluidos({ data, confirmPDF, valuesPDF }) {
     };
 
     useEffect(() => {
-        console.log(searchDate)
+        //console.log(searchDate)
     }, [searchDate])
 
     const btnGerarPDF = () => {

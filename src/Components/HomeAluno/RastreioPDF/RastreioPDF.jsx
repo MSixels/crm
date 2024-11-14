@@ -15,8 +15,8 @@ import { questsRestreioType1, questsRestreioType2, questsRestreioType3 } from '.
 function RastreioPDF({ alunoName, dataCards, dataValues }) {
 
     useEffect(() => {
-        console.log('dataCards: ', dataCards); 
-        console.log('dataValues: ', dataValues); 
+        //console.log('dataCards: ', dataCards); 
+        //console.log('dataValues: ', dataValues); 
     }, [dataCards, dataValues]);
     
     const header = [
@@ -280,7 +280,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                         };
 
                         const renderQuestsType3 = (questId, valueId) => {
-                            console.log('dataValuesMap: ', questId + ' ' + valueId);
+                            //console.log('dataValuesMap: ', questId + ' ' + valueId);
                             return questsRestreioType3
                             .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
                             .map((q) => (
@@ -318,7 +318,7 @@ function RastreioPDF({ alunoName, dataCards, dataValues }) {
                                 </div>
                             );
                         }else if(data.typeQuest === 3){
-                            console.log('dataResponses: ', data.responses)
+                            //console.log('dataResponses: ', data.responses)
                             return (
                                 <div key={data.id} className='descritivo'>
                                     {data.responses.map((r) => (
@@ -422,7 +422,7 @@ export default RastreioPDF
                         };
 
                         const renderQuestsType3 = (questId, valueId) => {
-                            console.log('dataValuesMap: ', questId + ' ' + valueId);
+                            //console.log('dataValuesMap: ', questId + ' ' + valueId);
                             return questsRestreioType3
                             .filter((q) => q.id === questId && (valueId === 2 || valueId === 3))
                             .map((q) => (
@@ -460,7 +460,7 @@ export default RastreioPDF
                                 </div>
                             );
                         }else if(data.typeQuest === 3){
-                            console.log('dataResponses: ', data.responses)
+                            //console.log('dataResponses: ', data.responses)
                             return (
                                 <div key={data.id} className='descritivo'>
                                     {data.responses.map((r) => (
