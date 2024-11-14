@@ -99,7 +99,7 @@ function VideoAula({ materialId, userId }) {
                         <p className='descriptionAula-text'>{aulas[0].description}</p>
                     </div>
                     <ButtonConfirm 
-                        title='Próxima etapa' 
+                        title='Concluir aula' 
                         icon={<FaCircleChevronRight size={25}/>} 
                         action={confirmMaterial} 
                         disabled={false} 

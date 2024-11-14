@@ -78,25 +78,23 @@ function Prova({ materialId, userId, conteudoId }) {
 
   const fetchProvasData = async () => {
     try {
-      const provaDocRef = doc(firestore, 'provas', materialId);
-      const provaDoc = await getDoc(provaDocRef);
+        const provaDocRef = doc(firestore, 'provas', materialId);
+        const provaDoc = await getDoc(provaDocRef);
 
-      if (provaDoc.exists()) {
-        const provaData = provaDoc.data();
-        
-        const randomQuestions = provaData.quests
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 5);
-
-        localStorage.setItem(`randomQuestions_${materialId}`, JSON.stringify(randomQuestions));
-        setProvas([{ ...provaData, quests: randomQuestions }]);
-      } else {
-        console.error('Prova não encontrada');
-      }
+        if (provaDoc.exists()) {
+            const provaData = provaDoc.data();
+            const randomQuestions = provaData.quests
+                .sort(() => 0.5 - Math.random())
+                .slice(0, 5);
+            localStorage.setItem(`randomQuestions_${materialId}`, JSON.stringify(randomQuestions));
+            setProvas([{ ...provaData, quests: randomQuestions }]);
+        } else {
+            console.error('Prova não encontrada');
+        }
     } catch (error) {
-      console.error('Erro ao buscar dados:', error);
+        console.error('Erro ao buscar dados:', error);
     }
-  };
+};
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -203,7 +201,6 @@ const provaConfirm = async () => {
         localStorage.removeItem('selectedResponses');
         localStorage.removeItem('currentQuestionIndex');
         localStorage.removeItem('startTime');
-        localStorage.removeItem(`randomQuestions_${materialId}`);
         navigate(`/aluno/modulo/${moduloId}/aulas`);
       }
     }
@@ -233,6 +230,7 @@ const provaConfirm = async () => {
         
         await updateDoc(progressRef, progressData);
         console.log('Progresso da prova atualizado com sucesso.');
+        localStorage.removeItem(`randomQuestions_${materialId}`);
       } else {
         console.log('O campo `chance` já existe. Nenhuma atualização foi feita.');
       }
@@ -248,95 +246,87 @@ const provaConfirm = async () => {
     const score = provaFinish[0]?.score || 0;
     const aprovado = score >= 50;
     const chance = provaFinish[0]?.chance || false;
-    const provaDone = () => {
-      if(aprovado) {
-        navigate(`/aluno/modulo/${moduloId}/aulas`) 
-      }else if(chance) {
-        console.log("chanceee", chance)
-        navigate(`/aluno/modulo/${moduloId}/aulas`)
-      }else {
-        provaChance()
-        navigate(`/aluno/modulo/${moduloId}/aulas`)
-      }
-    }
 
+    const provaDone = () => {
+        if (aprovado) {
+            navigate(`/aluno/modulo/${moduloId}/aulas`);
+        } else if (chance) {
+            navigate(`/aluno/modulo/${moduloId}/aulas`);
+        } else {
+            provaChance();
+            navigate(`/aluno/modulo/${moduloId}/aulas`);
+        }
+    };
+    const savedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`)) || [];
 
     return (
-      <div className="resultadoProva">
-        <div className="titleIcon">
-          <div className="divIconAula">
-            <FaBookOpen />
-          </div>
-          {provas[0].name && <h2 className="testTitle">{provas[0].name}</h2>}
-        </div>
-        <div className="resultadoProva__status">
-          {aprovado ? (
-            <FaCheckCircle color="#1BA284" size={48} className="icon aprovado" />
-          ) : (
-            <FaTimesCircle color="#D32F2F" size={48} className="icon reprovado" />
-          )}
-          <p className="text-aviso">
-            {aprovado
-              ? 'Parabéns, você foi aprovado(a). Continue seus estudos na próxima aula.'
-              : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova mais uma única vez!'}
-          </p>
-          <p className="resultadoProva__score" style={{ backgroundColor: score < 50 ? '#D32F2F' : '#1BA284' }}>
-          {score} PTS
-        </p>
-          <button
-            className="resultadoProva__button"
-            onClick={() => provaDone()}
-          >
-            {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
-          </button>
-        </div>
-        <div className="perguntas_respostas">
-          <ul>
-            {provas[0]?.quests.map((quest, index) => {
-              const selectedResponseIndex = selectedResponses[index];
-              const selectedResponse =
+        <div className="resultadoProva">
+            <div className="titleIcon">
+                <div className="divIconAula">
+                    <FaBookOpen />
+                </div>
+                {provas[0].name && <h2 className="testTitle">{provas[0].name}</h2>}
+            </div>
+            <div className="resultadoProva__status">
+                {aprovado ? (
+                    <FaCheckCircle color="#1BA284" size={48} className="icon aprovado" />
+                ) : (
+                    <FaTimesCircle color="#D32F2F" size={48} className="icon reprovado" />
+                )}
+                <p className="text-aviso">
+                    {aprovado
+                        ? 'Parabéns, você foi aprovado(a). Continue seus estudos na próxima aula.'
+                        : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova mais uma única vez!'}
+                </p>
+                <p className="resultadoProva__score" style={{ backgroundColor: score < 50 ? '#D32F2F' : '#1BA284' }}>
+                    {score} PTS
+                </p>
+                <button className="resultadoProva__button" onClick={provaDone}>
+                    {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
+                </button>
+            </div>
+            <div className="perguntas_respostas">
+            <ul>
+        {savedQuestions.map((quest, index) => {
+            const selectedResponseIndex = selectedResponses[index];
+            const selectedResponse =
                 selectedResponseIndex !== undefined
-                  ? quest.responses[selectedResponseIndex]
-                  : null;
-              return (
+                    ? quest.responses[selectedResponseIndex]
+                    : null;
+
+            const isCorrect = selectedResponse?.value === true;
+            const responseClass = isCorrect ? 'resposta-correta' : 'resposta-incorreta'; // Classe dinâmica para resposta correta/incorreta
+
+            return (
                 <li key={index}>
-                  <p className="pergunta_recebida">{quest.quest}</p>
-                  {selectedResponse && (
-                    <div
-                      className={`resposta_selecionada`}
-                    >
-                      <div
-                        className={`circle-checkbox`}
-                      >
-                        <div
-                          className={`circle-inner`}
-                          >
-                          </div>
-                      </div>
-                      <p title={selectedResponse.text}>
-                        {selectedResponse.text.length > 140
-                          ? `${selectedResponse.text.substring(0, 90)}...`
-                          : selectedResponse.text}
-                      </p>
-                    </div>
-                  )}
+                    <p className="pergunta_recebida">{quest.quest}</p>
+                    {selectedResponse && (
+                        <div className={`resposta_selecionada ${responseClass}`}>
+                            <div className={`circle-checkbox ${responseClass}`}>
+                                <div className={`circle-inner ${responseClass}`}></div>
+                            </div>
+                            <p title={selectedResponse.text}>
+                                {selectedResponse.text.length > 140
+                                    ? `${selectedResponse.text.substring(0, 90)}...`
+                                    : selectedResponse.text}
+                            </p>
+                        </div>
+                    )}
                 </li>
-              );
-            })}
-          </ul>
+            );
+        })}
+    </ul>
+            </div>
+            <div className="btn_final">
+                <span></span>
+                <button className="resultadoProva__button" onClick={() => navigate(`/aluno/modulo/${moduloId}/aulas`)}>
+                    {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
+                </button>
+            </div>
         </div>
-        <div className="btn_final">
-          <span></span>
-          <button
-            className="resultadoProva__button"
-            onClick={() => navigate(`/aluno/modulo/${moduloId}/aulas`)}
-          >
-            {aprovado ? 'Próxima aula' : 'Reassistir aulas'}
-          </button>
-        </div>
-      </div>
     );
-  };
+};
+
   
 
 

@@ -212,7 +212,7 @@ input[type="checkbox"]:checked::before {
   width: 20px;
   height: 20px; 
   border-radius: 50%; 
-  border: 2px solid var(--bg-principal); 
+  border: 2px solid var(--success); 
   display: inline-flex; 
   align-items: center; 
   justify-content: center; 
@@ -228,35 +228,35 @@ input[type="checkbox"]:checked::before {
   width: 60%;
   height: 60%;
   border-radius: 50%;
-  background-color: var(--bg-principal); 
+  background-color: var(--success); 
 }
 
-.resposta_selecionada.correta {
-  border: 1px solid var(--bg-principal);
+.resposta_selecionada.resposta-correta {
+  border: 1px solid var(--success);
   background-color: #1BA28405;
 }
 
 
-.resposta_selecionada.errada {
+.resposta_selecionada.resposta-incorreta {
   border: 1px solid var(--error); 
   background-color: #D32F2F05; 
 }
 
 
-.circle-checkbox.correta {
+.circle-checkbox.resposta-correta {
   background-color: transparent; 
 }
 
-.circle-inner.correta {
-  background-color: var(--bg-success);
+.circle-inner.resposta-correta {
+  background-color: var(--success);
 }
 
-.circle-checkbox.errada {
+.circle-checkbox.resposta-incorreta {
   background-color: transparent;
   border: 2px solid var(--error);
 }
 
-.circle-inner.errada {
+.circle-inner.resposta-incorreta {
   background-color: var(--error); 
 }
 
