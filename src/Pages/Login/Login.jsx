@@ -107,7 +107,7 @@ function Login() {
                         sessao && location.pathname === '/login/professor' && 
                         userType === 1 || userType === 2 && !disable
                     ) {
-                        navigate('/professor/alunos');
+                        navigate('/professor/dashboard');
                     } else if(disable){
                         setEmail(docSnap.data().email);
                         setAlertAccountDisabled(true);
