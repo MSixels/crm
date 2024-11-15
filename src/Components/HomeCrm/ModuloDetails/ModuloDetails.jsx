@@ -24,6 +24,7 @@ function ModuloDetails({ moduloId, pagetype }) {
     const [conteudos, setConteudos] = useState([]);
     const [aulas, setAulas] = useState([]);
     const [provas, setProvas] = useState([]);
+    const [materialCreate, setMaterialCreate] = useState('')
     const [showModalConteudo, setShowModalConteudo] = useState(false)
     const [conteudoDelete, setConteudoDelete] = useState('')
     const [showModalDelete, setShowModalDelete] = useState(false)
@@ -256,6 +257,11 @@ function ModuloDetails({ moduloId, pagetype }) {
         setShowModalCreateMaterial(false)
     }
 
+    const newMaterial = (id) => {
+        setShowModalCreateMaterial(true)
+        setMaterialCreate(id)
+    }
+
 
     
 
@@ -326,12 +332,12 @@ function ModuloDetails({ moduloId, pagetype }) {
                                     {showModalCreateMaterial && <ModalCreateMaterial 
                                         title='Novo conteúdo'
                                         close={closeModalMaterial} 
-                                        conteudoId={c.id} 
+                                        conteudoId={materialCreate} 
                                         updateDocs={() => fetchConteudos(moduloId)}/>
                                     }
                                     <div className='divHeaderConteudo'>
                                         <p style={{ fontSize: 18, fontWeight: 'bold' }}>{c.name}</p>
-                                        <ButtonBold title='Novo conteúdo' icon={<FaCirclePlus size={24}/>} action={() => setShowModalCreateMaterial(true)}/>
+                                        <ButtonBold title='Novo conteúdo' icon={<FaCirclePlus size={24}/>} action={() => newMaterial(c.id)}/>
                                     </div>
                                     
                                     {itensOrdenados.length > 0 ? (
