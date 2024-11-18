@@ -304,7 +304,7 @@ function ModuloDetails({ moduloId, pagetype }) {
                 
                 <div>
                     {conteudos.length < 1 ? <div><p>Este módulo não tem tópicos! Adicione um tópico!</p></div> : 
-                        conteudos.map((c) => {
+                        conteudos.sort((a, b) => a.createdAt.seconds - b.createdAt.seconds).map((c) => {
                             const itensRelacionados = [
                                 ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'aula').map(item => ({ ...item, type: 'aula' })),
                                 ...aulas.filter((aula) => aula.conteudoId === c.id && aula.type === 'game').map(item => ({ ...item, type: 'game' })),
@@ -315,8 +315,8 @@ function ModuloDetails({ moduloId, pagetype }) {
                             const itensOrdenados = itensRelacionados.sort((a, b) => {
                                 const order = {
                                     aula: 1,
-                                    game: 2,
-                                    prova: 3,
+                                    prova: 2,
+                                    game: 3,
                                     storyTelling: 4
                                 };
                             
