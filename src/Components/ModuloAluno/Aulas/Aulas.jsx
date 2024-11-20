@@ -37,7 +37,7 @@ function Aulas({ modulo, conteudo, aulas, provas, progressAulas, progressProvas,
             } else if (type === "prova" || status !== "start") {
                 return (
                     <button className='btn-access' onClick={() => handleStartContent(moduloId, conteudoId, type, materialId)}>
-                        Ver respostas
+                        Refazer
                     </button>
                 );
             }
