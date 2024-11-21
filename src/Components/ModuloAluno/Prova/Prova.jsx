@@ -19,6 +19,8 @@ function Prova({ materialId, userId, conteudoId }) {
   const [timeLeft, setTimeLeft] = useState(30 * 60);
   const [provaFinish, setProvaFinish] = useState([]);
   const [loading, setLoading] = useState(TbRuler3);
+  const [showResult, setShowResult] = useState(false);
+
 
   useEffect(() => {
     const savedResponses = JSON.parse(localStorage.getItem('selectedResponses'));
@@ -96,22 +98,22 @@ function Prova({ materialId, userId, conteudoId }) {
     }
 };
 
-  useEffect(() => {
-    if (timeLeft === 0) {
+useEffect(() => {
+  if (timeLeft === 0) {
       confirmMaterial(true);
-      navigate(`/aluno/modulo/${moduloId}/aulas`);
-    }
+  }
 
-    const intervalId = setInterval(() => {
+  const intervalId = setInterval(() => {
       setTimeLeft((prevTime) => {
-        const newTime = prevTime - 1;
-        localStorage.setItem('timeLeft', newTime);
-        return newTime;
+          const newTime = prevTime - 1;
+          localStorage.setItem('timeLeft', newTime);
+          return newTime;
       });
-    }, 1000);
+  }, 1000);
 
-    return () => clearInterval(intervalId);
-  }, [timeLeft, navigate, moduloId]);
+  return () => clearInterval(intervalId);
+}, [timeLeft]);
+
 
   useEffect(() => {
     if (!localStorage.getItem('startTime')) {
@@ -155,64 +157,79 @@ function Prova({ materialId, userId, conteudoId }) {
     });
   };
 
+  const handleSaveAndAdvance = async () => {
+    try {
+        await provaConfirm();
+        const updatedProgress = await fetchProgressProvas(materialId, userId);
+        setProvaFinish(updatedProgress); 
+        setShowResult(true);
+    } catch (error) {
+        console.error('Erro ao salvar e avançar:', error);
+    }
+};
+
+
 const provaConfirm = async () => {
   try {
-    const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
-    let score = 0;
-    const randomizedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
+      const progressRef = doc(firestore, 'progressProvas', `${userId}_${materialId}`);
+      let score = 0;
+      const randomizedQuestions = JSON.parse(localStorage.getItem(`randomQuestions_${materialId}`));
 
-    randomizedQuestions.forEach((quest, index) => {
-      const selectedResponseIndex = selectedResponses[index];
-      if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
-        score += 20;
+      randomizedQuestions.forEach((quest, index) => {
+          const selectedResponseIndex = selectedResponses[index];
+          if (selectedResponseIndex !== undefined && quest.responses[selectedResponseIndex].value === true) {
+              score += Math.floor(100 / randomizedQuestions.length);
+          }
+      });
+
+      score = Math.min(score, 100); 
+
+      const progressData = {
+          userId,
+          provaId: materialId,
+          type: 'prova',
+          status: 'end',
+          score,
+          responses: selectedResponses,
+      };
+
+      const docSnapshot = await getDoc(progressRef);
+
+      if (docSnapshot.exists()) {
+          await updateDoc(progressRef, progressData);
+      } else {
+          await setDoc(progressRef, progressData);
       }
-    });
-    score = Math.min(score, 100);
-
-    const progressData = {
-      userId,
-      provaId: materialId,
-      type: 'prova',
-      status: 'end',
-      score,
-      responses: selectedResponses,
-    };
-    const docSnapshot = await getDoc(progressRef);
-
-    if (docSnapshot.exists()) {
-      await updateDoc(progressRef, progressData);
-      //console.log('Progresso da prova atualizado com sucesso.');
-    } else {
-      await setDoc(progressRef, progressData);
-      //console.log('Progresso da prova criado com sucesso.');
-    }
-
+      setProvaFinish([{ ...progressData }]);
   } catch (error) {
-    //console.error('Erro ao salvar o progresso da prova:', error);
+      console.error('Erro ao salvar o progresso da prova:', error);
   }
 };
 
 
-  const confirmMaterial = async (confirm) => {
-    if (confirm) {
+
+const confirmMaterial = async (confirm) => {
+  if (confirm) {
       if (materialId) {
-        await provaConfirm();
-        localStorage.removeItem('provas');
-        localStorage.removeItem('selectedResponses');
-        localStorage.removeItem('currentQuestionIndex');
-        localStorage.removeItem('startTime');
-        navigate(`/aluno/modulo/${moduloId}/aulas`);
+          await provaConfirm();
+          localStorage.removeItem('provas');
+          localStorage.removeItem('selectedResponses');
+          localStorage.removeItem('currentQuestionIndex');
+          localStorage.removeItem('startTime');
+          setShowResult(true);
       }
-    }
-  };
+  }
+};
+
 
   const allQuestionsAnswered = provas[0]?.quests.length === Object.keys(selectedResponses).length;
 
   const handleButtonClick = () => {
     if (allQuestionsAnswered) {
-      confirmMaterial(true);
+        confirmMaterial(true);
     }
-  };
+};
+
 
   const provaChance = async () => {
     try {
@@ -265,7 +282,7 @@ const provaConfirm = async () => {
                 <div className="divIconAula">
                     <FaBookOpen />
                 </div>
-                {provas[0].name && <h2 className="testTitle">{provas[0].name}</h2>}
+                <h2>Suas Respostas</h2>
             </div>
             <div className="resultadoProva__status">
                 {aprovado ? (
@@ -276,7 +293,7 @@ const provaConfirm = async () => {
                 <p className="text-aviso">
                     {aprovado
                         ? 'Parabéns, você foi aprovado(a). Continue seus estudos na próxima aula.'
-                        : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova mais uma única vez!'}
+                        : 'Você não teve a pontuação necessária. Reassista às aulas anteriores para que você possa tentar fazer a prova outra vez!'}
                 </p>
                 <p className="resultadoProva__score" style={{ backgroundColor: score < 50 ? '#D32F2F' : '#1BA284' }}>
                     {score} PTS
@@ -295,7 +312,7 @@ const provaConfirm = async () => {
                     : null;
 
             const isCorrect = selectedResponse?.value === true;
-            const responseClass = isCorrect ? 'resposta-correta' : 'resposta-incorreta'; // Classe dinâmica para resposta correta/incorreta
+            const responseClass = isCorrect ? 'resposta-correta' : 'resposta-incorreta';
 
             return (
                 <li key={index}>
@@ -414,10 +431,17 @@ const provaConfirm = async () => {
   }
 
   return (
-    <div className='containerProva'>
-      {provaFinish.length > 0 && provaFinish[0].status === 'end' ? resultadoProva() : renderProvas()}
+    <div className="prova-container">
+        {showResult ? (
+            resultadoProva()
+        ) : (
+            <>
+                {renderProvas()}
+            </>
+        )}
     </div>
-  );
+);
+
 }
 
 Prova.propTypes = {
