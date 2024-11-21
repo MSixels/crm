@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import './ModuloDetails.css'
 import PropTypes from 'prop-types'
-import { collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
-import { firestore } from '../../../services/firebaseConfig';
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, where } from 'firebase/firestore';
+import { firestore, storage } from '../../../services/firebaseConfig';
 import Loading from '../../Loading/Loading';
-import { FaBookOpen } from "react-icons/fa";
+import { FaBookOpen, FaTimes } from "react-icons/fa";
 import { FaGear, FaXmark } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
@@ -16,6 +16,10 @@ import ModalCreateConteudo from '../../ModalCreateConteudo/ModalCreateConteudo';
 import ModalDeleteItem from '../../ModalDeleteItem/ModalDeleteItem';
 import ModalCreateMaterial from '../../ModalCreateMaterial/ModalCreateMaterial'
 import { deleteConteudo, deleteModulo, updateModulo } from '../../../functions/functions';
+import { FaRegFileAlt } from "react-icons/fa";
+import { FaFilePdf } from "react-icons/fa6";
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import LoadingItem from '../../LoadingItem/LoadingItem'
 
 function ModuloDetails({ moduloId, pagetype }) {
     const navigate = useNavigate()
@@ -40,9 +44,13 @@ function ModuloDetails({ moduloId, pagetype }) {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [showModalDeleteModulo, setShowModalDeleteModulo] = useState(false)
 
+    const [uploadedFiles, setUploadedFiles] = useState([]);
+    const [isUploading, setIsUploading] = useState(false);
+
     const optionsHeader = [
         {id: 1, icon: <FaBookOpen />, title: 'Conteúdo', route: 'conteudo'},
-        {id: 2, icon: <FaGear />, title: 'Configurações', route: 'configuracoes'},
+        {id: 2, icon: <FaRegFileAlt />, title: 'Materiais', route: 'materiais'},
+        {id: 3, icon: <FaGear />, title: 'Configurações', route: 'configuracoes'},
     ]
 
     const fetchModulo = async (moduloId) => {
@@ -262,6 +270,27 @@ function ModuloDetails({ moduloId, pagetype }) {
         setMaterialCreate(id)
     }
 
+    const fetchUploadedFiles = async (moduloId) => {
+        try {
+            const q = query(collection(firestore, "materiais"), where("moduloId", "==", moduloId));
+            const querySnapshot = await getDocs(q);
+
+            const files = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                name: doc.data().materialUrl.split("/").pop(), // Obtém o nome do arquivo da URL
+                url: doc.data().materialUrl,
+            }));
+            console.log(files)
+            setUploadedFiles(files);
+        } catch (error) {
+            console.error("Erro ao buscar arquivos:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchUploadedFiles(moduloId);
+    }, [moduloId]);
+
 
     
 
@@ -375,7 +404,102 @@ function ModuloDetails({ moduloId, pagetype }) {
     };
 
     
+    const renderMateriais = () => {
+
+        const handleFileChange = async (event) => {
+            const files = Array.from(event.target.files);
     
+            setIsUploading(true);
+    
+            for (const file of files) {
+                try {
+                    const storageRef = ref(storage, `materiais/${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    const downloadURL = await getDownloadURL(storageRef);
+    
+                    const docRef = await addDoc(collection(firestore, "materiais"), {
+                        materialUrl: downloadURL,
+                        moduloId: moduloId,
+                    });
+    
+                    setUploadedFiles((prevFiles) => [
+                        ...prevFiles,
+                        { id: docRef.id, name: file.name, url: downloadURL },
+                    ]);
+                } catch (error) {
+                    console.error("Erro ao fazer upload do arquivo:", error);
+                }
+            }
+    
+            setIsUploading(false);
+        };
+    
+        const removeFile = async (fileId, fileUrl) => {
+            try {
+                await deleteDoc(doc(firestore, "materiais", fileId));
+        
+                const filePath = decodeURIComponent(fileUrl.split("/o/")[1].split("?")[0]);
+        
+                const storageRef = ref(storage, filePath);
+        
+                await deleteObject(storageRef);
+        
+                setUploadedFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+            } catch (error) {
+                console.error("Erro ao remover arquivo:", error);
+            }
+        };
+
+        return (
+            <div className="containerMateriais">
+                <h2>Materiais complementares</h2>
+                <div className="contents">
+                    <div>
+                        <label htmlFor="file" className="labelFile">
+                            <div className="divIcon">
+                                <FaFilePdf />
+                            </div>
+                            <p>Clique aqui para fazer o Upload</p>
+                        </label>
+                        <input
+                            type="file"
+                            id="file"
+                            accept=".pdf"
+                            multiple
+                            style={{ display: "none" }}
+                            onChange={handleFileChange}
+                        />
+                    </div>
+    
+                    {isUploading && <div style={{marginTop: 12}}><p>Carregando arquivo...</p></div>}
+            
+                    <div className="fileList">
+                        {uploadedFiles.map((file) => {
+                            const fileName = decodeURIComponent(file.name.split("?")[0]).replace("materiais/", "");
+
+                            return (
+                                <div key={file.id} className="divFile">
+                                    <div className="infos">
+                                        <div>
+                                            <FaFilePdf />
+                                        </div>
+                                        <p>{fileName}</p>
+                                    </div>
+                                    <div
+                                        className="removeFile"
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => removeFile(file.id, file.url)}
+                                    >
+                                        <FaTimes />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        );
+    }
     
 
     const renderModuloConfig = () => {
@@ -418,6 +542,7 @@ function ModuloDetails({ moduloId, pagetype }) {
 
         const handleUpdateModulo = () => {
             updateModulo(moduloId, moduloName, moduloDescription, searchDrop.id, liberacao, validade)
+            alert('Alterações salvas')
         }
 
         const openModalDelete = () => {
@@ -561,7 +686,7 @@ function ModuloDetails({ moduloId, pagetype }) {
                 ))}
             </div>
             <div className='divValues'>
-                {pagetype === 'conteudo' ? renderConteudo() : pagetype === 'configuracoes' ? renderModuloConfig() : ''}
+                {pagetype === 'conteudo' ? renderConteudo() : pagetype === 'configuracoes' ? renderModuloConfig() : pagetype === 'materiais' ? renderMateriais() : ''}
             </div>
         </div>
     )

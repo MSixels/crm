@@ -215,10 +215,12 @@ export const updateModulo = async (id, name, description, professorId, liberacao
 
 export const deleteModulo = async (id) => {
     try {
+        // Deletar o módulo
         const moduloRef = doc(firestore, 'modulos', id);
         await deleteDoc(moduloRef);
         console.log("Módulo deletado com sucesso!");
 
+        // Excluir os conteúdos relacionados ao módulo
         const conteudoQuery = query(collection(firestore, 'conteudo'), where('moduloId', '==', id));
         const conteudoSnapshot = await getDocs(conteudoQuery);
 
@@ -229,6 +231,7 @@ export const deleteModulo = async (id) => {
         }
         console.log("Conteúdos deletados com sucesso!");
 
+        // Excluir as aulas relacionadas aos conteúdos
         if (conteudoIds.length > 0) {
             const aulasQuery = query(collection(firestore, 'aulas'), where('conteudoId', 'in', conteudoIds));
             const aulasSnapshot = await getDocs(aulasQuery);
@@ -237,12 +240,44 @@ export const deleteModulo = async (id) => {
             }
             console.log("Aulas deletadas com sucesso!");
 
+            // Excluir as provas relacionadas aos conteúdos
             const provasQuery = query(collection(firestore, 'provas'), where('conteudoId', 'in', conteudoIds));
             const provasSnapshot = await getDocs(provasQuery);
             for (const provaDoc of provasSnapshot.docs) {
                 await deleteDoc(provaDoc.ref);
             }
             console.log("Provas deletadas com sucesso!");
+        }
+
+        // Excluir os materiais relacionados ao módulo, caso existam
+        const materiaisQuery = query(collection(firestore, 'materiais'), where('moduloId', '==', id));
+        const materiaisSnapshot = await getDocs(materiaisQuery);
+
+        if (!materiaisSnapshot.empty) {
+            for (const materialDoc of materiaisSnapshot.docs) {
+                // Obter o URL do material
+                const fileUrl = materialDoc.data().materialUrl;
+                if (fileUrl) {
+                    // Excluir o material do Firestore
+                    await deleteDoc(materialDoc.ref);
+                    console.log(`Material ${materialDoc.id} deletado com sucesso!`);
+
+                    // Excluir o arquivo relacionado no Storage
+                    try {
+                        // Ajuste para garantir que o caminho do arquivo no Firebase Storage seja correto
+                        const path = fileUrl.split("/o/")[1].split("?")[0];
+                        const storageRef = ref(storage, decodeURIComponent(path)); // Decodifica o caminho para garantir que seja correto
+                        await deleteObject(storageRef);
+                        console.log(`Arquivo ${fileUrl} deletado com sucesso do Storage!`);
+                    } catch (storageError) {
+                        console.error("Erro ao excluir o arquivo do Storage:", storageError);
+                    }
+                } else {
+                    console.log(`Material ${materialDoc.id} não possui URL para exclusão no Storage.`);
+                }
+            }
+        } else {
+            console.log("Nenhum material encontrado para o módulo.");
         }
 
         return true;

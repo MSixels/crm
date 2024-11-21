@@ -3,7 +3,7 @@ import './Alunos.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
 import { FaAngleDown, FaAngleUp, FaCirclePlus } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
 import { firestore } from '../../../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -14,6 +14,7 @@ import { disableUserInFirestore, reactivateUserInFirestore, deleteUserFromFireBa
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { GrNext } from 'react-icons/gr';
 import DropDown from '../../DropDown/DropDown'
+import html2pdf from 'html2pdf.js';
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -34,6 +35,8 @@ function Alunos({ userType }) {
         { title: 'Status' },
         { title: 'Média' },
     ]
+    //const componentRef = useRef();
+    //const showPdf = true
 
     const removeAccents = (text) => {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -120,23 +123,21 @@ function Alunos({ userType }) {
         fetchProgressProvas()
     }, [])
 
+    
     const filtered = alunos
     .filter(a => {
         const lowerCaseSearchTerm = removeAccents(searchTerm).toLowerCase();
 
-        // Filtragem pelo termo de pesquisa
         const matchesSearchTerm = removeAccents(a.name).toLowerCase().includes(lowerCaseSearchTerm) ||
         (a.email && removeAccents(a.email).toLowerCase().includes(lowerCaseSearchTerm));
 
-        // Verificação de searchDrop
         if (searchDrop === null || searchDrop === 'Selecione') {
-            return matchesSearchTerm; // Exibe todos os alunos correspondentes ao searchTerm
+            return matchesSearchTerm; 
         }
         
-        // Filtragem adicional com base no valor de searchDrop e considerando a.disable
-        if (searchDrop === 1 && (!a.isActive || a.disable)) return false; // Aluno ativo sem a.disable
-        if (searchDrop === 2 && (a.isActive || a.disable)) return false;  // Aluno pendente sem a.disable
-        if (searchDrop === 3 && !a.disable) return false;                  // Aluno desativado
+        if (searchDrop === 1 && (!a.isActive || a.disable)) return false; 
+        if (searchDrop === 2 && (a.isActive || a.disable)) return false;  
+        if (searchDrop === 3 && !a.disable) return false;                 
 
         return matchesSearchTerm;
     })
@@ -233,10 +234,57 @@ function Alunos({ userType }) {
             setSearchDrop('Selecione');
         }
     };
+    /*
+    const baixarPDF = (confirm) => {
+        if (confirm) {
+            const element = componentRef.current;
+
+            const opt = {
+                margin: 0.15,
+                filename: 'relatorio_alunos.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(opt).save();
+        }
+    };
+    */
 
     if (loading) {
         return <Loading />
     }
+
+    /*
+    if(showPdf){
+        return (
+            <div>
+                <div ref={componentRef}>
+                   
+                    <h1>Relatório do alunos - total({filtered.length})</h1>
+                    <div style={{ width: '100%', borderCollapse: 'collapse', marginTop: 12 }}>
+                        <div style={{ width: '400' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: 12 }}>
+                                <p style={{ fontWeight: 'bold' }}>Email</p>
+                                <p style={{ fontWeight: 'bold' }}>Média</p>
+                            </div>
+                        </div>
+                        <div>
+                            {filtered.map((aluno, index) => (
+                                <div key={index} style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: 8, borderBottom: 'solid 1px #ccc', pageBreakInside: 'avoid' }}>
+                                    <p>{aluno.email || "N/A"}</p>
+                                    <p>{aluno.averageScore || 0}/100</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <button onClick={() => baixarPDF(true)}>Baixar PDF</button>
+            </div>
+        );
+    }
+    */
     
     return(
         <div className='containerAlunos'>

@@ -138,6 +138,7 @@ function MaterialEdit() {
 
         const handleUpdate = () => {
             updateAula(materialId, aulaName, aulaDescription, aulaUrl, type)
+            alert('Alterações salvas')
         }
 
         const handleDelete = async () => {
