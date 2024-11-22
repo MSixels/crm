@@ -3,7 +3,10 @@ import { IoIosArrowDropleftCircle } from "react-icons/io";
 import PropTypes from 'prop-types'
 import { FaLock } from "react-icons/fa";
 import ProgressBar from '../../ProgressBar/ProgressBar';
-import { useEffect, useState } from 'react';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { firestore } from "../../../services/firebaseConfig";
+import { useEffect, useState } from "react";
+import { FaFilePdf } from "react-icons/fa";
 import { SiGoogleclassroom } from "react-icons/si";
 import { FaUser } from "react-icons/fa";
 import { MdOutlineErrorOutline } from "react-icons/md";
@@ -13,9 +16,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, userId }) {
     const navigate = useNavigate()
     const [selectOption, setSelectOption] = useState(1)
-    const { moduloId } = useParams()
+    const { moduloId } = useParams();
     const { type } = useParams()
-    const [provasQtd, setProvasQtd] = useState(0)
+    const [provasQtd, setProvasQtd] = useState(0);
+    const [materiais, setMateriais] = useState([]);
 
     const calculateProgress = (aulasCompletadas, aulasTotal, provasCompletadas, provasTotal) => {
         //console.log(`Calculos de %: ${aulasCompletadas} / ${aulasTotal} && ${provasCompletadas} / ${provasTotal}`)
@@ -90,6 +94,32 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
         return acc;
     }, 0);
 
+    useEffect(() => {
+        const fetchMateriais = async () => {
+            try {
+                const q = query(
+                    collection(firestore, "materiais"),
+                    where("moduloId", "==", moduloId)
+                );
+                const querySnapshot = await getDocs(q);
+                const materiaisData = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setMateriais(materiaisData);
+            } catch (error) {
+                console.error("Erro ao buscar materiais:", error);
+            }
+        };
+
+        fetchMateriais();
+    }, [moduloId]);
+
+    const downloadMaterial = (url) => {
+        window.open(url, "_blank");
+    };
+    
+
     return (
         <div className='containerMenu'>
             <div className='divBtnBack'>
@@ -126,6 +156,37 @@ function Menu({ modulo, conteudo, aulas, provas, progressAulas, progressProvas, 
                         <span className='optionText'>{o.text}</span>
                     </div>
                 ))}
+            </div>
+            <div className="materials">
+                <h3 className='materials_title'>Materiais complementares</h3>
+                <p className='materials_text' >Materiais referentes a esse módulo</p>
+                <div className="materialsList">
+    {materiais.length > 0 ? (
+        materiais.map((material) => {
+            const fileName = decodeURIComponent(
+                material.materialUrl.split("/").pop().split("?")[0]
+            ).replace("materiais/", "");
+
+            return (
+                <div
+                    key={material.id}
+                    className="materialItem"
+                    onClick={() => downloadMaterial(material.materialUrl)}
+                    role="button"
+                    tabIndex="0"
+                    onKeyDown={(e) =>
+                        e.key === "Enter" && downloadMaterial(material.materialUrl)
+                    }
+                >
+                    <FaFilePdf className="materialIcon" size={32} />
+                    <p className="materialName">{fileName}</p>
+                </div>
+            );
+        })
+    ) : (
+        <p className="materialNone" >Nenhum material disponível para este módulo.</p>
+    )}
+</div>
             </div>
         </div>
     );
