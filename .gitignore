@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+src/services/serviceAccountKey.json
+alunos.csv
+exportAlunos.js
+
 
 # Editor directories and files
 .vscode/*
