@@ -12,7 +12,6 @@ dist
 dist-ssr
 *.local
 src/services/serviceAccountKey.json
-alunos.csv
 exportAlunos.js
 
 
@@ -26,3 +25,4 @@ exportAlunos.js
 *.njsproj
 *.sln
 *.sw?
+alunos.csv
