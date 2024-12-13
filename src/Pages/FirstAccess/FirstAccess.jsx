@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import './FirstAccess.css';
 import LogoText from '../../imgs/logoText.png';
 import { firestore } from '../../services/firebaseConfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query } from 'firebase/firestore';
 import { useState } from 'react';
 import Cookies from 'js-cookie';
 

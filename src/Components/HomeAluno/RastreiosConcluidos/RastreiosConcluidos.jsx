@@ -1,5 +1,5 @@
 import './RastreiosConcluidos.css'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import InputText from '../../InputText/InputText'
 import { FaAngleDown } from "react-icons/fa6";

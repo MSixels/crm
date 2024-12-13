@@ -1,0 +1,42 @@
+.containerModalCertificado{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    color: var(--secondary1000);
+    padding-inline: 24px;
+}
+.containerModalCertificado .divBox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px;
+    background-color: #FFF;
+    box-shadow: .8px 2px 8px .8px #ccc;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 90%;
+}
+.containerModalCertificado .divBox .title{
+    font-size: 24px;
+    font-weight: 500;
+}
+.containerModalCertificado .divCertificado{
+    width: 90%;
+    max-width: 1000px;
+}
+.containerModalCertificado .divCertificado header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+.containerModalCertificado input[type="number"]::-webkit-inner-spin-button,
+.containerModalCertificado input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Remove setas em navegadores baseados em Firefox */
+.containerModalCertificado input[type="number"] {
+    -moz-appearance: textfield;
+}

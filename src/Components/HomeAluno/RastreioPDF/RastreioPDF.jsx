@@ -8,7 +8,7 @@ import {
     evaluateTLPotential, 
     evaluateTODPotential 
 } from '../../../functions/functions';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { FaCircleCheck } from 'react-icons/fa6';
 import { questsRestreioType1, questsRestreioType2, questsRestreioType3 } from '../../../database';
 

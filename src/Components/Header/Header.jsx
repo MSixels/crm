@@ -93,6 +93,7 @@ Header.propTypes = {
         text: PropTypes.string.isRequired,
         route: PropTypes.string.isRequired,
         status: PropTypes.string.isRequired,
+        type: PropTypes.string
     })).isRequired,
     userId: PropTypes.string
 };

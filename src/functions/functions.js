@@ -1,4 +1,4 @@
-import { collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 import { firestore, storage } from "../services/firebaseConfig";
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
@@ -619,5 +619,60 @@ export async function deleteUserFromFireBaseAuth(uid, update) {
       update();
     } catch (error) {
       console.error("Erro ao deletar usuário:", error);
+    }
+}
+
+export async function generateCertificado(userId, name, cpf, update){
+    try {
+        const certificadosCollectionRef = collection(firestore, "certificados");
+
+        const certificadoData = {
+            userId: userId,
+            name: name,
+            cpf: cpf,
+            createdAt: new Date() 
+        };
+
+        const docRef = await addDoc(certificadosCollectionRef, certificadoData);
+
+        console.log("Certificado gerado com sucesso", docRef.id);
+        update();
+        
+    } catch (error) {
+        console.error("Erro ao gerar certificado:", error);
+    }
+}
+
+export async function fetchCertificado(userId, setCertificado) {
+    try {
+        const certificadosCollectionRef = collection(firestore, "certificados");
+
+        const q = query(certificadosCollectionRef, where("userId", "==", userId));
+
+        const querySnapshot = await getDocs(q);
+
+        const certificados = querySnapshot.docs.map(doc => ({
+            id: doc.id, 
+            ...doc.data() 
+        }));
+
+        setCertificado(certificados.length > 0 ? certificados[0] : null);
+    } catch (error) {
+        console.error("Erro ao buscar certificado:", error);
+    }
+}
+
+export async function updateUserCertificado(userId, name, matricula, cpf) {
+    try {
+        const userDocRef = doc(firestore, "users", userId);
+
+        await updateDoc(userDocRef, {
+            name: name,
+            matricula: matricula,
+            cpf: cpf,
+        });
+
+    } catch (error) {
+        console.error("Erro ao atualizar os dados do usuário:", error);
     }
 }

@@ -6,11 +6,12 @@ import './Home.css'
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate, useParams } from 'react-router-dom'
-import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 import { auth, firestore } from '../../services/firebaseConfig'
 import Rastreios from '../../Components/HomeAluno/Rastreios/Rastreios'
 import RastreiosSmall from '../../Components/HomeAluno/RastreiosSmall/RastreiosSmall'
 import { onAuthStateChanged } from 'firebase/auth'
+import ModalCertificado from '../../Components/HomeAluno/ModalCertificado/ModalCertificado'
 
 function Home() {
     const navigate = useNavigate()
@@ -21,7 +22,7 @@ function Home() {
     const [userType, setUserType] = useState(null)
     const [rastreios, setRastreios] = useState([])
     const [nome, setNome] = useState('')
-    const validPages = ['home', 'rastreio', 'modulos']; 
+    const validPages = ['home', 'rastreio', 'modulos', 'certificado']; 
     const options = [
         {
             id: 1,
@@ -40,6 +41,13 @@ function Home() {
             text: 'Módulos e aulas',
             route: '/aluno/modulos',
             status: 'active'
+        },
+        {
+            id: 4,
+            text: 'Emitir Certificado',
+            route: '/aluno/certificado',
+            status: 'active',
+            type: 'btn'
         },
     ]
 
@@ -281,6 +289,11 @@ function Home() {
             {page === 'aovivo' && 
                 <div className='divContentHome'>
                     Ao Vivo
+                </div>
+            }
+            {page === 'certificado' && 
+                <div className='divContentHome'>
+                    <ModalCertificado userId={userId}/>
                 </div>
             }
         </div>

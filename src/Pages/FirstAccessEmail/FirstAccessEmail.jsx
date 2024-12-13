@@ -1,25 +1,33 @@
-import { useNavigate } from 'react-router-dom'
 import './FirstAccessEmail.css'
 import LogoText from '../../imgs/logoText.png'
-import { MdSchool } from "react-icons/md";
 import { auth, firestore } from '../../services/firebaseConfig';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import emailjs from 'emailjs-com';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import Cookies from 'js-cookie'
 import { FaCircleCheck } from "react-icons/fa6";
 
 function FirstAccess() {
-    const navigate = useNavigate()
     const [inputEmail, setInputEmail] = useState(false)
     const [email, setEmail] = useState('')
     const [
         createUserWithEmailAndPassword,
         loading,
     ] = useCreateUserWithEmailAndPassword(auth);
-    const name = ''
+    const [name, setName] = useState('')
+    const [matricula, setMatricula] = useState()
     const [success, setSuccess] = useState(false)
+
+    useEffect(() => {
+        // Obtendo os valores dos cookies
+        const cookieName = Cookies.get('name');
+        const cookieMatricula = Cookies.get('matricula');
+
+        // Setando os estados com os valores dos cookies, caso existam
+        if (cookieName) setName(cookieName);
+        if (cookieMatricula) setMatricula(cookieMatricula);
+    }, [])
 
     const generateRandomPassword = () => {
         const length = 8;
@@ -60,6 +68,7 @@ function FirstAccess() {
                 await setDoc(doc(firestore, 'users', userId), {
                     name: name,
                     email: email,
+                    matricula: matricula,
                     type: 3,
                     userId: userId,
                     isActive: false
