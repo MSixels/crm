@@ -99,7 +99,7 @@ function ModalCertificado({ userId }) {
                             </div>
                             <p>A Ultra Cursos, CNPJ 23.284.700/0001-50, afirma por meio deste documento que </p>
                             <p style={{ fontSize: 24, fontWeight: 500, textTransform: 'uppercase', paddingBlock: 12}} className='userName'>{name}</p>
-                            <p>portador do CPF <span style={{fontWeight: 'bold'}}>{cpf}</span> concluiu com êxito o PROGRAMA DE CAPACITAÇÃO CONTINUADA EM NEUROEDUCAÇÃO (PCCN) realizado de modo híbrido, com carga horária total de 60 horas. Período 29 de outubro de 2024, à 31 de novembro de 2024.</p>
+                            <p>portador do CPF <span style={{fontWeight: 'bold'}}>{cpf}</span> concluiu com êxito o PROGRAMA DE CAPACITAÇÃO CONTINUADA EM NEUROEDUCAÇÃO (PCCN) realizado de modo híbrido, com carga horária total de 60 horas. Período 29 de outubro de 2024, à 06 de dezembro de 2024.</p>
                             <div className='divAssinar' style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 84}}>
                                 <p style={{width: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 'solid 1px #000', padding: 6}}>Ultra Cursos</p>
                                 <p style={{width: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 'solid 1px #000', padding: 6}}>Aluno</p>
