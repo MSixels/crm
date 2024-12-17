@@ -7,6 +7,7 @@ import InputNumber from '../../InputNumber/InputNumber';
 import ButtonBold from '../../ButtonBold/ButtonBold';
 import Fundo from '../../../imgs/fundo_certificado.png'
 import Logo from '../../../imgs/logo.png'
+import Assinatura from '../../../imgs/assinatura.png'
 import Img_1 from '../../../imgs/pccn_certificado.png'
 import Img_2 from '../../../imgs/tocantins_certificado.png'
 import Img_3 from '../../../imgs/profe_certificado.png'
@@ -101,7 +102,10 @@ function ModalCertificado({ userId }) {
                             <p style={{ fontSize: 24, fontWeight: 500, textTransform: 'uppercase', paddingBlock: 12}} className='userName'>{name}</p>
                             <p>portador do CPF <span style={{fontWeight: 'bold'}}>{cpf}</span> concluiu com êxito o PROGRAMA DE CAPACITAÇÃO CONTINUADA EM NEUROEDUCAÇÃO (PCCN) realizado de modo híbrido, com carga horária total de 60 horas. Período 29 de outubro de 2024, à 31 de novembro de 2024.</p>
                             <div className='divAssinar' style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 84}}>
-                                <p style={{width: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 'solid 1px #000', padding: 6}}>Ultra Cursos</p>
+                                <div style={{position: 'relative'}}>
+                                    <img src={Assinatura} alt="" style={{ width: 200, position: 'absolute', top: -50, left: 20 }}/>
+                                    <p style={{width: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 'solid 1px #000', padding: 6}}>Ultra Cursos</p>
+                                </div>
                                 <p style={{width: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', borderTop: 'solid 1px #000', padding: 6}}>Aluno</p>
                             </div>
                             <div className='divEmpresas' style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 64, width: '100%', gap: 12}}>
