@@ -108,7 +108,7 @@ function Home() {
 
     useEffect(() => {
         getRastreios(userId)
-        //console.log(userId)
+        console.log(userId)
     }, [userId])
 
     useEffect(() => {

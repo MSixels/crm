@@ -1,3 +1,4 @@
+/*
 import PropTypes from 'prop-types';
 import './ComponentLimitado.css'
 import InputSend from '../InputSend/InputSend';
@@ -773,3 +774,267 @@ function ComponentLimitado() {
 }
 
 export default ComponentLimitado;
+*/
+
+
+
+
+
+
+
+import PropTypes from 'prop-types';
+import './ComponentLimitado.css'
+import InputSend from '../InputSend/InputSend';
+import { useEffect, useState } from 'react';
+import InputDate from '../InputDate/InputDate';
+import ButtonBold from '../ButtonBold/ButtonBold';
+import DropDown from '../DropDown/DropDown';
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { firestore, storage } from '../../services/firebaseConfig';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import InputText from '../InputText/InputText';
+import Papa from 'papaparse'; 
+import { evaluateTDAHPotential, evaluateTDIPotential, evaluateTEAPotential, evaluateTEAPPotential, evaluateTLPotential, evaluateTODPotential, fetchRastreios } from '../../functions/functions';
+
+function ComponentLimitado() {
+    const [rastreios, setRastreios] = useState([]);
+    const [alunos, setAlunos] = useState([]);
+
+    const getRastreios = async () => {
+        try {
+            const q = collection(firestore, "rastreios");
+            const querySnapshot = await getDocs(q);
+            
+            const allRastreios = [];
+
+            if (!querySnapshot.empty) {
+                querySnapshot.forEach((doc) => {
+                    allRastreios.push(doc.data());
+                });
+
+                setRastreios(allRastreios); // Define os rastreios encontrados
+            } else {
+                setRastreios([]); // Caso não haja nenhum rastreio
+            }
+        } catch (error) {
+            console.error("Erro ao buscar rastreios:", error);
+        }
+    };
+
+    const fetchUser = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(firestore, 'users'));
+    
+            const alunosList = querySnapshot.docs.map(doc => ({
+                id: doc.id,              
+                userId: doc.data().userId, 
+                email: doc.data().email,    
+                name: doc.data().name,      
+            }));
+    
+            setAlunos(alunosList);
+            console.log("Alunos carregados com sucesso:", alunosList);
+        } catch (error) {
+            console.error("Erro ao carregar os alunos:", error);
+        }
+    };
+
+    const formatDate = (timestamp) => {
+        if (timestamp && timestamp.seconds) {
+            const date = new Date(timestamp.seconds * 1000); // Converter segundos para milissegundos
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        return 'Data inválida';
+    };
+    
+
+    useEffect(() => {
+        getRastreios();
+        fetchUser();
+    }, []);
+
+    useEffect(() => {
+        if (rastreios.length > 0 && alunos.length > 0) {
+            console.log('Rastreios:', rastreios);
+            console.log('Alunos:', alunos);
+    
+            rastreios.forEach((r, index) => {
+                if (r && r.responses && r.patient) {
+                    // Tente encontrar o aluno no array 'alunos'
+                    const aluno = alunos.find(a => a.id === r.userId);
+    
+                    // Verifique se o aluno foi encontrado, se não, atribua "Não encontrado"
+                    const alunoName = aluno ? (aluno.name && aluno.name !== '' ? aluno.name : aluno.email) : 'Não encontrado';
+    
+                    if (aluno) {
+                        const { tdahPotential } = evaluateTDAHPotential(r.responses);
+                        const { teaPotential } = evaluateTEAPotential(r.responses);
+                        const { teapPotential } = evaluateTEAPPotential(r.responses);
+                        const { tlPotential } = evaluateTLPotential(r.responses);
+                        const { todPotential } = evaluateTODPotential(r.responses);
+                        const { tdiPotential } = evaluateTDIPotential(r.responses);
+    
+                        // Lógica para definir o 'resultado'
+                        let resultado = 'pp'; // Valor padrão é 'pp'
+                        const potentials = [tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential];
+    
+                        if (potentials.includes('mp')) {
+                            resultado = 'mp';
+                        } else if (potentials.includes('p')) {
+                            resultado = 'p';
+                        }
+    
+                        const line = {
+                            data: formatDate(r.createdAt),
+                            aluno: alunoName,
+                            patient: r.patient,
+                            tdahPotential,
+                            teaPotential,
+                            teapPotential,
+                            tlPotential,
+                            todPotential,
+                            tdiPotential,
+                            resultado, // Adiciona o campo 'resultado'
+                        };
+    
+                        console.log(`Rastreio ${index}: `, { line });
+                    } else {
+                        // Caso o aluno não seja encontrado, exibe um aviso e coloca "Não encontrado"
+                        const line = {
+                            data: formatDate(r.createdAt),
+                            aluno: 'Não encontrado',
+                            patient: r.patient,
+                            tdahPotential: null,
+                            teaPotential: null,
+                            teapPotential: null,
+                            tlPotential: null,
+                            todPotential: null,
+                            tdiPotential: null,
+                            resultado: 'pp', // Valor padrão é 'pp'
+                        };
+                        console.warn(`Aluno não encontrado para userId: ${r.userId} - Rastreio ${index}:`, line);
+                        console.log(`Rastreio ${index}: `, { line });
+                    }
+                } else {
+                    console.warn(`Rastreio ${index} não possui 'patient.responses'`);
+                }
+            });
+        }
+    }, [rastreios, alunos]);
+
+    const generateCSV = () => {
+        if (rastreios.length > 0 && alunos.length > 0) {
+            const csvData = [];
+    
+            // Função para mapear os valores de potencial
+            const mapPotentialToText = (potential) => {
+                switch (potential) {
+                    case 'pp':
+                        return 'Baixo';
+                    case 'p':
+                        return 'Médio';
+                    case 'mp':
+                        return 'Alto';
+                    default:
+                        return 'Indefinido'; // Caso o valor seja inesperado
+                }
+            };
+    
+            rastreios.forEach((r) => {
+                if (r && r.responses && r.patient) {
+                    const aluno = alunos.find(a => a.id === r.userId);
+    
+                    const alunoName = aluno ? (aluno.name && aluno.name !== '' ? aluno.name : aluno.email) : 'Não encontrado';
+    
+                    if (aluno) {
+                        const { tdahPotential } = evaluateTDAHPotential(r.responses);
+                        const { teaPotential } = evaluateTEAPotential(r.responses);
+                        const { teapPotential } = evaluateTEAPPotential(r.responses);
+                        const { tlPotential } = evaluateTLPotential(r.responses);
+                        const { todPotential } = evaluateTODPotential(r.responses);
+                        const { tdiPotential } = evaluateTDIPotential(r.responses);
+    
+                        // Aplica a função de mapeamento para transformar os valores
+                        const tdahText = mapPotentialToText(tdahPotential);
+                        const teaText = mapPotentialToText(teaPotential);
+                        const teapText = mapPotentialToText(teapPotential);
+                        const tlText = mapPotentialToText(tlPotential);
+                        const todText = mapPotentialToText(todPotential);
+                        const tdiText = mapPotentialToText(tdiPotential);
+    
+                        let resultado = 'pp'; // Valor padrão é 'pp'
+                        const potentials = [tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential];
+    
+                        if (potentials.includes('mp')) {
+                            resultado = 'mp';
+                        } else if (potentials.includes('p')) {
+                            resultado = 'p';
+                        }
+    
+                        // Aplica o mapeamento para o 'resultado'
+                        const resultadoText = mapPotentialToText(resultado);
+    
+                        // Adiciona os dados para a geração do CSV
+                        csvData.push({
+                            'Data': formatDate(r.createdAt),  // Usa a função para formatar
+                            'Realizador do rastreio': alunoName,
+                            'Nome do rastreado': r.patient,
+                            'TDAH': tdahText,
+                            'TEA': teaText,
+                            'TEAP': teapText,
+                            'TL': tlText,
+                            'TOD': todText,
+                            'TDI': tdiText,
+                            'Resultado': resultadoText,
+                        });
+                    } else {
+                        // Caso o aluno não tenha sido encontrado, ainda cria a entrada com 'Não encontrado'
+                        const line = {
+                            'Data': null,
+                            'Realizador do rastreio': 'Não encontrado',
+                            'Nome do rastreado': r.patient,
+                            'TDAH': null,
+                            'TEA': null,
+                            'TEAP': null,
+                            'TL': null,
+                            'TOD': null,
+                            'TDI': null,
+                            'Resultado': 'pp', // Valor padrão é 'pp'
+                        };
+                        csvData.push(line);
+                    }
+                }
+            });
+    
+            // Ordenar os dados do CSV pela coluna 'Realizador do rastreio' (nome ou email)
+            csvData.sort((a, b) => {
+                const nameA = a['Realizador do rastreio'].toLowerCase();
+                const nameB = b['Realizador do rastreio'].toLowerCase();
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+            });
+    
+            // Gera o CSV e realiza o download
+            const csv = Papa.unparse(csvData);
+    
+            const link = document.createElement('a');
+            link.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+            link.target = '_blank';
+            link.download = 'rastreios.csv';
+            link.click();
+        }
+    };
+
+    return (
+        <div className='containerComponentLimitado'>
+            <button onClick={generateCSV}>Gerar CSV Rastreios</button>
+        </div>
+    );
+}
+
+export default ComponentLimitado;
+
