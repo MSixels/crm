@@ -26,3 +26,6 @@ exportAlunos.js
 *.sln
 *.sw?
 alunos.csv
+
+backend/servicekeys.json
+backend/.env
