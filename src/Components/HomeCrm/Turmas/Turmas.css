@@ -55,7 +55,7 @@
 }
 
 .tabs span.active {
-    color: yellow;
+    color: var(--yellow-1);
     font-weight: bold;
 }
 
@@ -92,11 +92,22 @@
     cursor: pointer;
 }
 
+.voltarIcon {
+    cursor: pointer;
+}
+
+.voltarIcon svg {
+    color: #333;
+    transition: color 0.3s;
+}
+
+
+
 .btnDelete {
-    background-color: red;
-    color: white;
+    color: var(--bg-block);
+    background-color: white;
     padding: 8px;
-    border: none;
+    border: 2px solid  var(--bg-block);
     border-radius: 4px;
     cursor: pointer;
 }
