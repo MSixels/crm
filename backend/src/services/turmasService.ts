@@ -1,14 +1,16 @@
 import { AddAlunoDto } from "../controllers/turmas/dtos/AddAlunoDto";
 import { Turma } from "../models/Turma";
 import { TurmasRepository } from "../repositories/turmasRepository";
-import { IAddAluno } from "./interfaces/IAddAluno";
+import { UsersRepository } from "../repositories/usersRepository";
 import { IAlunoInTurma } from "./interfaces/IAlunoInTurma";
 
 export class TurmasService {
   private readonly turmasRepository: TurmasRepository;
+  private readonly usersRepository: UsersRepository;
 
-  constructor(turmasRepository: TurmasRepository) {
+  constructor(turmasRepository: TurmasRepository, usersRepository: UsersRepository) {
     this.turmasRepository = turmasRepository;
+    this.usersRepository = usersRepository;
   }
 
   async getAllTurmas() {
@@ -21,15 +23,14 @@ export class TurmasService {
 
   async createTurma(data: Turma) {
     this.deactiveOthersTurmas()
-    return this.turmasRepository.create(data);
+    return this.turmasRepository.create({...data, alunosCount: 0});
   }
 
   async addAlunoInTurma(alunoInTurmaData: AddAlunoDto) {
-    const data: IAddAluno = {
-      alunoEmail: alunoInTurmaData.alunoEmail,
-      alunoName: alunoInTurmaData.alunoName,
-    } 
-    await this.turmasRepository.createSubCollection<IAddAluno>("turmas", alunoInTurmaData.turmaId, "alunos", alunoInTurmaData.alunoId, data);
+    const alunosToAdd = await this.usersRepository.getUsersAreAlunosByUserIds(alunoInTurmaData.usersIds);
+    await this.turmasRepository.addAlunoInTurma(alunoInTurmaData.turmaId, alunosToAdd);
+    this.updateAlunosCount(alunoInTurmaData.turmaId, alunosToAdd.length);
+    return;
   }
 
   async editTurma(data: Turma, turmaId: string) {
@@ -52,6 +53,10 @@ export class TurmasService {
 
   private async deactiveOthersTurmas(turmaId?: string) {
     return this.turmasRepository.deactiveOthersTurmas(turmaId);
+  }
+
+  private async updateAlunosCount(turmaId: string, increment: number) {
+    return this.turmasRepository.updateAlunosCount(turmaId, increment);
   }
 
 }

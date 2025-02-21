@@ -1,6 +1,4 @@
 export interface AddAlunoDto {
-  alunoName: string
-  alunoEmail: string
+  usersIds: string[]
   turmaId: string
-  alunoId: string
 }

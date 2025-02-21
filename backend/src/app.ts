@@ -5,6 +5,7 @@ import { turmasRoutes } from "./routes/turmasRoutes";
 import { TurmasRepository } from './repositories/turmasRepository';
 import { TurmasService } from './services/turmasService';
 import { AppError } from './core/errors/AppError';
+import { UsersRepository } from './repositories/usersRepository';
 
 export const app = Fastify({
   logger: true, 
@@ -24,6 +25,7 @@ app.setErrorHandler((error, _, reply) => {
 });
 
 const turmasRepository = new TurmasRepository();
-const turmasService = new TurmasService(turmasRepository);
+const usersRepository = new UsersRepository();
+const turmasService = new TurmasService(turmasRepository, usersRepository);
 
 app.register(turmasRoutes, { prefix: "/turmas", turmasService });
