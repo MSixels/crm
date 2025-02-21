@@ -46,4 +46,12 @@ export class RepositoryBase<T extends DocumentData> implements IRepository<T> {
 
     await docRef.set(data);
   }
+
+  async getSubCollection<W>(principalCollectionName: string, principalCollectionId: string, subCollectionName: string): Promise<W[]> {
+    const snapshot = await firestore.collection(principalCollectionName).doc(principalCollectionId).collection(subCollectionName).get();
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    } as unknown as W)); 
+  }
 }

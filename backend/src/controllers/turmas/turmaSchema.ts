@@ -16,3 +16,11 @@ export const addAlunoInTurmaSchema = z.object({
   turmaId: z.string(),
   alunoId: z.string()
 })
+
+export const editTurmaSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  active: z.boolean().optional(), 
+  startDate: z.string().datetime().optional(),
+  endDate: z.union([z.string().datetime(), z.null()]).optional(),
+})

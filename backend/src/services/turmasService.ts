@@ -1,12 +1,13 @@
 import { AddAlunoDto } from "../controllers/turmas/dtos/AddAlunoDto";
-import { IRepository } from "../core/interfaces/IRepository";
 import { Turma } from "../models/Turma";
+import { TurmasRepository } from "../repositories/turmasRepository";
 import { IAddAluno } from "./interfaces/IAddAluno";
+import { IAlunoInTurma } from "./interfaces/IAlunoInTurma";
 
 export class TurmasService {
-  private readonly turmasRepository: IRepository<Turma>;
+  private readonly turmasRepository: TurmasRepository;
 
-  constructor(turmasRepository: IRepository<Turma>) {
+  constructor(turmasRepository: TurmasRepository) {
     this.turmasRepository = turmasRepository;
   }
 
@@ -19,6 +20,7 @@ export class TurmasService {
   }
 
   async createTurma(data: Turma) {
+    this.deactiveOthersTurmas()
     return this.turmasRepository.create(data);
   }
 
@@ -29,4 +31,27 @@ export class TurmasService {
     } 
     await this.turmasRepository.createSubCollection<IAddAluno>("turmas", alunoInTurmaData.turmaId, "alunos", alunoInTurmaData.alunoId, data);
   }
+
+  async editTurma(data: Turma, turmaId: string) {
+    if(data.active) this.deactiveOthersTurmas(turmaId)
+    return this.turmasRepository.update(turmaId, data);
+  }
+
+  async changeTurmaStatus(turmaId: string) {
+    const turma = await this.turmasRepository.getById(turmaId);
+    const data = {...turma, active: !turma?.active }
+
+    if(data.active) this.deactiveOthersTurmas(turmaId);
+
+    return this.turmasRepository.update(turmaId, data);
+  }
+
+  async getAlunosInTurma(turmaId: string) {
+    return this.turmasRepository.getSubCollection<IAlunoInTurma>("turmas", turmaId, "alunos");
+  }
+
+  private async deactiveOthersTurmas(turmaId?: string) {
+    return this.turmasRepository.deactiveOthersTurmas(turmaId);
+  }
+
 }

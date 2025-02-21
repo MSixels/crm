@@ -7,4 +7,5 @@ export interface IRepository<T> {
   update(id: string, data: Partial<T>): Promise<void>;
   delete(id: string): Promise<void>;
   createSubCollection<W extends DocumentData>(principalCollectionName: string, principalCollectionId: string, subCollectionName: string, subCollectionId: string, data: WithFieldValue<W>): Promise<void>
+  getSubCollection<W>(principalCollectionName: string, principalCollectionId: string, subCollectionName: string): Promise<W[]>;
 }
