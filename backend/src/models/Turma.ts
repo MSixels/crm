@@ -6,4 +6,5 @@ export interface Turma {
   endDate?: string
   active: boolean
   startDate: string;
+  alunosCount: number;
 }

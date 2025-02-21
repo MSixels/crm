@@ -1,6 +1,8 @@
 import { firestore } from "../config/firebaseConfig";
 import { Turma } from "../models/Turma";
+import { User } from "../models/User";
 import { RepositoryBase } from "./repositoryBase";
+import admin from 'firebase-admin'
 
 export class TurmasRepository extends RepositoryBase<Turma> {
   private static readonly COLLECTION_NAME = "turmas"
@@ -14,11 +16,32 @@ export class TurmasRepository extends RepositoryBase<Turma> {
     if (turmasAtivas.empty) return;
     const batch = firestore.batch();
     turmasAtivas.forEach((doc) => {
-      if (exceptTurmaId && doc.id !== exceptTurmaId) {
+      if (doc.id !== exceptTurmaId) {
         batch.update(doc.ref, { active: false });
       }
     });
   
     await batch.commit();
+  }
+
+  async addAlunoInTurma(turmaId: string, alunosToAdd: User[]) {
+    const batch = firestore.batch();
+    const turmaRef = firestore.collection(TurmasRepository.COLLECTION_NAME).doc(turmaId);
+    alunosToAdd.forEach((aluno) => {
+      const alunoRef = turmaRef.collection("alunos").doc(aluno.userId);
+      batch.set(alunoRef, {
+        email: aluno.email,
+        name: aluno.name,
+        matricula: aluno.matricula ?? "",
+        status: aluno.isActive
+      });
+    });
+  
+    await batch.commit();
+  }
+
+  async updateAlunosCount(turmaId: string, increment: number) {
+    const turmaRef = firestore.collection(TurmasRepository.COLLECTION_NAME).doc(turmaId);
+    await turmaRef.update({ alunosCount: admin.firestore.FieldValue.increment(increment) });
   }
 }

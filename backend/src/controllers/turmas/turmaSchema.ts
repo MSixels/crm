@@ -11,10 +11,8 @@ export const createTurmaSchema = z.object({
 });
 
 export const addAlunoInTurmaSchema = z.object({
-  alunoName: z.string(),
-  alunoEmail: z.string().email(),
   turmaId: z.string(),
-  alunoId: z.string()
+  usersIds: z.array(z.string()).default([]),
 })
 
 export const editTurmaSchema = z.object({
