@@ -3,6 +3,8 @@
     flex-direction: column;
     padding: 32px;
     width: 100%;
+    font-family: 'Inter', sans-serif;
+
 }
 .containerTurmas .divContent{
     display: flex;
@@ -38,34 +40,52 @@
     white-space: nowrap;
     position: relative;
 }
+
+.novaTurmaHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.5rem;
+    color: var(--secondary1000);
+}
 .containerTurmas .bold{
     font-weight: bold;
 }
 
 .tabs {
     display: flex;
-    gap: 20px; /* Espaçamento entre os itens */
+    margin: 2rem 0 ;
+    background-color: #FFF;
+    border-radius: 8px;
 }
 
 .tabs span {
     cursor: pointer;
     font-size: 18px;
+    color: var(--secondary700);
     padding: 10px;
     transition: color 0.3s;
+    height: 56px;
+    margin-top: 0.5rem;
 }
 
 .tabs span.active {
     color: var(--yellow-1);
     font-weight: bold;
+    border-bottom: 2px solid var(--yellow-1);
 }
 
 .alunosSection {
     margin-top: 20px;
+    background-color: var(--bg-White);
+    padding: 0.5rem;
+
 }
 
 .alunosActions {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 15px;
     margin-top: 10px;
 }
@@ -84,7 +104,6 @@
 }
 
 .btnAdd {
-    background-color: green;
     color: white;
     padding: 8px 12px;
     border: none;
@@ -110,4 +129,116 @@
     border: 2px solid  var(--bg-block);
     border-radius: 4px;
     cursor: pointer;
+}
+.alunosHeader, .alunoItem {
+    background-color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.titlesConfigs {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.configHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.InfosClass {
+    background-color: var(--bg-White);
+    padding: 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    margin-bottom: 1rem;
+}
+
+.modulosList {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem 1rem 2rem 0;
+}
+
+.modulosList li {
+    background-color: var(--border-light);
+    padding: 3px 6px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 18px;
+}
+
+.ativaTurma {
+    display: flex;
+    flex-direction: row;
+    margin-top: 1.5rem;
+    color: var(--secondary900);
+}
+
+.StartAndEnd {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.switch {
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 20px;
+    margin-right: 1.5rem;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-light);
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--secondary500);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: var(--bg-success);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+.buttonStart-- {
+    display: flex;
+    align-items: start;
 }
