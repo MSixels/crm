@@ -27,16 +27,20 @@ export class TurmasRepository extends RepositoryBase<Turma> {
   async addAlunoInTurma(turmaId: string, alunosToAdd: User[]) {
     const batch = firestore.batch();
     const turmaRef = firestore.collection(TurmasRepository.COLLECTION_NAME).doc(turmaId);
-    alunosToAdd.forEach((aluno) => {
-      const alunoRef = turmaRef.collection("alunos").doc(aluno.userId);
-      batch.set(alunoRef, {
+
+    alunosToAdd.map((aluno) => {
+      const alunoRefInTurma = turmaRef.collection("alunos").doc(aluno.userId);
+      batch.set(alunoRefInTurma, {
         email: aluno.email,
         name: aluno.name,
         matricula: aluno.matricula ?? "",
-        status: aluno.isActive
+        status: aluno.isActive,
       });
+
+      const alunoRefInUsers = firestore.collection("users").doc(aluno.userId);
+      batch.set(alunoRefInUsers, { turmaId }, { merge: true });
     });
-  
+
     await batch.commit();
   }
 

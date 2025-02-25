@@ -26,4 +26,23 @@ export class UsersRepository extends RepositoryBase<User> {
 
     return usersIncludeInIds;
   }
+
+  async getUsersByNameOrTurma(name?: string, turmaId?: string) {
+    const collectionRef = firestore.collection(UsersRepository.COLLECTION_NAME);
+    let query = collectionRef as FirebaseFirestore.Query<FirebaseFirestore.DocumentData>;
+
+    if (name) {
+      query = query
+      .where("name", ">=", name)
+      .where("name", "<=", name + "\uf8ff");
+    }
+
+    const snapshot = await query.get();
+    const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as unknown as User));
+
+    if (turmaId) {
+      return users.filter(user => user.turmaId === turmaId);
+    }
+    return users;
+  }
 }

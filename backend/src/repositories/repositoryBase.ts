@@ -9,16 +9,44 @@ export class RepositoryBase<T extends DocumentData> implements IRepository<T> {
       const collectionRef = firestore.collection(this.collectionName);
       const snapshot = await collectionRef.get();
   
+      if(snapshot.empty) return []
+
       return snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
       } as unknown as T)); 
   }
 
+  async getAllPaginated(limit: number, fieldOrderBy?: string, cursor?: string): Promise<T[]> {
+    let collectionRef = firestore.collection(this.collectionName).orderBy(fieldOrderBy ?? "createdAt").limit(limit)
+
+    if(cursor) {
+      const snapshot = await firestore.collection(this.collectionName).doc(cursor).get();
+      if (snapshot.exists) {
+        collectionRef = collectionRef.startAfter(snapshot);
+      }
+    } 
+
+    const snapshot = await collectionRef.get();
+
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    } as unknown as T));
+  }
+
   async getById(id: string): Promise<T | null> {
     const docRef = firestore.collection(this.collectionName).doc(id);
     const snapshot = await docRef.get();
     return snapshot.exists ? ({ id: snapshot.id, ...snapshot.data() } as unknown as T) : null;
+  }
+
+  async getByIds(ids: string[], fieldNameToSearch?: string): Promise<T[] | null> {
+    const snapshot = await firestore.collection(this.collectionName).where(fieldNameToSearch ?? "id",  "in", ids).get();
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    } as unknown as T));
   }
 
   async create(data: WithFieldValue<T>): Promise<string> {

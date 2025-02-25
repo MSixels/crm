@@ -10,4 +10,5 @@ export interface User {
   name: string;
   type: EUserType;
   userId: string;
+  turmaId: string;
 }

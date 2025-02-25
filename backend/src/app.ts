@@ -2,10 +2,13 @@ import 'dotenv/config'
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import { turmasRoutes } from "./routes/turmasRoutes";
+import { rastreiosRoutes } from './routes/rastreiosRoutes';
 import { TurmasRepository } from './repositories/turmasRepository';
 import { TurmasService } from './services/turmasService';
 import { AppError } from './core/errors/AppError';
 import { UsersRepository } from './repositories/usersRepository';
+import { RastreiosRepository } from './repositories/rastreiosRepository';
+import { RastreiosService } from './services/rastreiosService';
 
 export const app = Fastify({
   logger: true, 
@@ -26,6 +29,9 @@ app.setErrorHandler((error, _, reply) => {
 
 const turmasRepository = new TurmasRepository();
 const usersRepository = new UsersRepository();
+const rastreiosRepository = new RastreiosRepository();
 const turmasService = new TurmasService(turmasRepository, usersRepository);
+const rastreiosService = new RastreiosService(rastreiosRepository, turmasRepository, usersRepository);
 
 app.register(turmasRoutes, { prefix: "/turmas", turmasService });
+app.register(rastreiosRoutes, { prefix: "/rastreios", rastreiosService })
