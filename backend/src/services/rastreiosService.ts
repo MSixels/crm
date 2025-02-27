@@ -83,6 +83,10 @@ export class RastreiosService {
     return Buffer.from(pdfBytes);
   }
 
+  async delete(id: string) {
+    return this.rastreiosRepository.delete(id);
+  }
+
   private mapData(rastreios: Rastreio[], usersMap: Map<string, User>, turmasMap: Map<string, Turma>) {
     return rastreios.map(rastreio => {
       const aluno = usersMap.get(rastreio.userId);
