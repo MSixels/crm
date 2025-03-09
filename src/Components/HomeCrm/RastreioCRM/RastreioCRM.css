@@ -1,0 +1,47 @@
+.containerRastreios {
+  padding: 1rem;
+}
+
+.titleRastreios {
+  color: var(--secondary1000);
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 1.5rem 0;
+}
+
+.listaFiltrada {
+  background-color: white;
+  padding: 0.5rem;
+}
+
+.filtros {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cabecalhoLista {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: black;
+  line-height: 24px;
+}
+
+.spanName {
+  display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dowRastreio {
+  display: flex;
+  color: #616161;
+  border: 2px solid var(--secondary200);
+  border-radius: 4px;
+  background-color: transparent;
+  padding: 2px;
+  cursor: pointer;
+}

@@ -7,6 +7,7 @@ import Alunos from '../../Components/HomeCrm/Alunos/Alunos'
 import Turmas from '../../Components/HomeCrm/Turmas/Turmas'
 import Modulos from '../../Components/HomeCrm/Modulos/Modulos'
 import Usuarios from '../../Components/HomeCrm/Usuarios/Usuarios'
+import RastreioCRM from '../../Components/HomeCrm/RastreioCRM/RastreioCRM';
 import Cookies from 'js-cookie'
 import { jwtDecode } from 'jwt-decode'
 import { useEffect, useState } from 'react'
@@ -93,6 +94,7 @@ function HomeCrm() {
                     {page === 'modulos' && <Modulos userType={userType}/>}
                     {page === 'usuarios' && <Usuarios userType={userType}/>}
                     {page === 'storytelling' && <StoryTelling userType={userType} />}
+                    {page === 'rastreios' && <RastreioCRM />}
                     {location.pathname === `/professor/storytelling/${conteudoId}` && <StoryTellingDetails conteudoId={conteudoId}/>}
                     {location.pathname === `/professor/modulos/${moduloId}/${pagetype}` && <ModuloDetails userType={userType} moduloId={moduloId} pagetype={pagetype}/>}
                     {location.pathname === `/professor/modulos/${moduloId}/${type}/${materialId}` && <MaterialEdit />}
