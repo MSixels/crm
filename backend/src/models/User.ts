@@ -1,14 +1,13 @@
 import { EUserType } from "../enums/EUserType";
 
 export interface User {
-  avatar: string;
+  avatar?: string;
   cpf: string;
-  dataNascimento: string;
+  dataNascimento?: string;
   email: string
   isActive: boolean;
-  matricula: string;
+  matricula?: string;
   name: string;
   type: EUserType;
-  userId: string;
-  turmaId: string;
+  userId?: string;
 }

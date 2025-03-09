@@ -11,6 +11,9 @@ import { RastreiosRepository } from './repositories/rastreiosRepository';
 import { RastreiosService } from './services/rastreiosService';
 import { AuthService } from './services/authService';
 import { authRoutes } from './routes/authRoutes';
+import { alunoRoutes } from './routes/alunoRoutes';
+import { AlunoService } from './services/aluno/alunoService';
+import { AlunosRepository } from './repositories/alunosRepository';
 
 export const app = Fastify({
   logger: true, 
@@ -32,10 +35,14 @@ app.setErrorHandler((error, _, reply) => {
 const turmasRepository = new TurmasRepository();
 const usersRepository = new UsersRepository();
 const rastreiosRepository = new RastreiosRepository();
+const alunosRepository = new AlunosRepository();
+
 const turmasService = new TurmasService(turmasRepository, usersRepository);
 const rastreiosService = new RastreiosService(rastreiosRepository, turmasRepository, usersRepository);
 const authService = new AuthService();
+const alunoService = new AlunoService(alunosRepository, usersRepository)
 
 app.register(turmasRoutes, { prefix: "/turmas", turmasService });
 app.register(rastreiosRoutes, { prefix: "/rastreios", rastreiosService })
 app.register(authRoutes, { prefix: "/auth", authService});
+app.register(alunoRoutes, { prefix: "/alunos", alunoService})

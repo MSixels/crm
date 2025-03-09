@@ -45,4 +45,20 @@ export class UsersRepository extends RepositoryBase<User> {
     }
     return users;
   }
+
+  async usersExistsByEmail(email: string): Promise<boolean> {
+    const collectionRef = firestore.collection(UsersRepository.COLLECTION_NAME);
+    const query = collectionRef.where("email", "==", email)
+
+    const snapshot = await query.get();
+    return snapshot.empty;
+  }
+
+  async usersExistsByCpf(cpf: string): Promise<boolean> {
+    const collectionRef = firestore.collection(UsersRepository.COLLECTION_NAME);
+    const query = collectionRef.where("cpf", "==", cpf)
+
+    const snapshot = await query.get();
+    return snapshot.empty;
+  }
 }
