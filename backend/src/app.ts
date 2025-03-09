@@ -9,6 +9,8 @@ import { AppError } from './core/errors/AppError';
 import { UsersRepository } from './repositories/usersRepository';
 import { RastreiosRepository } from './repositories/rastreiosRepository';
 import { RastreiosService } from './services/rastreiosService';
+import { AuthService } from './services/authService';
+import { authRoutes } from './routes/authRoutes';
 
 export const app = Fastify({
   logger: true, 
@@ -32,6 +34,8 @@ const usersRepository = new UsersRepository();
 const rastreiosRepository = new RastreiosRepository();
 const turmasService = new TurmasService(turmasRepository, usersRepository);
 const rastreiosService = new RastreiosService(rastreiosRepository, turmasRepository, usersRepository);
+const authService = new AuthService();
 
 app.register(turmasRoutes, { prefix: "/turmas", turmasService });
 app.register(rastreiosRoutes, { prefix: "/rastreios", rastreiosService })
+app.register(authRoutes, { prefix: "/auth", authService});
