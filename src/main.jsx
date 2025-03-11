@@ -16,6 +16,10 @@ import ComponentLimitado from './Components/ComponentLimitado/ComponentLimitado.
 import FirstAccess from './Pages/FirstAccess/FirstAccess.jsx';
 import FirstAccessEmail from './Pages/FirstAccessEmail/FirstAccessEmail.jsx'
 import EmailProtectedRoute from './Components/EmailProtectedRoute/EmailProtectedRoute.jsx';
+import ProfessionalDataProtectedRoute from './Components/ProfessionalDataProtectedRoute/ProfessionalDataProtectedRoute.jsx'
+import FirstAccessProfessionalData from './Pages/FirstAccessProfessionalData/FirstAccessProfessionalData.jsx';
+import PasswordDataProtectedRoute from './Components/PasswordDataProtectedRoute/PasswordDataProtectedRoute.jsx';
+import FirstAccessPassword from './Pages/FirstAccessPassword/FirstAccessPassword.jsx';
 //import StoryTelling from './Components/ModuloAluno/Storytelling/Storytelling.jsx';
 
 const router = createBrowserRouter([
@@ -42,6 +46,22 @@ const router = createBrowserRouter([
         element={<FirstAccessEmail />} 
       />
     ),
+  },
+  {
+    path: '/login/aluno/primeiro-acesso/professional-data',
+    element: (
+      <ProfessionalDataProtectedRoute 
+        element={<FirstAccessProfessionalData />}
+      />
+    )
+  },
+  {
+    path: '/login/aluno/primeiro-acesso/password',
+    element: (
+      <PasswordDataProtectedRoute 
+        element={<FirstAccessPassword />}
+      />
+    )
   },
   {
     path: `/aluno/:page`,

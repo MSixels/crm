@@ -3,7 +3,7 @@ import './InputCPF.css';
 import PropTypes from 'prop-types';
 import InputMask from 'react-input-mask';
 
-function InputCPF({ title, placeH, onSearchChange, mt }) {
+function InputCPF({ title, placeH, onSearchChange, inputError, inputErrorMessage, mt, onBlur }) {
     const [search, setSearch] = useState('');
 
     const handleSearchChange = (e) => {
@@ -29,9 +29,11 @@ function InputCPF({ title, placeH, onSearchChange, mt }) {
                         outline: 'none',
                         paddingBlock: 16,
                         borderRadius: 4,
-                        borderColor: '#DAE1E7',
+                        borderColor: inputError ? 'red' : '#DAE1E7',
                     }}
+                    onBlur={onBlur}
                 />
+                {inputError ? <p style={{ fontSize: '12px', color: '#D32F2F' }}>{inputErrorMessage}</p> : ''}
             </div>
         </div>
     );
@@ -41,7 +43,10 @@ InputCPF.propTypes = {
     title: PropTypes.string.isRequired,
     placeH: PropTypes.string.isRequired,
     onSearchChange: PropTypes.func,
+    inputError: PropTypes.bool.isRequired,
+    inputErrorMessage: PropTypes.string.isRequired,
     mt: PropTypes.string,
+    onBlur: PropTypes.func
 };
 
 export default InputCPF;

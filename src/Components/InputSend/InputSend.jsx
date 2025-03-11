@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './InputSend.css'
 import PropTypes from 'prop-types'
 
-function InputSend({title, placeH, onSearchChange, inputError, type }) {
+function InputSend({title, placeH, onSearchChange, inputError, type, disabled, inputValue }) {
     const [search, setSearch] = useState('');
 
     const handleSearchChange = (e) => {
@@ -10,7 +10,6 @@ function InputSend({title, placeH, onSearchChange, inputError, type }) {
         setSearch(newSearchTerm);
         onSearchChange(newSearchTerm);
     };
-
     return(
         <div className='containerInputSend'>
             <div className='divInput'>
@@ -20,10 +19,11 @@ function InputSend({title, placeH, onSearchChange, inputError, type }) {
                     name='busca' 
                     id='busca' 
                     className='input' 
-                    value={search}
+                    value={disabled ? inputValue : search}
                     placeholder={placeH}
                     onChange={handleSearchChange}
                     style={{borderColor: inputError ? 'red' : ''}}
+                    disabled={disabled}
                 />
             </div>
         </div>
@@ -35,6 +35,8 @@ InputSend.propTypes = {
     onSearchChange: PropTypes.func.isRequired,
     inputError: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
+    disabled: PropTypes.bool,
+    inputValue: PropTypes.string,
 };
 
 export default InputSend

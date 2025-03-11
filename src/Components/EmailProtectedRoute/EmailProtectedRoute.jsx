@@ -11,9 +11,10 @@ const EmailProtectedRoute = ({ element }) => {
     useEffect(() => {
         //const name = Cookies.get('name'); // Supondo que você armazena o nome no cookie
         const matricula = Cookies.get('matricula'); // Supondo que você armazena a matrícula no cookie
+        const cpf = Cookies.get('cpf')
 
         // Verifica se o nome e a matrícula estão presentes nos cookies
-        if (matricula) {
+        if (matricula | cpf) {
             setIsAuthorized(true);
         }
 
