@@ -23,17 +23,24 @@
     justify-content: space-between;
     padding: 16px;
 }
-.containerTurmas .divInfos {
+.containerTurmas {
     display: flex;
     flex-direction: column;
 }
+
+.spanHeader {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--secondary1000);
+}
+
 .containerTurmas .divHeader{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     align-items: center;
     border-bottom: solid 1px var(--primary-200);
 }
-.containerTurmas .divHeader .title{
+.containerTurmas .divHeader{
     padding: 16px;
     overflow: hidden;        
     text-overflow: ellipsis; 
@@ -120,7 +127,15 @@
     transition: color 0.3s;
 }
 
-
+.turmaItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--secondary900);
+}
 
 .btnDelete {
     color: var(--bg-block);
@@ -138,6 +153,16 @@
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid var(--border-light);
+}
+
+.configBtnTurma {
+    color: #616161;
+    border: 2px solid var(--secondary200);
+    border-radius: 4px;
+    background-color: transparent;
+    padding: 2px;
+    cursor: pointer;
+    width: fit-content;
 }
 
 .titlesConfigs {
