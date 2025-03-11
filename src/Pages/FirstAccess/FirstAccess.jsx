@@ -2,107 +2,76 @@ import { useNavigate } from 'react-router-dom';
 import './FirstAccess.css';
 import LogoText from '../../imgs/logoText.png';
 import { firestore } from '../../services/firebaseConfig';
-import { collection, getDocs, query } from 'firebase/firestore';
-import { useState } from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
+import InputCPF from '../../Components/InputCPF/InputCPF'
+import InputSend from '../../Components/InputSend/InputSend'
+import { isValidCPF } from '../../functions/functions'
 
 function FirstAccess() {
     const navigate = useNavigate();
-    const [inputMatricula, setInputMatricula] = useState(false);
-    const [nameData, setNameData] = useState('');
-    const [matriculaData, setMatriculaData] = useState('');
-    const [matricula, setMatricula] = useState('');
-    const [alertCredentialInvalid, setAlertCredentialInvalid] = useState(false);
     const [isConfirmButtonDisabled, setIsConfirmButtonDisabled] = useState(true);
+    const [name, setName] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [nameError, setNameError] = useState(false);
+    const [cpfError, setCpfError] = useState(false);
+    const [cpfErrorMessage, setCpfErrorMessage] = useState("")
+    const [user, setUser] = useState(null);
 
-    // Função para remover acentos e caracteres especiais
-    const removeAccentsAndSpecialChars = (text) => {
-        return text
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[-\s]/g, ''); 
-    };
-
-    const buscarMatricula = async () => {
-        if (matricula === '') {
-            setInputMatricula(true);
-            return;
+    useEffect(() => {
+        if(cpf) {
+            setIsConfirmButtonDisabled(false);
         }
+    }, [cpf])
 
-        try {
-            const cleanedUserMatricula = removeAccentsAndSpecialChars(matricula);
-
-            const q = query(collection(firestore, "alunos"));
-            const querySnapshot = await getDocs(q);
-
-            let userFound = null;
-
-            querySnapshot.forEach(doc => {
-                const dbMatricula = removeAccentsAndSpecialChars(doc.data().matricula);
-                if (dbMatricula === cleanedUserMatricula) {
-                    userFound = doc.data();
-                }
-            });
-
-            if (userFound) {
-                setNameData(userFound.name);
-                setMatriculaData(userFound.matricula)
-                setAlertCredentialInvalid(false);
-                 
-            } else {
-                setAlertCredentialInvalid(true);
-                setIsConfirmButtonDisabled(true); 
-                setNameData('');
-                setMatriculaData('') 
-            }
-        } catch (error) {
-            console.error("Erro ao buscar aluno:", error);
-            alert('Erro ao buscar aluno.');
+    const getName = (newName) => {
+        setName(newName);
+        if (newName !== '') {
+            setNameError(false);
         }
     };
 
-    const access = async () => {
-        if (!matriculaData || !nameData) {
-            alert('Ocorreu um erro tente novamente')
-            return
-        } else {
-            try {
-                const q = query(collection(firestore, "alunos"));
-                const querySnapshot = await getDocs(q);
-
-                let matriculaFound = false;
-
-                querySnapshot.forEach(doc => {
-                    const dbMatricula = (doc.data().matricula); 
-                    if (dbMatricula === matriculaData) {
-                        matriculaFound = true;
-                    }
-                });
-
-                if (matriculaFound) {
-                    Cookies.set('name', nameData)
-                    Cookies.set('matricula', matriculaData);
-                    navigate('/login/aluno/primeiro-acesso/email');
-                    setAlertCredentialInvalid(false);
-                } else {
-                    setAlertCredentialInvalid(true);
-                }
-            } catch (error) {
-                console.error("Erro ao buscar aluno:", error);
-                alert('Erro ao buscar aluno.');
-            }
+    const getCpf = (newCpf) => {
+        setCpf(newCpf)
+        if(newCpf !== '') {
+            setCpfError(false)
         }
-    };
-
-    const confirmUser = () => {
-        setIsConfirmButtonDisabled(false);
     }
 
-    const cancelUser = () => {
-        setNameData('')
-        setMatriculaData('')
-        setIsConfirmButtonDisabled(true);
-        setMatricula('')
+    const validateCPF = async () => {
+        setName("");
+        setCpfError(false);
+
+        if(!isValidCPF(cpf)) {
+           setCpfError(true);
+           setCpfErrorMessage("CPF Inválido. Corrija a informação ou fale com o suporte.")
+           return;
+        }
+
+        const cleanedCpf = cpf.replace(/\D/g, '');
+        const q = query(collection(firestore, "alunos"), where('cpf', '==', cleanedCpf))
+        const querySnapshot = await getDocs(q);
+        let userFound = querySnapshot.docs.length > 0 ? querySnapshot.docs[0].data() : null;
+
+        if(userFound) {
+            setUser(userFound);
+            setName(userFound.name)
+            setCpfError(false);
+        }
+        else {
+            setCpfError(true)
+            setCpfErrorMessage("CPF Inválido. Corrija a informação ou fale com o suporte.")
+        }
+    }
+
+    const access = async () => {
+        if(user) {
+            Cookies.set('name', user.name);
+            Cookies.set('matricula', user.matricula);
+            Cookies.set('cpf', user.cpf);
+            navigate('/login/aluno/primeiro-acesso/email');
+        }
     }
 
     return (
@@ -111,45 +80,24 @@ function FirstAccess() {
                 <img src={LogoText} alt="logo" style={{width: '186px'}}/>
                 <div className='divForm'>
                     <div className='divTitle titleFisrt'>
-                        <span className='title'>Informe os dados de acesso</span>
-                        <span style={{width: '100%'}}>Você deve informar os dados que recebeu para criar sua conta.</span>
+                        <span className='title'>Informe seus dados</span>
+                        <span style={{width: '100%'}}>Seus dados estão registrados no banco de dados, precisamos valida-los.</span>
                     </div>
-                    
-                    <div className='divInput'>
-                        <label htmlFor="matricula" style={{color: inputMatricula && 'red'}}>Número de matrícula</label>
-                        <input 
-                            type='text' 
-                            name='matricula' 
-                            id='matricula' 
-                            className='input' 
-                            value={matricula}
-                            onChange={(e) => {
-                                setMatricula(e.target.value);
-                                setInputMatricula(false);
-                            }}
-                            style={{borderColor: inputMatricula && 'red'}}
-                        />
+
+                    <div>
+                        <InputCPF 
+                            title='CPF' 
+                            placeH='' 
+                            onSearchChange={getCpf} 
+                            inputError={cpfError} 
+                            inputErrorMessage={cpfErrorMessage} 
+                            onBlur={validateCPF}
+                        >
+                        </InputCPF>
+                        <InputSend title='Nome completo' placeH='' onSearchChange={getName} inputError={nameError} type='text' disabled={true} inputValue={name} />
                     </div>
-                    {alertCredentialInvalid && 
-                        <div style={{marginBottom: 20}}>
-                            <p style={{color: 'red'}}>Matrícula não encontrada</p>
-                            <p style={{color: 'red'}}>Tente novamente</p>
-                        </div>
-                    }
-                    {nameData && matriculaData && (
-                        <div style={{marginBottom: 20}}>
-                            <p style={{fontWeight: 'bold'}}>{nameData}</p>
-                            <p>Matrícula: {matriculaData}</p>
-                        </div>
-                    )}
-                    {nameData && matriculaData && isConfirmButtonDisabled ? 
-                    (   
-                        <div style={{display: 'flex', alignItems: 'center', gap: 12}}>
-                            <button className='btnLogin mT-20' onClick={confirmUser}>Sou eu </button>
-                            <button className='btnLogin mT-20 alert' onClick={cancelUser}>Não sou eu</button>
-                        </div>
-                    ) : nameData && matriculaData ? '' : <button className='btnLogin' onClick={buscarMatricula}>Buscar</button>}
-                    <button className={`btnLogin ${isConfirmButtonDisabled && 'block'}`} onClick={access} disabled={isConfirmButtonDisabled}>Confirmar</button>
+
+                    <button className={`btnLogin ${isConfirmButtonDisabled && 'block'}`} onClick={access} disabled={isConfirmButtonDisabled}>Continuar</button>
                     <a href="/" className='decorationN loginLink'>Voltar para tela de login</a>
                 </div>
             </div>

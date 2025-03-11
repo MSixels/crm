@@ -7,8 +7,10 @@ import emailjs from 'emailjs-com';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import Cookies from 'js-cookie'
 import { FaCircleCheck } from "react-icons/fa6";
+import { useNavigate } from 'react-router-dom';
 
 function FirstAccess() {
+    const navigate = useNavigate();
     const [inputEmail, setInputEmail] = useState(false)
     const [email, setEmail] = useState('')
     const [
@@ -17,16 +19,20 @@ function FirstAccess() {
     ] = useCreateUserWithEmailAndPassword(auth);
     const [name, setName] = useState('')
     const [matricula, setMatricula] = useState()
+    const [cpf, setCpf] = useState()
     const [success, setSuccess] = useState(false)
+    const [confirmEmail, setConfirmEmail] = useState("")
 
     useEffect(() => {
         // Obtendo os valores dos cookies
         const cookieName = Cookies.get('name');
         const cookieMatricula = Cookies.get('matricula');
+        const cookiesCpf = Cookies.get('cpf');
 
         // Setando os estados com os valores dos cookies, caso existam
         if (cookieName) setName(cookieName);
         if (cookieMatricula) setMatricula(cookieMatricula);
+        if (cookiesCpf) setCpf(cookiesCpf)
     }, [])
 
     const generateRandomPassword = () => {
@@ -47,6 +53,11 @@ function FirstAccess() {
                 setInputEmail(true);
                 return;
             }
+
+            if(email !== confirmEmail) {
+                setInputEmail(true)
+                return
+            }
     
             setInputEmail(false);
     
@@ -59,22 +70,24 @@ function FirstAccess() {
                     alert("E-mail já cadastrado.");
                     return;
                 }
+                Cookies.set("email", email)
+                navigate('/login/aluno/primeiro-acesso/professional-data')
     
-                const randomPassword = generateRandomPassword();
+                // const randomPassword = generateRandomPassword();
     
-                const userCredential = await createUserWithEmailAndPassword(email, randomPassword);
-                const userId = userCredential.user.uid;
+                // const userCredential = await createUserWithEmailAndPassword(email, randomPassword);
+                // const userId = userCredential.user.uid;
     
-                await setDoc(doc(firestore, 'users', userId), {
-                    name: name,
-                    email: email,
-                    matricula: matricula,
-                    type: 3,
-                    userId: userId,
-                    isActive: false
-                });
+                // await setDoc(doc(firestore, 'users', userId), {
+                //     name: name,
+                //     email: email,
+                //     matricula: matricula,
+                //     type: 3,
+                //     userId: userId,
+                //     isActive: false
+                // });
     
-                await sendEmail(name, email, randomPassword);
+                // await sendEmail(name, email, randomPassword);
     
                 close(false);
     
@@ -139,6 +152,7 @@ function FirstAccess() {
                 <div className='divForm'>
                     <div className='divTitle titleFisrt'>
                         <span className='title titleLink'>Informe seu e-mail de acesso</span>
+                        <span className='subtitle'>Esse e-mail poderá ser utilizado para acessar a plataforma. Ao final do cadastro, enviaremos um link para confirma-lo.</span>
                     </div>
                     <div className='divInput'>
                         <label htmlFor="email" style={{color: inputEmail && 'red'}}>E-mail</label>
@@ -149,6 +163,18 @@ function FirstAccess() {
                             className='input' 
                             value={email}
                             onChange={(e) => {setEmail(e.target.value), e.target.value != setInputEmail(false)}}
+                            style={{borderColor: inputEmail && 'red'}}
+                        />
+                    </div>
+                    <div className='divInput'>
+                        <label htmlFor="confirmEmail" style={{color: inputEmail && 'red'}}>Confirme o e-mail</label>
+                        <input 
+                            type="email" 
+                            name='confirmEmail' 
+                            id='confirmEmail' 
+                            className='input' 
+                            value={confirmEmail}
+                            onChange={(e) => {setConfirmEmail(e.target.value), e.target.value != setInputEmail(false)}}
                             style={{borderColor: inputEmail && 'red'}}
                         />
                     </div>

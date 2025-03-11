@@ -9,13 +9,20 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '../../services/firebaseConfig';
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import emailjs from 'emailjs-com';
+import InputCPF from '../InputCPF/InputCPF';
+import { isValidCPF } from '../../functions/functions'
 
 
 function ModalCreateAluno({ title, close }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [cpf, setCpf] = useState('');
+    const [matricula, setMatricula] = useState('');
+    const [unidade, setUnidade] = useState('')
+
     const [emailError, setEmailError] = useState(false);
     const [nameError, setNameError] = useState(false);
+    const [cpfError, setCpfError] = useState(false);
     const [
         createUserWithEmailAndPassword,
         loading,
@@ -36,6 +43,21 @@ function ModalCreateAluno({ title, close }) {
         }
     };
 
+    const getCpf = (newCpf) => {
+        setCpf(newCpf)
+        if(newCpf !== '') {
+            setCpfError(false)
+        }
+    }
+
+    const getMatricula = (newMatricula) => {
+        setMatricula(newMatricula)
+    }
+
+    const getUnidade = (newUnidade) => {
+        setUnidade(newUnidade)
+    }
+
     const generateRandomPassword = () => {
         const length = 8;
         const charset = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789@";
@@ -49,29 +71,39 @@ function ModalCreateAluno({ title, close }) {
 
     const sendEmailToSignUp = async (send) => {
         if (send) {
-            /*
             if (name === '') {
                 setNameError(true);
                 return;
             }
-            */
             if (email === '') {
                 setEmailError(true);
                 return;
             }
-    
+
+            if(!isValidCPF(cpf)) {
+                setCpfError(true)
+            }
+
             setNameError(false);
             setEmailError(false);
+            setCpfError(false)
     
             try {
                 setLoadingEmail(true)
                 const usersRef = collection(firestore, 'users');
                 const emailQuery = query(usersRef, where('email', '==', email));
-                const querySnapshot = await getDocs(emailQuery);
+                const cpfQuery = query(usersRef, where('cpf', '==', cpf))
+                const emailSnapshot = await getDocs(emailQuery);
+                const cpfSnapshot = await getDocs(cpfQuery);
     
-                if (!querySnapshot.empty) {
+                if (!emailSnapshot.empty) {
                     
                     alert("E-mail já cadastrado.");
+                    return;
+                }
+
+                if(!cpfSnapshot.empty) {
+                    alert("CPF já cadastrado.");
                     return;
                 }
     
@@ -84,11 +116,15 @@ function ModalCreateAluno({ title, close }) {
                         const userId = userCredential.user.uid;
     
                         await setDoc(doc(firestore, 'users', userId), {
-                            name: '',
+                            name: name,
                             email: email,
                             type: 3,
                             userId: userId,
-                            isActive: false
+                            isActive: false,
+                            missingData: !matricula || !unidade,
+                            cpf,
+                            matricula, 
+                            unidade
                         });
                         alert("Aluno cadastrado com sucesso!");
                         setLoadingEmail(false)
@@ -152,8 +188,14 @@ function ModalCreateAluno({ title, close }) {
                         <IoClose size={25} onClick={() => close(false)} />
                     </div>
                 </div>
-                {/*<InputSend title='Nome' placeH='' onSearchChange={getName} inputError={nameError} type='text' />*/}
-                <InputSend title='Email' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
+                <InputCPF title='CPF' placeH='' onSearchChange={getCpf} inputError={cpfError}></InputCPF>
+                <InputSend title='Nome completo' placeH='' onSearchChange={getName} inputError={nameError} type='text' />
+                <InputSend title='E-mail de acesso' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
+                <div className='containerInputs'>
+                    <InputSend title='Nº de matrícula' placeH='' onSearchChange={getMatricula} type='text' />
+                    <InputSend title='Unidade' placeH='' onSearchChange={getUnidade} type='text' />
+                </div>
+                <p className="containerInputsWarning">Caso não preencha esse campo, o aluno deverá preenche-lo ao acessar a plataforma.</p>
                 <ButtonSend title={loading || loadingEmail ? 'Carregando' : 'Enviar convite'} icon={<MdEmail size={20} />} action={sendEmailToSignUp} />
             </div>
         </div>

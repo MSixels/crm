@@ -7,6 +7,10 @@
     text-align: start;
     width: 100%;
 }
+.subtitle {
+    font-size: 14px;
+    color: var(--secondary900)
+}
 .loginLink{
     width: 100%;
     text-align: center;
