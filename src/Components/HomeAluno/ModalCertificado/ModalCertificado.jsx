@@ -3,7 +3,7 @@ import ButtonConfirm from '../../ButtonConfirm/ButtonConfirm'
 import InputText from '../../InputText/InputText'
 import './ModalCertificado.css'
 import InputCPF from '../../InputCPF/InputCPF';
-import InputNumber from '../../InputNumber/InputNumber';
+//import InputNumber from '../../InputNumber/InputNumber';
 import ButtonBold from '../../ButtonBold/ButtonBold';
 import Fundo from '../../../imgs/fundo_certificado.png'
 import Logo from '../../../imgs/logo.png'
