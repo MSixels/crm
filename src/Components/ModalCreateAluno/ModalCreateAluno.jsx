@@ -192,7 +192,8 @@ function ModalCreateAluno({ title, close }) {
                 <InputSend title='Nome completo' placeH='' onSearchChange={getName} inputError={nameError} type='text' />
                 <InputSend title='E-mail de acesso' placeH='' onSearchChange={getEmail} inputError={emailError} type='email' />
                 <div className='containerInputs'>
-                    <InputSend title='Nº de matrícula' placeH='' onSearchChange={getMatricula} type='text' />
+                    {/*
+                    <InputSend title='Nº de matrícula' placeH='' onSearchChange={getMatricula} type='text' /> */}
                     <InputSend title='Unidade' placeH='' onSearchChange={getUnidade} type='text' />
                 </div>
                 <p className="containerInputsWarning">Caso não preencha esse campo, o aluno deverá preenche-lo ao acessar a plataforma.</p>

@@ -33,6 +33,7 @@ function FirstAccessProfessionalData() {
             <span className='title titleLink'>Dados profissionais</span>
             <span className='subtitle'>Seus dados estão registrados no banco de dados, precisamos valida-los.</span>
           </div>
+          {/*
           <div className='divInput'>
             <label htmlFor="matricula" style={{color: errorMatricula && 'red'}}>Matrícula</label>
             <input
@@ -44,7 +45,7 @@ function FirstAccessProfessionalData() {
               onChange={(e) => { setMatricula(e.target.value) }}
               style={{borderColor: errorMatricula && 'red'}}
             />
-          </div>
+          </div> */}
           <div className='divInput'>
             <label htmlFor="unidadeDeEnsino" style={{color: errorUnidadeDeEnsino && 'red'}}>Unidade de ensino</label>
             <input

@@ -76,9 +76,10 @@ function ModalCertificado({ userId }) {
                 <div>
                     <InputCPF title='CPF' onSearchChange={setCpf}/>
                 </div>
+                {/*
                 <div style={{marginBottom: 12}}>
                     <InputNumber title='Número de matrícula' onSearchChange={setMatricula}/>
-                </div>
+                </div> */}
                 <ButtonConfirm title='Continuar' action={generate} disabled={name === '' || cpf === '' || matricula === ''}/>
             </div>
         )
