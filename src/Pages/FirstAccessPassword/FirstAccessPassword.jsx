@@ -59,7 +59,7 @@ function FirstAccessPassword() {
       type: 3,
       userId: userId,
       isActive: false,
-      unidadeDeEnsino,
+      unidade: unidadeDeEnsino,
       cpf,
       turmaId
     });
