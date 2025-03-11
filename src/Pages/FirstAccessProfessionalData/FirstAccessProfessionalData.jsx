@@ -45,7 +45,8 @@ function FirstAccessProfessionalData() {
               onChange={(e) => { setMatricula(e.target.value) }}
               style={{borderColor: errorMatricula && 'red'}}
             />
-          </div> */}
+          </div>
+          */}
           <div className='divInput'>
             <label htmlFor="unidadeDeEnsino" style={{color: errorUnidadeDeEnsino && 'red'}}>Unidade de ensino</label>
             <input
