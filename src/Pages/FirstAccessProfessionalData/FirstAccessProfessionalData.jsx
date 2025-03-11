@@ -12,13 +12,10 @@ function FirstAccessProfessionalData() {
   const [errorUnidadeDeEnsino, setErrorUnidadeDeEnsino] = useState(false)
 
   const nextStep = () => {
-    if(!matricula) setErrorMatricula(true)
-
     if(!errorUnidadeDeEnsino) setErrorUnidadeDeEnsino(true)
 
     // verificar validacao no backend
 
-    Cookies.set("matricula", matricula)
     Cookies.set("unidadeDeEnsino", unidadeDeEnsino)
 
     navigate("/login/aluno/primeiro-acesso/password");
@@ -33,7 +30,7 @@ function FirstAccessProfessionalData() {
             <span className='title titleLink'>Dados profissionais</span>
             <span className='subtitle'>Seus dados estão registrados no banco de dados, precisamos valida-los.</span>
           </div>
-          <div className='divInput'>
+          {/* <div className='divInput'>
             <label htmlFor="matricula" style={{color: errorMatricula && 'red'}}>Matrícula</label>
             <input
               type="text"
@@ -44,7 +41,7 @@ function FirstAccessProfessionalData() {
               onChange={(e) => { setMatricula(e.target.value) }}
               style={{borderColor: errorMatricula && 'red'}}
             />
-          </div>
+          </div> */}
           <div className='divInput'>
             <label htmlFor="unidadeDeEnsino" style={{color: errorUnidadeDeEnsino && 'red'}}>Unidade de ensino</label>
             <input

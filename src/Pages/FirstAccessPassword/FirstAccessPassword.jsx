@@ -44,7 +44,6 @@ function FirstAccessPassword() {
     setPasswordDoesNotMatch(false)
 
     const name = Cookies.get("name")
-    const matricula = Cookies.get("matricula")
     const unidadeDeEnsino = Cookies.get("unidadeDeEnsino")
     const cpf = Cookies.get("cpf");
 
@@ -55,7 +54,6 @@ function FirstAccessPassword() {
     await setDoc(doc(firestore, 'users', userId), {
       name: name,
       email: email,
-      matricula: matricula,
       type: 3,
       userId: userId,
       isActive: false,

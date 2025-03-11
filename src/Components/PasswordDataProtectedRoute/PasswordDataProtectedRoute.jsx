@@ -9,13 +9,12 @@ const PasswordDataProtectedRoute = ({ element }) => {
     const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
-        const matricula = Cookies.get('matricula'); // Supondo que você armazena a matrícula no cookie
         const cpf = Cookies.get('cpf')
         const email = Cookies.get('email');
         const unidadeDeEnsino = Cookies.get("unidadeDeEnsino")
         
         // Verifica se o nome e a matrícula estão presentes nos cookies
-        if (matricula && cpf && email && unidadeDeEnsino) {
+        if (cpf && email && unidadeDeEnsino) {
             setIsAuthorized(true);
         }
 
