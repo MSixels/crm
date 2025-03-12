@@ -12,13 +12,10 @@ function FirstAccessProfessionalData() {
   const [errorUnidadeDeEnsino, setErrorUnidadeDeEnsino] = useState(false)
 
   const nextStep = () => {
-    if(!matricula) setErrorMatricula(true)
-
     if(!errorUnidadeDeEnsino) setErrorUnidadeDeEnsino(true)
 
     // verificar validacao no backend
 
-    Cookies.set("matricula", matricula)
     Cookies.set("unidadeDeEnsino", unidadeDeEnsino)
 
     navigate("/login/aluno/primeiro-acesso/password");
