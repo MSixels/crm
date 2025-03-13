@@ -31,6 +31,7 @@ function Alunos({ userType }) {
     const [usersScore, setUsersScore] = useState([])
     const header = [
         { title: 'Nome' },
+        { title: 'CPF' },
         { title: 'E-mail' },
         { title: 'Status' },
         { title: 'Média' },
@@ -314,10 +315,10 @@ function Alunos({ userType }) {
                             return(
                                 <div key={a.id} className='divAlunos'>
                                     <span className='spanBox'>{a.name ? a.name : 'Sem nome'}</span>
+                                    <span className='spanBox'>{a.cpf ? a.cpf : 'N/A'}</span>
                                     <span className='spanBox'>{a.email}</span>
                                     <span className='spanBox'><span className={`text ${a.disable ? 'inativo' : a.isActive ? 'ativo' : 'pendente'}`}><GoDotFill size={40}/>{a.disable ? 'Inativo' : a.isActive ? 'Ativo' : 'Pendente'}</span></span>
                                     <span className='spanBox'><span className={`${a.averageScore < 50 ? 'ruim' : a.averageScore >= 50 ? 'boa' : ''}`}>{a.averageScore ? a.averageScore : 'N'}</span> / {a.averageScore ? '100' : 'A'}</span>
-                                    
                                     {userType === 1 && 
                                     <div className='btnEditUser' onClick={() => openEditModal(a.id)}>
                                         <BsThreeDotsVertical />
