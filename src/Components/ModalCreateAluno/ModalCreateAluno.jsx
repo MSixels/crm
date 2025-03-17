@@ -109,7 +109,7 @@ function ModalCreateAluno({ title, close }) {
     
                 const randomPassword = generateRandomPassword();
     
-                await sendEmail(name, email, randomPassword);
+                // await sendEmail(name, email, randomPassword);
     
                 createUserWithEmailAndPassword(email, randomPassword)
                     .then(async (userCredential) => {
@@ -128,10 +128,12 @@ function ModalCreateAluno({ title, close }) {
                         });
                         alert("Aluno cadastrado com sucesso!");
                         setLoadingEmail(false)
-                        close(false);
+                        close(false, name, email, true)
                     })
                     .catch((error) => {
                         console.error("Erro ao criar usuário no Firebase Auth:", error);
+                        setLoadingEmail(false)
+                        close(false, name, email, false)
                     });
     
             } catch (error) {

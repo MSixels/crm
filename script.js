@@ -3,7 +3,7 @@
 // import { addDoc, collection } from 'firebase/firestore';
 // import {firestore} from './src/services/firebaseConfig.js'
 
-// const csvFilePath = './alunos-novo.csv'
+// const csvFilePath = './alunos-novo-incluir.csv'
 
 // csv()
 //   .fromFile(csvFilePath)
@@ -12,11 +12,11 @@
 //     jsonObj.forEach(async (aluno) => {
 //       try {
 //         await addDoc(collection(firestore, "alunos"), {
-//           name: aluno.name,        
+//           name: aluno.NOME,        
 //           matricula: "",
-//           cpf: aluno.cpf
+//           cpf: aluno.CPF
 //         });
-//         console.log("Aluno adicionado com sucesso:", aluno.name);
+//         console.log("Aluno adicionado com sucesso:", aluno.NOME);
 //       } catch (error) {
 //         console.error("Erro ao adicionar aluno:", error);
 //       }

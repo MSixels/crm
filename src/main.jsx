@@ -21,6 +21,8 @@ import FirstAccessProfessionalData from './Pages/FirstAccessProfessionalData/Fir
 import PasswordDataProtectedRoute from './Components/PasswordDataProtectedRoute/PasswordDataProtectedRoute.jsx';
 import FirstAccessPassword from './Pages/FirstAccessPassword/FirstAccessPassword.jsx';
 //import StoryTelling from './Components/ModuloAluno/Storytelling/Storytelling.jsx';
+import { ToastProvider } from './Contexts/ToastContext'
+import ToastContainer from './Components/ToastContainer/ToastContainer'
 
 const router = createBrowserRouter([
   {
@@ -211,6 +213,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <ToastProvider>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </ToastProvider>
   </React.StrictMode>
 );

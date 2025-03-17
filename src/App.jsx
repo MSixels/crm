@@ -4,9 +4,9 @@ import PreLogin from './Pages/PreLogin/PreLogin'
 
 function App() {
   return (
-  <div className='containerApp'>
-    <PreLogin />
-  </div>
+    <div className='containerApp'>
+      <PreLogin />
+    </div>
   )
 }
 

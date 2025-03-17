@@ -14,7 +14,7 @@ import { disableUserInFirestore, reactivateUserInFirestore, deleteUserFromFireBa
 import { MdArrowBackIosNew } from 'react-icons/md';
 import { GrNext } from 'react-icons/gr';
 import DropDown from '../../DropDown/DropDown'
-import html2pdf from 'html2pdf.js';
+import { useToast } from '../../../Contexts/ToastContext'
 
 function Alunos({ userType }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -38,6 +38,7 @@ function Alunos({ userType }) {
     ]
     //const componentRef = useRef();
     //const showPdf = true
+    const { showToast } = useToast();
 
     const removeAccents = (text) => {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -80,7 +81,22 @@ function Alunos({ userType }) {
         setShowModal(openModal)
     }
 
-    const closeBtn = (close) => {
+    const closeBtn = (close, name, email, success) => {
+        const toastInfos = {
+            title: 'Aluno cadastrado',
+            infos: [email, name],
+            footer: 'Veja mais detalhes na listagem.',
+            type: 'success'
+        }
+
+        if(!success) {
+            toastInfos.title = 'Erro ao cadastrar aluno';
+            toastInfos.infos = [email, name];
+            toastInfos.footer = "Tente novamente mais tarde ou acione o suporte."
+            toastInfos.type = 'error'
+        }
+
+        showToast(toastInfos.title, toastInfos.infos, toastInfos.footer, toastInfos.type)
         setShowModal(close)
         fetchAlunosFromFirestore()
     }
