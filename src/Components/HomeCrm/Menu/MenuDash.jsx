@@ -43,7 +43,7 @@ function MenuDash({ page, conteudoId, moduloId }) {
         { id: 4, icon: <FaBookOpen size={20} />, name: 'Módulos', status: 'active' },
         { id: 5, icon: <FaUserAlt size={20} />, name: 'Usuários', status: 'active' },
         { id: 6, icon: <IoChatbubbleEllipsesSharp size={20} />, name: 'StoryTelling', status: 'active' },
-        //{ id: 7, icon: <FaListCheck size={20} />, name: 'Rastreios', status: 'active' } 
+        { id: 7, icon: <FaListCheck size={20} />, name: 'Rastreios', status: 'active' } 
     ];
 
     const openPage = (id, status) => {
