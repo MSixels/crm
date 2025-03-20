@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { db } from '../../../services/firebaseConfig';
 import { collection, getDocs, addDoc, writeBatch } from 'firebase/firestore';
-import {  FaCircleChevronLeft, FaTrash, FaUser, FaGear } from 'react-icons/fa6';
+import {  FaCircleChevronLeft, FaTrash, FaUser, FaGear, FaCirclePlus, FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import ButtonBold from '../../ButtonBold/ButtonBold';
 import InputText from '../../InputText/InputText';
 import './Turmas.css';
@@ -258,7 +258,7 @@ useEffect(() => {
                             onSearchChange={handleSearchChange} 
                         />
                             </div>
-                            {/*
+                            
                             <ButtonBold 
                             title='Nova turma' 
                             icon={<FaCirclePlus size={20}/>} 
@@ -275,7 +275,7 @@ useEffect(() => {
                                 setTurmaSelecionada(null);
                                 setNovaTurma(true); // Abre o formulário
                             }} 
-                        />*/}
+                        />
 
                         </div>
                         <div className='divInfos'>
@@ -293,7 +293,7 @@ useEffect(() => {
             <span>{turma.alunosCount}</span>
             <span>{turma.startDate}</span>
             <span>{turma.endDate}</span>
-            {/*
+            
             <button 
     className='configBtnTurma' 
     onClick={() => {
@@ -302,8 +302,8 @@ useEffect(() => {
         setNovaTurma(true); 
     }}
             >
-                <FaGears/>
-            </button> */}
+                <FaArrowUpRightFromSquare/>
+            </button> 
         </div>
     ))
 ) : (
