@@ -7,6 +7,7 @@ import html2pdf from 'html2pdf.js';
 import InputText from '../../InputText/InputText';
 import DropDown from '../../DropDown/DropDown';
 import { FaEllipsisVertical, FaCircleChevronRight, FaCircleChevronLeft } from 'react-icons/fa6';
+import { evaluateTDAHPotential, evaluateTDIPotential, evaluateTEAPotential, evaluateTEAPPotential, evaluateTLPotential, evaluateTODPotential } from '../../../functions/functions';
 
 function RastreioCRM() {
     const [nome, setNome] = useState('');
@@ -23,22 +24,23 @@ function RastreioCRM() {
     const [paginaAtual, setPaginaAtual] = useState(1);
     const itensPorPagina = 10;
     const [modalConfirmacao, setModalConfirmacao] = useState(null);
+    const [resultText, setResultText] = useState('');
     const componentRef = useRef();
-    
+
     const abrirModalConfirmacao = (acao, alunoId) => {
         setModalConfirmacao({ acao, alunoId });
         setModalAberto(null); // Fecha o modal pequeno
     };
-    
+
 
     const baixarPDF = () => {
         const element = componentRef.current;
-    
+
         if (!element) {
             console.error("Elemento para gerar PDF não encontrado!");
             return;
         }
-    
+
         const opt = {
             margin: 0.15,
             filename: 'relatorio_rastreio.pdf',
@@ -46,17 +48,17 @@ function RastreioCRM() {
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
-    
+
         html2pdf().from(element).set(opt).save();
     };
-    
-    
+
+
 
     useEffect(() => {
         const fetchTurmas = async () => {
             try {
                 const snapshot = await getDocs(collection(firestore, 'turmas'));
-                setTurmas(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+                setTurmas(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
             } catch (error) {
                 console.error("Erro ao buscar turmas:", error);
             }
@@ -65,62 +67,36 @@ function RastreioCRM() {
         const fetchRastreios = async () => {
             try {
                 const snapshot = await getDocs(collection(firestore, 'rastreios'));
-                const rastreios = await Promise.all(snapshot.docs.map(async (docSnap) => {
-                    const data = docSnap.data();
+                const docsRastreios = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-                    // Buscar nome do usuário na collection 'users'
-                    let userName = 'Desconhecido';
-                    if (data.userID) {
-                        const userDocRef = doc(firestore, 'users', data.userID);
-                        const userDocSnap = await getDoc(userDocRef);
-                        if (userDocSnap.exists()) {
-                            userName = userDocSnap.data().name || 'Desconhecido';
-                        }
-                    }
+                // 1. Obter todos os userIds e turmaIds únicos
+                const userIds = [...new Set(docsRastreios.map(d => d.userId).filter(Boolean))];
 
-                    // Buscar nome da turma (se existir)
-                    let turmaNome = '';
-                    if (data.turmaID) {
-                        const turmaDocRef = doc(firestore, 'turmas', data.turmaID);
-                        const turmaDocSnap = await getDoc(turmaDocRef);
-                        if (turmaDocSnap.exists()) {
-                            turmaNome = turmaDocSnap.data().name || '';
-                        }
-                    }
+                // 2. Buscar todos os usuários de uma vez só
+                const userSnapshots = await Promise.all(userIds.map(id => getDoc(doc(firestore, 'users', id))));
+                const usersMap = new Map(userSnapshots.map(snap => [snap.id, snap.exists() ? snap.data() : null]));
 
-                    // Formatar faixa etária conforme lógica do typeQuest
-                    let faixaEtaria = '';
-                    switch (data.typeQuest) {
-                        case 1:
-                            faixaEtaria = '3 a 6 anos';
-                            break;
-                        case 2:
-                            faixaEtaria = 'Até 8 anos';
-                            break;
-                        case 3:
-                            faixaEtaria = 'Acima de 8 anos';
-                            break;
-                        default:
-                            faixaEtaria = '';
-                    }
+                // 3. Obter todas as turmas necessárias (baseado nos usuários)
+                const turmaIds = [...new Set([...usersMap.values()].map(u => u?.turmaId).filter(Boolean))];
+                const turmaSnapshots = await Promise.all(turmaIds.map(id => getDoc(doc(firestore, 'turmas', id))));
+                const turmasMap = new Map(turmaSnapshots.map(snap => [snap.id, snap.exists() ? snap.data() : null]));
 
-                    let dataFormatada = '';
-                    if (data.createdAt?.seconds) {
-                        const dataObj = new Date(data.createdAt.seconds * 1000);
-                        dataFormatada = dataObj.toLocaleDateString('pt-BR');
-                    }
+                // 4. Processar os rastreios com dados já carregados
+                const alunos = docsRastreios.map(docRastreio => {
+                    const user = usersMap.get(docRastreio.userId) || {};
+                    const turma = turmasMap.get(user.turmaId) || {};
 
                     return {
-                        id: docSnap.id,
-                        nome: userName,
-                        turma: turmaNome,
-                        faixaEtaria: faixaEtaria,
-                        data: dataFormatada,
-                        resultado: '' 
+                        id: docRastreio.id,
+                        nome: user.name || 'Desconhecido',
+                        turma: turma.name || '',
+                        faixaEtaria: getFaixaEtaria(docRastreio.typeQuest),
+                        data: formatarData(docRastreio.createdAt),
+                        resultado: docRastreio.responses
                     };
-                }));
+                });
 
-                setAlunos(rastreios);
+                setAlunos(alunos);
             } catch (error) {
                 console.error("Erro ao buscar rastreios:", error);
             }
@@ -130,18 +106,34 @@ function RastreioCRM() {
         fetchRastreios();
     }, []);
 
+    const getFaixaEtaria = (typeQuest) => {
+        switch (typeQuest) {
+            case 1: return '3 a 6 anos';
+            case 2: return 'Até 8 anos';
+            case 3: return 'Acima de 8 anos';
+            default: return '';
+        }
+    };
+
+    const formatarData = (createdAt) => {
+        if (createdAt?.seconds) {
+            return new Date(createdAt.seconds * 1000).toLocaleDateString('pt-BR');
+        }
+        return '';
+    };
+
     const handleExcluirRastreio = (alunoId) => {
         abrirModalConfirmacao('excluir', alunoId);
     };
-    
+
     const handleBaixarRastreio = (alunoId) => {
         abrirModalConfirmacao('baixar', alunoId);
     };
     const confirmarAcao = async () => {
         if (!modalConfirmacao) return;
-    
+
         const { acao, alunoId } = modalConfirmacao;
-    
+
         if (acao === 'excluir') {
             try {
                 await deleteDoc(doc(firestore, 'rastreios', alunoId));
@@ -154,13 +146,13 @@ function RastreioCRM() {
         } else if (acao === 'baixar') {
             baixarPDF();
         }
-    
+
         setModalConfirmacao(null); // Fecha o modal
     };
 
     const ModalConfirmacao = () => {
         if (!modalConfirmacao) return null;
-    
+
         return (
             <div className="overlay">
                 <div className="modalConfirmacao">
@@ -175,11 +167,18 @@ function RastreioCRM() {
             </div>
         );
     };
-    
+
 
     useEffect(() => {
-        const filtrados = alunos.filter(aluno =>
-            aluno.nome.toLowerCase().includes(nome.toLowerCase()) &&
+        let filtrados;
+        if (turmaSelecionada === 'Selecione') {
+            filtrados = alunos;
+            setAlunosFiltrados(filtrados)
+            return
+        }
+
+        filtrados = alunos.filter(aluno =>
+            aluno.nome && aluno.nome.toLowerCase().includes(nome.toLowerCase()) &&
             (turmaSelecionada === '' || aluno.turma === turmaSelecionada) &&
             (dataSelecionada === '' || aluno.data === dataSelecionada)
         );
@@ -191,13 +190,13 @@ function RastreioCRM() {
     }, [selecionarTodos, alunosFiltrados]);
 
     const handleOpenModal = (event, alunoId) => {
-        event.stopPropagation(); 
+        event.stopPropagation();
         const rect = event.currentTarget.getBoundingClientRect();
         setModalPos({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
         setModalAberto(alunoId);
     };
-    
-    
+
+
 
     const handleCheckboxChange = (id) => {
         setSelecionados(prevSelecionados =>
@@ -213,22 +212,68 @@ function RastreioCRM() {
                 setModalAberto(null);
             }
         };
-    
+
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [modalAberto]);
-    
-    
+
+    const handleDropChange = (option) => {
+        if (option) {
+            setTurmaSelecionada(option);
+        } else {
+            setTurmaSelecionada('Selecione')
+        }
+    };
+
+    const mapPotentialToText = (potential) => {
+        switch (potential) {
+            case 'pp':
+                return 'Baixo';
+            case 'p':
+                return 'Médio';
+            case 'mp':
+                return 'Alto';
+            default:
+                return 'Indefinido'; // Caso o valor seja inesperado
+        }
+    };
+
+    const calculateResult = (value) => {
+        const { tdahPotential } = evaluateTDAHPotential(value);
+        const { teaPotential } = evaluateTEAPotential(value);
+        const { teapPotential } = evaluateTEAPPotential(value);
+        const { tlPotential } = evaluateTLPotential(value);
+        const { todPotential } = evaluateTODPotential(value);
+        const { tdiPotential } = evaluateTDIPotential(value);
+        let resultado = 'pp';
+
+        const potentials = [tdahPotential, teaPotential, teapPotential, tlPotential, todPotential, tdiPotential];
+
+        if (potentials.includes('mp')) {
+            resultado = 'mp';
+        } else if (potentials.includes('p')) {
+            resultado = 'p';
+        }
+
+        return resultado;
+    }
+
+    const renderText = (value) => {
+        const resultado = calculateResult(value);
+        return mapPotentialToText(resultado);
+    }
+
 
     const renderGrafic = (value) => {
+        const resultado = calculateResult(value);
         return (
             <div className='containerGraficMini divlineValue'>
-                <div className={`bar bar-1 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
-                <div className={`bar bar-2 ${value === 'pp' ? 'green' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
-                <div className={`bar bar-3 ${value === 'pp' ? '' : value === 'p' ? 'yellow' : value === 'mp' ? 'red' : ''}`}></div>
-                <div className={`bar bar-4 ${value === 'pp' ? '' : value === 'p' ? '' : value === 'mp' ? 'red' : ''}`}></div>
+                <div className={`bar bar-1 ${resultado === 'pp' ? 'green' : resultado === 'p' ? 'yellow' : resultado === 'mp' ? 'red' : ''}`}></div>
+                <div className={`bar bar-2 ${resultado === 'pp' ? 'green' : resultado === 'p' ? 'yellow' : resultado === 'mp' ? 'red' : ''}`}></div>
+                <div className={`bar bar-3 ${resultado === 'pp' ? '' : resultado === 'p' ? 'yellow' : resultado === 'mp' ? 'red' : ''}`}></div>
+                <div className={`bar bar-4 ${resultado === 'pp' ? '' : resultado === 'p' ? '' : resultado === 'mp' ? 'red' : ''}`}></div>
             </div>
         );
     };
@@ -237,99 +282,105 @@ function RastreioCRM() {
     const inicio = (paginaAtual - 1) * itensPorPagina;
     const alunosPaginados = alunosFiltrados.slice(inicio, inicio + itensPorPagina);
 
-
     return (
         <div className="containerRastreios">
             <h1 className='titleRastreios'>Rastreios</h1>
             <ModalConfirmacao />
-            <div className="listaFiltrada">
-                <div className="filtros">
-                    <InputText 
-                        title='Pesquisar nome' 
-                        value={nome} 
-                        onChange={(e) => setNome(e.target.value)} 
-                    />
-                    <DropDown 
-                        title='Turma' 
-                        type='Selecione' 
-                        options={turmas.map(t => t?.nome ?? '')}
-                        value={turmaSelecionada}
-                        onChange={(e) => setTurmaSelecionada(e.target.value)}
-                    />
-                    <InputText 
-                        title='Data' 
-                        type="text" 
-                        maxLength="10"
-                        value={dataSelecionada} 
-                        onChange={(e) => setDataSelecionada(e.target.value)}
-                        placeholder="dd/mm/aaaa"
-                    />
-                    <ButtonBold title='Baixar relatórios' />
-                </div>
-
-                <div className="listaAlunos">
-                    <div className="alunoItem cabecalhoLista">
-                        <div className='spanName'>
-                            <input 
-                                type="checkbox" 
-                                checked={selecionarTodos} 
-                                onChange={() => setSelecionarTodos(!selecionarTodos)} 
-                            />
-                            <span>Nome</span>
-                        </div>
-                        <span>Turma</span>
-                        <span>Faixa Etária</span>
-                        <span>Data</span>
-                        <span>Resultado</span>
-                        <span></span>
+            <div className="divContent">
+                <div className="listaFiltrada">
+                    <div className="filtros">
+                        <InputText
+                            title='Pesquisar nome'
+                            value={nome}
+                            onChange={(e) => setNome(e.target.value)}
+                        />
+                        <DropDown
+                            title='Turma'
+                            type='Selecione'
+                            options={turmas.map(t => t?.name ?? '')}
+                            value={turmaSelecionada}
+                            onChange={(e) => setTurmaSelecionada(e.target.value)}
+                            onTurmaChange={handleDropChange}
+                        />
+                        <InputText
+                            title='Data'
+                            type="text"
+                            maxLength="10"
+                            value={dataSelecionada}
+                            onChange={(e) => setDataSelecionada(e.target.value)}
+                            placeholder="dd/mm/aaaa"
+                        />
+                        <ButtonBold title='Baixar relatórios' />
                     </div>
-                    {alunosPaginados.length > 0 ? (
-                        alunosPaginados.map(aluno => (
-                            <div key={aluno.id} className="alunoItem">
-                                <div className='spanName'>
-                                    <input 
-                                        type="checkbox" 
-                                        checked={selecionados.includes(aluno.id)} 
-                                        onChange={() => handleCheckboxChange(aluno.id)} 
-                                    />
-                                    <span>{aluno.nome}</span>
-                                </div>
-                                <span>{aluno.turma}</span>
-                                <span>{aluno.faixaEtaria}</span>
-                                <span>{aluno.data}</span>
-                                <span>{renderGrafic(aluno.resultado)}</span>
-                                <button className='dowRastreio' onClick={(e) => handleOpenModal(e, aluno.id)}>
-    <FaEllipsisVertical size={14}/>
-</button>
-{modalAberto === aluno.id && (
-    <div 
-        ref={componentRef}
-        className="modalRastreio" 
-        style={{ position: 'absolute', top: modalPos.top, left: modalPos.left, background: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
-    >
-        <ul className='modalList'>
-            <li onClick={() => handleExcluirRastreio(aluno.id)} style={{ cursor: 'pointer', color: 'red' }}>Excluir</li>
-            <li onClick={handleBaixarRastreio} style={{ cursor: 'pointer' }}> Baixar</li>
-        </ul>
-    </div>
-)}
+
+                    <div className="divInfos">
+                        <div className="divHeader">
+                            <div className='spanName'>
+                                <input
+                                    type="checkbox"
+                                    checked={selecionarTodos}
+                                    onChange={() => setSelecionarTodos(!selecionarTodos)}
+                                />
+                                <span>Nome</span>
                             </div>
-                        ))
-                    ) : (
-                        <p>Nenhum rastreio encontrado.</p>
-                    )}
+                            <span className='title'>Turma</span>
+                            <span className='title'>Faixa Etária</span>
+                            <span className='title'>Data</span>
+                            <span className='title'>Resultado</span>
+                            <span className='title'></span>
+                        </div>
+                        <div className="divValues">
+                            {alunosPaginados.length > 0 ? (
+                                alunosPaginados.map(aluno => (
+                                    <div key={aluno.id} className="divRastreios">
+                                        <div className='spanName'>
+                                            <input
+                                                type="checkbox"
+                                                checked={selecionados.includes(aluno.id)}
+                                                onChange={() => handleCheckboxChange(aluno.id)}
+                                            />
+                                            <span>{aluno.nome}</span>
+                                        </div>
+                                        <span className='spanBox'>{aluno.turma}</span>
+                                        <span className='spanBox'>{aluno.faixaEtaria}</span>
+                                        <span className='spanBox'>{aluno.data}</span>
+                                        <div className='spanName'>
+                                            {renderGrafic(aluno.resultado)}{renderText(aluno.resultado)} risco potencial
+                                        </div>
+                                        <button className='dowRastreio' onClick={(e) => handleOpenModal(e, aluno.id)}>
+                                            <FaEllipsisVertical size={14} />
+                                        </button>
+                                        {modalAberto === aluno.id && (
+                                            <div
+                                                ref={componentRef}
+                                                className="modalRastreio"
+                                                style={{ position: 'absolute', top: modalPos.top, left: modalPos.left, background: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+                                            >
+                                                <ul className='modalList'>
+                                                    <li onClick={() => handleExcluirRastreio(aluno.id)} style={{ cursor: 'pointer', color: 'red' }}>Excluir</li>
+                                                    <li onClick={handleBaixarRastreio} style={{ cursor: 'pointer' }}> Baixar</li>
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <p>Nenhum rastreio encontrado.</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div className="paginacao">
-                <span></span>
-                <div>
-                <button className='navBtn' onClick={() => setPaginaAtual(p => Math.max(p - 1, 1))} disabled={paginaAtual === 1}>
-                    <FaCircleChevronLeft size={20} />
-                </button>
-                <span>Página {paginaAtual} de {totalPaginas}</span>
-                <button className='navBtn' onClick={() => setPaginaAtual(p => Math.min(p + 1, totalPaginas))} disabled={paginaAtual === totalPaginas}>
-                    <FaCircleChevronRight  size={20}/>
-                </button>
+                <div className="paginacao">
+                    <span></span>
+                    <div>
+                        <button className='navBtn' onClick={() => setPaginaAtual(p => Math.max(p - 1, 1))} disabled={paginaAtual === 1}>
+                            <FaCircleChevronLeft size={20} />
+                        </button>
+                        <span>Página {paginaAtual} de {totalPaginas}</span>
+                        <button className='navBtn' onClick={() => setPaginaAtual(p => Math.min(p + 1, totalPaginas))} disabled={paginaAtual === totalPaginas}>
+                            <FaCircleChevronRight size={20} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
