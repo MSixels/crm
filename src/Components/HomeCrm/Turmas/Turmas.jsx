@@ -258,6 +258,7 @@ useEffect(() => {
                         />
                             </div>
                             
+                            {/*
                             <ButtonBold 
                             title='Nova turma' 
                             icon={<FaCirclePlus size={20}/>} 
@@ -274,7 +275,7 @@ useEffect(() => {
                                 setTurmaSelecionada(null);
                                 setNovaTurma(true);
                             }} 
-                        />
+                        /> */}
 
                         </div>
                         <div className='divInfos'>
