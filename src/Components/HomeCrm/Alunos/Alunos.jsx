@@ -1,9 +1,9 @@
 import InputText from '../../InputText/InputText'
 import './Alunos.css'
 import ButtonBold from '../../ButtonBold/ButtonBold'
-import { FaAngleDown, FaAngleUp, FaCirclePlus } from "react-icons/fa6";
+import { FaCirclePlus } from "react-icons/fa6";
 import { GoDotFill } from "react-icons/go";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalCreateAluno from '../../ModalCreateAluno/ModalCreateAluno';
 import { firestore } from '../../../services/firebaseConfig';
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -11,9 +11,8 @@ import Loading from '../../Loading/Loading';
 import PropTypes from 'prop-types'
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { disableUserInFirestore, reactivateUserInFirestore, deleteUserFromFireBaseAuth } from '../../../functions/functions';
-import { MdArrowBackIosNew } from 'react-icons/md';
-import { GrNext } from 'react-icons/gr';
 import DropDown from '../../DropDown/DropDown'
+import Pagination from '../../Pagination/Pagination';
 import { useToast } from '../../../Contexts/ToastContext'
 
 function Alunos({ userType }) {
@@ -27,7 +26,6 @@ function Alunos({ userType }) {
     const [actionType, setActionType] = useState('')
     const [currentPage, setCurrentPage] = useState(0);
     const [itemsPerPage, setItemsPerPage] = useState(5);
-    const [showModalNumberPages, setShowModalNumberPages] = useState(false)
     const [usersScore, setUsersScore] = useState([])
     const header = [
         { title: 'Nome' },
@@ -101,25 +99,6 @@ function Alunos({ userType }) {
         fetchAlunosFromFirestore()
     }
 
-    const renderModalNumberLiner = () => {
-        const options = [
-            {value: 100},
-            {value: 40},
-            {value: 20},
-            {value: 10},
-            {value: 5},
-        ]
-
-        return(
-            <div className='containerRenderModalNumberLiner'>
-                {options.map((o, index) => (
-                    <div key={index} className='option' onClick={() => setItemsPerPage(o.value)}>
-                        {o.value}
-                    </div>
-                ))}
-            </div>
-        )
-    }
 
     const fetchAlunosFromFirestore = async () => {
         try {
@@ -184,19 +163,6 @@ function Alunos({ userType }) {
         setActiveModalId(null)
         setConfirmId(null); 
     };
-
-    const handleNextPage = () => {
-        if ((currentPage + 1) * itemsPerPage < filtered.length) {
-            setCurrentPage(prevPage => prevPage + 1);
-        }
-    };
-
-    const handlePreviousPage = () => {
-        if (currentPage > 0) {
-            setCurrentPage(prevPage => prevPage - 1);
-        }
-    };
-
     const handleDisable = async (id) => {
         try {
             //console.log('Iniciando desativação do usuário com ID:', id);
@@ -365,26 +331,14 @@ function Alunos({ userType }) {
                         })}
                     </div>
                 </div>
-                <div className='legendas'>
-                    <div className='divNumberLines'>
-                        <p>Linhas por página <span className='bold'>{itemsPerPage}</span></p>
-                        <div onClick={() => setShowModalNumberPages(!showModalNumberPages)} className='divIcon'>
-                            {showModalNumberPages ? <FaAngleDown /> : <FaAngleUp />}
-                            {showModalNumberPages && renderModalNumberLiner()}
-                        </div>
-                        
-                    </div>
-                    
-                    <p className='bold'>{currentPage * itemsPerPage + 1}-{Math.min((currentPage + 1) * itemsPerPage, filtered.length)} de {filtered.length}</p>
-                    <div className='btnNextPage'>
-                        <div className='divBtnBackNext' onClick={handlePreviousPage}>
-                            <MdArrowBackIosNew />
-                        </div>
-                        <div className='divBtnBackNext' onClick={handleNextPage}>
-                            <GrNext />
-                        </div>
-                    </div>
-                </div>
+                <Pagination
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    itemsPerPage={itemsPerPage}
+    setItemsPerPage={setItemsPerPage}
+    totalItems={filtered.length}
+/>
+
             </div>
         </div>
     )

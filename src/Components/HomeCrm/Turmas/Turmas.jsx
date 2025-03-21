@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { db } from '../../../services/firebaseConfig';
-import { collection, getDocs, addDoc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, addDoc,doc, updateDoc, writeBatch, query, where } from 'firebase/firestore';
 import {  FaCircleChevronLeft, FaTrash, FaUser, FaGear, FaCirclePlus, FaArrowUpRightFromSquare } from 'react-icons/fa6';
 import ButtonBold from '../../ButtonBold/ButtonBold';
 import InputText from '../../InputText/InputText';
+import Pagination from '../../Pagination/Pagination';
 import './Turmas.css';
 
 function Turmas() {
@@ -13,11 +14,11 @@ function Turmas() {
     const [turmas, setTurmas] = useState([]);
     const [editandoTurma, setEditandoTurma] = useState(false);
     const [turmaSelecionada, setTurmaSelecionada] = useState(null);
-    const [alunos, setAlunos] = useState([
-        { id: 1, nome: "João Silva", email: "joao@email.com", media: 80 },
-        { id: 2, nome: "Maria Souza", email: "maria@email.com", media: 90 },
-        { id: 3, nome: "Carlos Lima", email: "carlos@email.com", media: 75 },
-    ]);
+    const [alunos, setAlunos] = useState([]);
+    const [selectedAlunos, setSelectedAlunos] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const paginatedAlunos = alunos.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
     const [turma, setTurma] = useState({
         name: '',
         description: '',
@@ -33,18 +34,37 @@ function Turmas() {
     console.log("Pesquisa:", value);
 };
 
+const handleSelectAll = () => {
+    if (selectedAlunos.length === alunos.length) {
+        setSelectedAlunos([]);
+    } else {
+        setSelectedAlunos(alunos.map(aluno => aluno.id));
+    }
+};
+
+const handleSelectAluno = (id) => {
+    setSelectedAlunos(prevSelected => 
+        prevSelected.includes(id) 
+            ? prevSelected.filter(alunoId => alunoId !== id)
+            : [...prevSelected, id] 
+    );
+};
+
 const buscarTurmas = async () => {
     try {
         const turmasRef = collection(db, 'turmas');
         const snapshot = await getDocs(turmasRef);
-        
-        if (snapshot.empty) {
-            console.log("Nenhuma turma encontrada na coleção 'turmas'.");
-        } else {
-            console.log("Dados encontrados:", snapshot.docs.map(doc => doc.data()));
-        }
 
-        const listaTurmas = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const listaTurmas = await Promise.all(snapshot.docs.map(async (doc) => {
+            const turmaData = doc.data();
+
+            const q = query(collection(db, 'users'), where('turmaId', '==', doc.id), where('type', '==', 3));
+            const alunosSnapshot = await getDocs(q);
+            const totalAlunos = alunosSnapshot.size;
+
+            return { id: doc.id, ...turmaData, alunosCount: totalAlunos };
+        }));
+
         setTurmas(listaTurmas);
     } catch (error) {
         console.error('Erro ao buscar turmas:', error);
@@ -54,6 +74,21 @@ useEffect(() => {
     buscarTurmas();
 }, []);
 
+const fetchMediasAlunos = async () => {
+    try {
+        const q = query(collection(firestore, 'turmas', turmaId, 'alunos')); 
+        const querySnapshot = await getDocs(q);
+        
+        const alunosComMedias = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        setAlunos(alunosComMedias);
+    } catch (error) {
+        console.error("Erro ao carregar as médias dos alunos:", error);
+    }
+};
 
 const salvarTurma = async () => {
     console.log("Estado atual da turma:", turma);
@@ -109,56 +144,21 @@ const buscarTurmaAtiva = async () => {
     }
 };
 
-const cadastrarAluno = async (nome, email, media) => {
-    try {
-        const turmaAtiva = await buscarTurmaAtiva();
-        
-        if (!turmaAtiva) {
-            alert("Nenhuma turma ativa encontrada.");
-            return;
-        }
-
-        const alunosRef = collection(db, 'alunos');
-        const alunoDoc = await addDoc(alunosRef, {
-            nome,
-            email,
-            media,
-            turmaID: turmaAtiva.id
-        });
-
-        const turmaAlunosRef = collection(db, `turmas/${turmaAtiva.id}/alunos`);
-        await addDoc(turmaAlunosRef, {
-            nome,
-            email,
-            media,
-            alunoID: alunoDoc.id
-        });
-
-        const turmaRef = doc(db, 'turmas', turmaAtiva.id);
-        await updateDoc(turmaRef, {
-            alunosCount: turmaAtiva.alunosCount + 1
-        });
-
-        alert("Aluno cadastrado com sucesso!");
-    } catch (error) {
-        console.error("Erro ao cadastrar aluno:", error);
-        alert("Erro ao cadastrar aluno.");
-    }
-};
 
 const buscarAlunosDaTurma = async (turmaID) => {
     try {
-        const alunosRef = collection(db, `turmas/${turmaID}/alunos`);
-        const snapshot = await getDocs(alunosRef);
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('type', '==', 3), where('turmaId', '==', turmaID));
+        const snapshot = await getDocs(q);
 
         const listaAlunos = snapshot.docs.map(doc => ({
             id: doc.id,
-            ...doc.data()
+            nome: doc.data().nome || doc.data().name || "Sem nome",
+            email: doc.data().email,
+            media: doc.data().media || "N/A"
         }));
 
         setAlunos(listaAlunos);
-
-        
         setTurma(prevTurma => ({
             ...prevTurma,
             alunosCount: listaAlunos.length
@@ -167,7 +167,6 @@ const buscarAlunosDaTurma = async (turmaID) => {
         console.error("Erro ao buscar alunos da turma:", error);
     }
 };
-
 
 const salvarAlteracoes = async () => {
     console.log("Estado atual da turma:", turma);
@@ -211,7 +210,7 @@ const salvarAlteracoes = async () => {
                 endDate: turma.endDate,
                 active: turma.active,
                 modulos: turma.modulos,
-                alunosCount: 0, 
+                alunosCount: alunos.length, 
             });
 
             alert('Turma criada com sucesso!');
@@ -236,7 +235,7 @@ useEffect(() => {
             endDate: turmaSelecionada.endDate,
             active: turmaSelecionada.active,
             modulos: turmaSelecionada.modulos || [],
-            alunosCount: turmaSelecionada.alunosCount || 0, 
+            alunosCount: alunos.length || 0, 
         });
 
         buscarAlunosDaTurma(turmaSelecionada.id);
@@ -263,7 +262,7 @@ useEffect(() => {
                             title='Nova turma' 
                             icon={<FaCirclePlus size={20}/>} 
                             action={() => {
-                                setEditandoTurma(false); // Não estamos editando, e sim criando
+                                setEditandoTurma(false);
                                 setTurma({
                                     name: '',
                                     description: '',
@@ -273,7 +272,7 @@ useEffect(() => {
                                     modulos: [],
                                 });
                                 setTurmaSelecionada(null);
-                                setNovaTurma(true); // Abre o formulário
+                                setNovaTurma(true);
                             }} 
                         />
 
@@ -309,7 +308,6 @@ useEffect(() => {
 ) : (
     <p>Nenhuma turma cadastrada.</p>
 )}
-
 </div>
                     </div>
                 </>
@@ -319,7 +317,7 @@ useEffect(() => {
     <span className="voltarIcon" onClick={() => setNovaTurma(false)}>
         <FaCircleChevronLeft size={20} />
     </span>
-    <h1>Nova Turma</h1>
+    <h1>{turmaSelecionada ? turmaSelecionada.name : "Nova Turma"}</h1>
 </div>
     <div className="tabs">
         <span 
@@ -358,29 +356,52 @@ useEffect(() => {
             
             <div className="alunosLista">
                 <div className="alunosHeader">
-                <input type="checkbox" />
-                    <span>Nome</span>
+                <div className='spanName'>
+                <input 
+    type="checkbox" 
+    checked={selectedAlunos.length === alunos.length && alunos.length > 0} 
+    onChange={handleSelectAll} 
+/>
+                <span>Nome</span>
+                </div>
                     <span>Email</span>
                     <span>Média de Notas</span>
-                    <button className="btnDelete">
-                        <FaTrash size={18} />
-                    </button>
+                    <span></span>
                 </div>
         
-                {alunos.map((aluno) => (
-                    <div key={aluno.id} className="alunoItem">
-                        <input type="checkbox" />
-                        <span>{aluno.nome}</span>
-                        <span>{aluno.email}</span>
-                        <span>{aluno.media}</span>
-                        <button className="btnDelete">
-                        <FaTrash size={18} />
-                    </button>
-                        </div>
-                ))}
+                {paginatedAlunos.map((aluno) => (
+    <div key={aluno.id} className="alunoItem">
+        <div className='spanName'>
+        <input 
+    type="checkbox" 
+    checked={selectedAlunos.includes(aluno.id)} 
+    onChange={() => handleSelectAluno(aluno.id)} 
+/>
+
+        <span title={aluno.nome}>
+            {aluno.nome.length > 15 ? aluno.nome.slice(0, 15) + '...' : aluno.nome}
+        </span>
+        </div>
+        <span title={aluno.email}>
+            {aluno.email.length > 12 ? aluno.email.slice(0, 12) + '...' : aluno.email}
+        </span>
+        <span>{aluno.media ? aluno.media : "N/A"}</span>
+        <button className="btnDelete">
+            <FaTrash size={18} />
+        </button>
+    </div>
+))}
             </div>
         </div>
-            </div>
+        <Pagination
+    currentPage={currentPage}
+    setCurrentPage={setCurrentPage}
+    itemsPerPage={itemsPerPage}
+    setItemsPerPage={setItemsPerPage}
+    totalItems={alunos.length}
+/>
+        </div>
+            
         
         ) : (
             <div className="configSection">

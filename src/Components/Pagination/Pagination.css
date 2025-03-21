@@ -1,0 +1,66 @@
+.legendas {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap:32px;
+  font-size: 12px;
+  padding-top: 16px;
+  padding-inline: 12px;
+}
+
+.legendas .divBtnBackNext{
+  cursor: pointer;
+}
+
+legendas .l_graficos{
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.legendas .btnNextPage{
+  display: flex;
+  gap: 32px;
+}
+
+.containerRenderModalNumberLiner{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  bottom: 15px;
+  right: 10px;
+  background-color: #FFF;
+  z-index: 2000;
+  border: solid 1px var(--primary-200);
+  padding: 3px;
+  border-radius: 4px;
+}
+
+.containerRenderModalNumberLiner .option{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.containerRenderModalNumberLiner .option:hover{
+  background-color: var(--primary-200);
+}
+
+.divNumberLines{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.divNumberLines .divIcon{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}

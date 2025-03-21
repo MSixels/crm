@@ -171,7 +171,7 @@ function LastRastreio({ data, close, alunoName, comentarioAtt }) {
                             <textarea
                                 name="coment"
                                 id="coment"
-                                maxLength="200"
+                                maxLength="700"
                                 style={{ height: 150, outline: 'none', padding: 8, border: 'solid 1px #ccc', borderRadius: 4 }}
                                 value={comentario}
                                 onChange={(e) => setComentario(e.target.value)}

@@ -108,6 +108,7 @@
 .buttons {
     display: flex;
     gap: 10px;
+    margin-right: 1rem;
 }
 
 .btnAdd {
@@ -145,15 +146,35 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+.btnDelete:hover {
+    color: var(--bg-White);
+    background-color: var(--error);
+    padding: 8px;
+    border: 2px solid  var(--bg-White);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
 .alunosHeader, .alunoItem {
-    background-color: #fff;
+    background-color: var(--bg-White);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid var(--border-light);
+    cursor: text;
 }
+
+.alunoItem span {
+    flex-basis: 20%;
+}
+
+.alunosHeader span {
+    font-weight: bold;
+}
+
 
 .configBtnTurma {
     color: #616161;

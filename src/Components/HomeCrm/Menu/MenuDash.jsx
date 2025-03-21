@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { PiStudentBold } from "react-icons/pi";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import { FaListCheck } from 'react-icons/fa6';
 
 function MenuDash({ page, conteudoId, moduloId }) {
     const [selectedOption, setSelectedOption] = useState(1);
