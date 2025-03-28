@@ -38,9 +38,9 @@ function DropDown({ title, type, options, onTurmaChange }) {
             {isDropdownOpen && (
                 <div className='dropdownList'>
                     {options.map((o) => (
-                        <span key={o.id} onClick={() => handleSelectTurma(o)} className='optionDrop'>
-                            {o.name}
-                        </span>
+                        <div key={o.id} onClick={() => handleSelectTurma(o)} className='optionDrop'>
+                            <span>{o.name}</span>
+                        </div>
                     ))}
                 </div>
             )}

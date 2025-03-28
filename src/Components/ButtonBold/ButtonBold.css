@@ -20,3 +20,9 @@
 .containerButtonBold button:hover{
     scale: 1.01;
 }
+.containerButtonBold button:disabled {
+    background-color: var(--bg-block);
+    color: var(--color-block);
+    scale: 1;
+}
+

@@ -117,6 +117,7 @@
   background-color: transparent;
   padding: 2px;
   cursor: pointer;
+  right: 16px;
 }
 
 .modalRastreio {
@@ -127,6 +128,7 @@
   padding: 10px;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+  right: 40px;
 }
 
 .modalRastreio button {

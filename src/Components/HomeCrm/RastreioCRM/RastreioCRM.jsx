@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { firestore } from '../../../services/firebaseConfig';
-import { collection, getDocs, doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, query, deleteDoc, where, documentId } from 'firebase/firestore';
 import ButtonBold from '../../ButtonBold/ButtonBold';
 import './RastreioCRM.css';
 import html2pdf from 'html2pdf.js';
@@ -8,6 +8,8 @@ import InputText from '../../InputText/InputText';
 import DropDown from '../../DropDown/DropDown';
 import { FaEllipsisVertical, FaCircleChevronRight, FaCircleChevronLeft } from 'react-icons/fa6';
 import { evaluateTDAHPotential, evaluateTDIPotential, evaluateTEAPotential, evaluateTEAPPotential, evaluateTLPotential, evaluateTODPotential } from '../../../functions/functions';
+import ReactDOMServer from 'react-dom/server';
+import RastreioPDF from '../../../Components/HomeAluno/RastreioPDF/RastreioPDF'
 
 function RastreioCRM() {
     const [nome, setNome] = useState('');
@@ -18,7 +20,6 @@ function RastreioCRM() {
     const [alunosFiltrados, setAlunosFiltrados] = useState([]);
     const [selecionados, setSelecionados] = useState([]);
     const [selecionarTodos, setSelecionarTodos] = useState(false);
-    const [modalPos, setModalPos] = useState({ top: 0, left: 0 });
     const [modalAberto, setModalAberto] = useState(null);
     const modalRef = useRef(null);
     const [paginaAtual, setPaginaAtual] = useState(1);
@@ -33,14 +34,61 @@ function RastreioCRM() {
     };
 
 
-    const baixarPDF = () => {
-        const element = componentRef.current;
+    const downloadSelectedRastreios = () => {
+        const selectedAlunos = alunos.filter((a) => selecionados.includes(a.id));
 
-        if (!element) {
-            console.error("Elemento para gerar PDF não encontrado!");
-            return;
-        }
+        const typeQuest1 = selectedAlunos.filter(rastreio => rastreio.typeQuest === 1).length;
+        const typeQuest2 = selectedAlunos.filter(rastreio => rastreio.typeQuest === 2).length;
+        const typeQuest3 = selectedAlunos.filter(rastreio => rastreio.typeQuest === 3).length;
 
+        const cards =  [
+            { id: 1, icon: 'active', title: 'Concluídos', value: selectedAlunos.length },
+            { id: 2, icon: '', title: '3 a 6 anos', value: typeQuest1 },
+            { id: 3, icon: '', title: 'Até 8 anos', value: typeQuest2 },
+            { id: 4, icon: '', title: 'Acima de 8 anos', value: typeQuest3},
+        ]
+
+        const values = selectedAlunos.map((s) => ({ 
+            createdAt: s.createdAt, 
+            responses: s.resultado, 
+            patient: s.patient, 
+            typeQuest: s.typeQuest 
+        }))
+
+        const element = ReactDOMServer.renderToString(<RastreioPDF alunoName={""} dataCards={cards} dataValues={values} />);
+        
+        const opt = {
+            margin: 0.15,
+            filename: 'relatorio_rastreio.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().from(element).set(opt).save();
+    }
+
+
+    const baixarPDF = (alunoId) => {
+        const aluno = alunos.filter((a) => a.id === alunoId);
+
+        const typeQuest1 = aluno.filter(rastreio => rastreio.typeQuest === 1).length;
+        const typeQuest2 = aluno.filter(rastreio => rastreio.typeQuest === 2).length;
+        const typeQuest3 = aluno.filter(rastreio => rastreio.typeQuest === 3).length;
+
+        const cards =  [
+            { id: 1, icon: 'active', title: 'Concluídos', value: alunos.length },
+            { id: 2, icon: '', title: '3 a 6 anos', value: typeQuest1 },
+            { id: 3, icon: '', title: 'Até 8 anos', value: typeQuest2 },
+            { id: 4, icon: '', title: 'Acima de 8 anos', value: typeQuest3},
+        ]
+
+        const values = [
+            { createdAt: aluno[0].createdAt, responses: aluno[0].resultado, patient: aluno[0].patient, typeQuest: aluno[0].typeQuest  }
+        ]
+
+        const element = ReactDOMServer.renderToString(<RastreioPDF alunoName={aluno[0].nome} dataCards={cards} dataValues={values} />);
+        
         const opt = {
             margin: 0.15,
             filename: 'relatorio_rastreio.pdf',
@@ -52,58 +100,62 @@ function RastreioCRM() {
         html2pdf().from(element).set(opt).save();
     };
 
-
+    const chunkArray = (array, size) => {
+        return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
+            array.slice(i * size, i * size + size)
+        );
+    };
 
     useEffect(() => {
-        const fetchTurmas = async () => {
+        const fetchData = async () => {
             try {
-                const snapshot = await getDocs(collection(firestore, 'turmas'));
-                setTurmas(snapshot.docs.map(d => ({ id: d.id, ...d.data() })));
-            } catch (error) {
-                console.error("Erro ao buscar turmas:", error);
-            }
-        };
-
-        const fetchRastreios = async () => {
-            try {
-                const snapshot = await getDocs(collection(firestore, 'rastreios'));
-                const docsRastreios = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-
-                // 1. Obter todos os userIds e turmaIds únicos
-                const userIds = [...new Set(docsRastreios.map(d => d.userId).filter(Boolean))];
-
-                // 2. Buscar todos os usuários de uma vez só
-                const userSnapshots = await Promise.all(userIds.map(id => getDoc(doc(firestore, 'users', id))));
-                const usersMap = new Map(userSnapshots.map(snap => [snap.id, snap.exists() ? snap.data() : null]));
-
-                // 3. Obter todas as turmas necessárias (baseado nos usuários)
+                const rastreiosSnapshot = await getDocs(collection(firestore, 'rastreios'));
+                const rastreios = rastreiosSnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    
+                const userIds = [...new Set(rastreios.map(d => d.userId).filter(Boolean))];
+    
+                let usersMap = new Map();
+                const userChunks = chunkArray(userIds, 30);
+                for (const chunk of userChunks) {
+                    const usersQuery = query(collection(firestore, 'users'), where(documentId(), 'in', chunk));
+                    const usersSnapshot = await getDocs(usersQuery);
+                    usersSnapshot.docs.forEach(doc => usersMap.set(doc.id, doc.data()));
+                }
+    
                 const turmaIds = [...new Set([...usersMap.values()].map(u => u?.turmaId).filter(Boolean))];
-                const turmaSnapshots = await Promise.all(turmaIds.map(id => getDoc(doc(firestore, 'turmas', id))));
-                const turmasMap = new Map(turmaSnapshots.map(snap => [snap.id, snap.exists() ? snap.data() : null]));
-
-                // 4. Processar os rastreios com dados já carregados
-                const alunos = docsRastreios.map(docRastreio => {
-                    const user = usersMap.get(docRastreio.userId) || {};
-                    const turma = turmasMap.get(user.turmaId) || {};
-
+    
+                let turmasMap = new Map();
+                const turmaChunks = chunkArray(turmaIds, 30);
+                for (const chunk of turmaChunks) {
+                    const turmasQuery = query(collection(firestore, 'turmas'), where(documentId(), 'in', chunk));
+                    const turmasSnapshot = await getDocs(turmasQuery);
+                    turmasSnapshot.docs.forEach(doc => turmasMap.set(doc.id, doc.data()));
+                }
+    
+                const alunosProcessados = rastreios.map(rastreio => {
+                    const user = usersMap.get(rastreio.userId) || {};
+                    const turma = turmasMap.get(user?.turmaId) || {};
+    
                     return {
-                        id: docRastreio.id,
+                        id: rastreio.id,
                         nome: user.name || 'Desconhecido',
                         turma: turma.name || '',
-                        faixaEtaria: getFaixaEtaria(docRastreio.typeQuest),
-                        data: formatarData(docRastreio.createdAt),
-                        resultado: docRastreio.responses
+                        faixaEtaria: getFaixaEtaria(rastreio.typeQuest),
+                        data: formatarData(rastreio.createdAt),
+                        resultado: rastreio.responses,
+                        createdAt: rastreio.createdAt,
+                        patient: rastreio.patient,
+                        typeQuest: rastreio.typeQuest
                     };
                 });
-
-                setAlunos(alunos);
+    
+                setAlunos(alunosProcessados);
             } catch (error) {
-                console.error("Erro ao buscar rastreios:", error);
+                console.error("Erro ao buscar dados:", error);
             }
         };
-
-        fetchTurmas();
-        fetchRastreios();
+    
+        fetchData();
     }, []);
 
     const getFaixaEtaria = (typeQuest) => {
@@ -129,6 +181,7 @@ function RastreioCRM() {
     const handleBaixarRastreio = (alunoId) => {
         abrirModalConfirmacao('baixar', alunoId);
     };
+
     const confirmarAcao = async () => {
         if (!modalConfirmacao) return;
 
@@ -144,7 +197,7 @@ function RastreioCRM() {
                 alert("Erro ao excluir rastreio. Tente novamente.");
             }
         } else if (acao === 'baixar') {
-            baixarPDF();
+            baixarPDF(alunoId);
         }
 
         setModalConfirmacao(null); // Fecha o modal
@@ -191,12 +244,8 @@ function RastreioCRM() {
 
     const handleOpenModal = (event, alunoId) => {
         event.stopPropagation();
-        const rect = event.currentTarget.getBoundingClientRect();
-        setModalPos({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
         setModalAberto(alunoId);
     };
-
-
 
     const handleCheckboxChange = (id) => {
         setSelecionados(prevSelecionados =>
@@ -220,8 +269,8 @@ function RastreioCRM() {
     }, [modalAberto]);
 
     const handleDropChange = (option) => {
-        if (option) {
-            setTurmaSelecionada(option);
+        if (option.id) {
+            setTurmaSelecionada(option.name);
         } else {
             setTurmaSelecionada('Selecione')
         }
@@ -297,7 +346,7 @@ function RastreioCRM() {
                         <DropDown
                             title='Turma'
                             type='Selecione'
-                            options={turmas.map(t => t?.name ?? '')}
+                            options={turmas.map(t => ({id: t.id, name: t.name }))}
                             value={turmaSelecionada}
                             onChange={(e) => setTurmaSelecionada(e.target.value)}
                             onTurmaChange={handleDropChange}
@@ -310,7 +359,7 @@ function RastreioCRM() {
                             onChange={(e) => setDataSelecionada(e.target.value)}
                             placeholder="dd/mm/aaaa"
                         />
-                        <ButtonBold title='Baixar relatórios' />
+                        <ButtonBold title='Baixar relatórios' action={downloadSelectedRastreios} disabled={!selecionados.length} />
                     </div>
 
                     <div className="divInfos">
@@ -354,11 +403,11 @@ function RastreioCRM() {
                                             <div
                                                 ref={componentRef}
                                                 className="modalRastreio"
-                                                style={{ position: 'absolute', top: modalPos.top, left: modalPos.left, background: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
+                                                style={{ position: 'absolute', background: 'white', padding: '10px', border: '1px solid #ccc', borderRadius: '5px' }}
                                             >
                                                 <ul className='modalList'>
                                                     <li onClick={() => handleExcluirRastreio(aluno.id)} style={{ cursor: 'pointer', color: 'red' }}>Excluir</li>
-                                                    <li onClick={handleBaixarRastreio} style={{ cursor: 'pointer' }}> Baixar</li>
+                                                    <li onClick={() => handleBaixarRastreio(aluno.id)} style={{ cursor: 'pointer' }}> Baixar</li>
                                                 </ul>
                                             </div>
                                         )}
