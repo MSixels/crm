@@ -80,7 +80,7 @@ function ModalCertificado({ userId }) {
                 <div style={{marginBottom: 12}}>
                     <InputNumber title='Número de matrícula' onSearchChange={setMatricula}/>
                 </div> */}
-                <ButtonConfirm title='Continuar' action={generate} disabled={name === '' || cpf === '' || matricula === ''}/>
+                <ButtonConfirm title='Continuar' action={generate} />
             </div>
         )
     }
