@@ -235,27 +235,27 @@ export const questsRestreioType1 = [
     },
     {
         id: 16, 
-        quest: 'Não se comunica-se através de gestos (apontando ou chamando)?',
+        quest: 'Comunica-se através de gestos',
         options: optionsRastreios    
     },
     {
         id: 17, 
-        quest: 'Já reconhece letras?',
+        quest: 'Não reconhece letras?',
         options: optionsRastreios    
     },
     {
         id: 18, 
-        quest: 'Já reconhece números?',
+        quest: 'Não reconhece números?',
         options: optionsRastreios    
     },
     {
         id: 19, 
-        quest: 'Já sabe contar até 5 ou 10?',
+        quest: 'Não sabe contar até 5 ou 10?',
         options: optionsRastreios    
     },
     {
         id: 20, 
-        quest: 'Tem resposta emocional quando ouve um texto?',
+        quest: 'Não apresenta resposta emocional quando ouve um texto?',
         options: optionsRastreios    
     },
     {
@@ -398,7 +398,7 @@ export const questsRestreioType2 = [
     },
     {
         id: 16, 
-        quest: 'Não se comunica-se através de gestos (apontando ou chamando)?',
+        quest: 'Comunica-se através de gestos',
         options: optionsRastreios    
     },
     {
@@ -561,7 +561,7 @@ export const questsRestreioType3 = [
     },
     {
         id: 16, 
-        quest: 'Possui habilidade de comunicação não verbal?',
+        quest: 'Comunica-se através de gestos',
         options: optionsRastreios    
     },
     {
